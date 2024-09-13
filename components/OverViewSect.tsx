@@ -14,7 +14,7 @@ import {
 function OverViewSect() {
   const { data, error, status } = useFetchUserData();
 
-  const { transactions } = data as UserData;
+  const { transactions, balance } = data as UserData;
 
   const totalDesposite = transactions.reduce((acc, transaction) => {
     if (transaction.type === "deposite") return acc + transaction.amount;
@@ -122,7 +122,7 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-dm_sans font-bold">Main wallet</span>
-              <span className="font-dm_sans text-3xl">$004.00</span>
+              <span className="font-dm_sans text-3xl">${balance}</span>
             </div>
           </div>
           <span className="h-[1px] w-full bg-siteHeadingDark/25"></span>

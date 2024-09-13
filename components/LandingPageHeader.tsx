@@ -2,20 +2,29 @@ import Image from "next/image";
 import DesktopMenu from "./DesktopMenu";
 import Link from "next/link";
 import HeaderAuthBox from "./HeaderAuthBox";
+import MobileMenu from "./MobileMenu";
 
 function LandingPageHeader() {
   return (
-    <header className=" w-full flex items-center justify-between">
+    <header className="z-20 flex w-full items-center justify-between">
       <Link
         href="/"
-        className="flex text-center font-syne font-bold text-xl gap-2 "
+        className="flex gap-2 text-center font-syne text-xl font-bold"
       >
-        <Image src="/kudizen-icon.png" alt="Kudizen" width={30} height={30} />
-        <h6 className="">Kudizen</h6>
+        <Image
+          src="/fastrack-green.png"
+          alt="Kudizen"
+          width={150}
+          height={10}
+        />
       </Link>
 
       <DesktopMenu />
       <HeaderAuthBox />
+
+      <div className="block sm:hidden">
+        <MobileMenu location="landing" />
+      </div>
     </header>
   );
 }

@@ -1,37 +1,44 @@
 import LandingPageHeader from "@/components/LandingPageHeader";
 import { Button } from "@nextui-org/react";
 import Image from "next/image";
+import Link from "next/link";
 
 function LandingPage() {
   return (
     <main
-      className=" bg-siteBg h-screen overflow-hidden relative bg-fixed bg-cover bg-center"
+      className="relative h-screen overflow-hidden bg-siteBg bg-cover bg-fixed bg-center"
       style={{
         backgroundImage: "url('/Lines-No-Background.png')",
       }}
     >
-      <span className=" z-[2] absolute top-0 left-0 right-0 bottom-0  bg-siteBg opacity-95 "></span>
-      <div className=" relative lg:container mx-auto py-5 xl:px-0 px-5 flex flex-col items-center z-10 ">
+      <span className="absolute bottom-0 left-0 right-0 top-0 z-[2] bg-siteBg opacity-95"></span>
+      <div className="relative z-50 mx-auto flex flex-col items-center px-5 py-5 lg:container xl:px-0">
         <LandingPageHeader />
-        <h1 className="text-center font-syne font-bold text-5xl mt-20 ">
+        <h1 className="mt-20 text-center font-syne text-4xl font-bold sm:text-5xl">
           Easy Transactions <br /> and Investments
         </h1>
-        <p className="font-dm_sans text-siteHeadingDark/60">
+        <p className="text-center font-dm_sans text-siteHeadingDark/60">
           Guaranteed revenue growth and seemless transactions
         </p>
-        <div className="flex gap-5 mt-5 mb-8">
-          <Button className="heroBtn bg-siteHeadingDark hover:bg-siteGreen font-medium text-white ">
+        <div className="mb-8 mt-5 flex w-full flex-col items-center gap-3 sm:w-72 sm:flex-row sm:gap-5">
+          <Link
+            href="/signup"
+            className="heroBtn w-full bg-siteHeadingDark font-medium text-white hover:bg-siteGreen"
+          >
             Start for free
-          </Button>
-          <Button className="heroBtn text-siteHeadingDark bg-transparent font-medium hover:text-siteGreen ">
+          </Link>
+          <Link
+            href="/login"
+            className="heroBtn w-full bg-transparent font-medium text-siteHeadingDark hover:text-siteGreen"
+          >
             login
-          </Button>
+          </Link>
         </div>
       </div>
-      <div className=" relative  z-10 lg:container mx-auto py-5 xl:px-0 px-5 w-full flex justify-center ">
+      <div className="relative z-10 mx-auto flex w-full justify-center px-5 py-5 lg:container xl:px-0">
         <Image
-          className=" rounded-lg h-full  border-[8px] bg-gradient-to-r from-siteGreen  to-siteLemon border-transparent bg-cover bg-center"
-          src="/hero-image.png"
+          className="h-full rounded-lg border-[8px] border-transparent bg-gradient-to-r from-siteGreen to-siteLemon bg-cover bg-center"
+          src="/app-image.png"
           alt="hero"
           width={1000}
           height={500}

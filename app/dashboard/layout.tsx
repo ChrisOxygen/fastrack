@@ -62,12 +62,11 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
               className="flex gap-2 text-center font-syne text-xl font-bold"
             >
               <Image
-                src="/kudizen-icon.png"
+                src="/fastrack-green.png"
                 alt="Kudizen"
-                width={30}
-                height={30}
+                width={150}
+                height={10}
               />
-              <h6 className="">Kudizen</h6>
             </Link>
 
             <button

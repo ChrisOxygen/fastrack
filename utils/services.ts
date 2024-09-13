@@ -4,6 +4,8 @@ import { connectToDatabase } from "@/app/utils/database";
 import User from "@/models/user";
 import { signIn } from "next-auth/react";
 
+export const siteName = process.env.NEXTAUTH_URL!;
+
 type userSignupDetailsType = {
   firstName: string;
   lastName: string;
@@ -58,7 +60,7 @@ export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
 
   try {
-    const res = await fetch("http://localhost:3000/api/signup", {
+    const res = await fetch("${sitename}/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -83,7 +85,7 @@ export const signupNewUser = async (userDetails: userSignupDetailsType) => {
 };
 export const checkEmail = async (email: string) => {
   try {
-    const res = await fetch("http://localhost:3000/api/checkemail", {
+    const res = await fetch("${sitename}/api/checkemail", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -215,7 +217,7 @@ export const generateUniqueReferralCode = async () => {
 
 export const getUser = async (id: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/api/user/${id}`, {
+    const res = await fetch(`${siteName}/api/user/${id}`, {
       method: "GET",
     });
 
@@ -237,7 +239,7 @@ export const initiateDeposit = async (
   console.log("initiateDeposit fired", deposit);
   const { amount, transferMethod, transferFee, tax, amountToReceive } = deposit;
   try {
-    const res = await fetch(`http://localhost:3000/api/deposit/`, {
+    const res = await fetch(`${siteName}/api/deposit/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -271,7 +273,7 @@ export const initiateDeposit = async (
 export const validateEmail = async (email: string) => {
   console.log("validateEmail fired", email);
   try {
-    const res = await fetch(`http://localhost:3000/api/checkEmail`, {
+    const res = await fetch(`${siteName}/api/checkEmail`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -299,7 +301,7 @@ export const initiateFundsTransfer = async (
 ) => {
   console.log("initiateFundsTransfer fired", transferDetails);
   try {
-    const res = await fetch(`http://localhost:3000/api/send-to-user`, {
+    const res = await fetch(`${siteName}/api/send-to-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -340,19 +342,16 @@ export const initiateWithdrawal = async (
     ? "bank"
     : "paypal";
   try {
-    const res = await fetch(
-      `http://localhost:3000/api/withdraw/${withdrawalMethod}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...withdrawalDetails,
-          userId,
-        }),
+    const res = await fetch(`${siteName}/api/withdraw/${withdrawalMethod}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        ...withdrawalDetails,
+        userId,
+      }),
+    });
 
     if (!res.ok) {
       const data = await res.json();

@@ -11,8 +11,8 @@ const syne = Syne({ subsets: ["latin"], variable: "--syne" });
 const dm_sans = DM_Sans({ subsets: ["latin"], variable: "--dm-sans" });
 
 export const metadata: Metadata = {
-  title: "Kudizen",
-  description: "Manage Your Finances with Kudizen",
+  title: "Fastrack",
+  description: "Manage Your Finances with Fastrack",
 };
 
 export default async function RootLayout({

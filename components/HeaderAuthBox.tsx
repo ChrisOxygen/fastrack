@@ -2,16 +2,16 @@ import Link from "next/link";
 
 function HeaderAuthBox() {
   return (
-    <div className="flex gap-3 items-center justify-center">
+    <div className="hidden items-center justify-center gap-3 sm:flex">
       <Link
         href="/login"
-        className=" bg-transparent text-siteGreen font-dm_sans font-bold"
+        className="bg-transparent font-dm_sans font-bold text-siteGreen"
       >
         Login
       </Link>
       <Link
         href="/signup"
-        className=" bg-siteGreen text-siteLemon rounded-lg px-4 py-1 font-dm_sans font-bold"
+        className="rounded-lg bg-siteGreen px-4 py-1 font-dm_sans font-bold text-siteLemon"
       >
         Sign up
       </Link>
