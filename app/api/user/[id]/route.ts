@@ -62,6 +62,6 @@ export async function GET(req: CustomRequest, res: Response) {
 
     // return new Response(JSON.stringify(newPrompt), { status: 201 });
   } catch (error: any) {
-    // return new Response("Failed to create a new prompt", { status: 500 });
+    return new Response("Something went wrong", { status: 500 });
   }
 }

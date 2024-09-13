@@ -70,16 +70,16 @@ export async function POST(req: Request, res: Response) {
 
     console.log(
       "all transaction IDs In bank withdrawal API",
-      allTransactionIds
+      allTransactionIds,
     );
 
     const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[]
+      allTransactionIds as string[],
     );
 
     console.log(
       "unique transaction ID In bank withdrawal API",
-      uniqueTransactionId
+      uniqueTransactionId,
     );
 
     const newTransaction = await Transaction.create({
@@ -121,7 +121,7 @@ export async function POST(req: Request, res: Response) {
 
     console.log(
       "withdrawalTransaction in withdrawal API",
-      withdrawalTransaction
+      withdrawalTransaction,
     );
 
     currentUser.balance -= deductableAmount;
@@ -129,19 +129,19 @@ export async function POST(req: Request, res: Response) {
     await currentUser.save();
 
     const res = new Response(
-      JSON.stringify({ message: "New Bank withdrawal transaction created" })
+      JSON.stringify({ message: "New Bank withdrawal transaction created" }),
     );
 
     console.log("response in Bank withdrawal API", res);
 
     return res;
-  } catch (error) {
+  } catch (error: any) {
     const errorObj = error as CustomError;
 
     // TODO: set status code based on error type
     const errorResponse = new Response(
       JSON.stringify({ error: errorObj.message, field: errorObj.field }),
-      { status: 400 }
+      { status: 400 },
     );
 
     return errorResponse;

@@ -95,6 +95,6 @@ export async function POST(req: Request, res: Response) {
     return res;
   } catch (error: any) {
     console.log("the error that occured", error);
-    return error as Error;
+    return new Response("Something went wrong", { status: 500 });
   }
 }
