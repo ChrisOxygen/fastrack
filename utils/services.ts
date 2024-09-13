@@ -60,7 +60,7 @@ export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
 
   try {
-    const res = await fetch("${sitename}/api/signup", {
+    const res = await fetch(`${siteName}/api/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
