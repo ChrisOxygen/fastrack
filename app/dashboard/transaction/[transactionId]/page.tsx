@@ -135,7 +135,10 @@ function Transaction() {
       </div>
       <div className="flex w-full max-w-[500px] flex-col rounded-2xl border border-siteHeadingDark/25 p-[55px]">
         {timeLineArray.map((timeLine, index) => (
-          <div className="relative flex w-full flex-col border-b border-siteHeadingDark/25 py-4 last:border-b-0">
+          <div
+            key={index}
+            className="relative flex w-full flex-col border-b border-siteHeadingDark/25 py-4 last:border-b-0"
+          >
             <span
               className={`absolute left-[-35px] grid place-items-center text-xl text-${getStatusColor(transactionStatus)} content-[''] after:top-0 after:mt-2 ${index === 1 ? "after:hidden" : "after:block"} after:h-[50px] after:w-[2px] after:bg-${getStatusColor(transactionStatus)}`}
             >
