@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .heroBtn {
+    @apply w-40 rounded-lg border border-siteHeadingDark font-dm_sans font-medium hover:border-siteGreen;
+  }
+  .overview-icon {
+    @apply grid h-14 w-14 place-items-center rounded-full border border-siteGreen text-lg text-siteGreen lg:h-12 lg:w-12 xl:h-9 xl:w-9;
+  }
+  .overview-line-box {
+    @apply flex items-center justify-start gap-6 px-4 py-3 lg:gap-3 xl:justify-center xl:gap-2;
+  }
+  /* .side-bar-btn {
+    @apply;
+  } */
+}
