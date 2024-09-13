@@ -78,7 +78,7 @@ export async function POST(req: Request, res: Response) {
     console.log("all transaction IDs In transfer API", allTransactionIds);
 
     const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[]
+      allTransactionIds as string[],
     );
 
     console.log("unique transaction ID In transfer API", uniqueTransactionId);
@@ -125,19 +125,19 @@ export async function POST(req: Request, res: Response) {
     await currentUser.save();
 
     const res = new Response(
-      JSON.stringify({ message: "New transfer transaction created" })
+      JSON.stringify({ message: "New transfer transaction created" }),
     );
 
     console.log("response in transfer API", res);
 
     return res;
-  } catch (error) {
+  } catch (error: any) {
     const errorObj = error as CustomError;
 
     // TODO: set status code based on error type
     const errorResponse = new Response(
       JSON.stringify({ error: errorObj.message, field: errorObj.field }),
-      { status: 400 }
+      { status: 400 },
     );
 
     return errorResponse;

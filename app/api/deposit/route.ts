@@ -47,7 +47,7 @@ export async function POST(req: Request, res: Response) {
     console.log("all transaction IDs In deposit API", allTransactionIds);
 
     const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[]
+      allTransactionIds as string[],
     );
 
     console.log("unique transaction ID In deposit API", uniqueTransactionId);
@@ -87,14 +87,14 @@ export async function POST(req: Request, res: Response) {
     console.log("depositTransaction in deposit API", depositTransaction);
 
     const res = new Response(
-      JSON.stringify({ message: "New deposite transaction created" })
+      JSON.stringify({ message: "New deposite transaction created" }),
     );
 
     console.log("response in deposit API", res);
 
     return res;
-  } catch (error) {
+  } catch (error: any) {
     console.log("the error that occured", error);
-    return error;
+    return error as Error;
   }
 }

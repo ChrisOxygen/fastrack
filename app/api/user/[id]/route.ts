@@ -61,7 +61,7 @@ export async function GET(req: CustomRequest, res: Response) {
     // await newPrompt.save();
 
     // return new Response(JSON.stringify(newPrompt), { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     // return new Response("Failed to create a new prompt", { status: 500 });
   }
 }
