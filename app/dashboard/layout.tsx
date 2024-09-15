@@ -13,6 +13,7 @@ import { GoMoveToStart } from "react-icons/go";
 
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { useTabSwitch } from "@/contex/TabSwitchProvider";
+import MobileMenu from "@/components/MobileMenu";
 
 // const screenViewList = [
 //   "Dashboard",
@@ -53,7 +54,21 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const { email, firstName, lastName } = data as UserData;
   return (
-    <>
+    <div className="flex w-full flex-col">
+      <header className="flex items-center justify-between border-b border-siteHeadingDark/30 bg-white p-5 lg:hidden">
+        <Link
+          href="/"
+          className="flex gap-2 text-center font-syne text-xl font-bold"
+        >
+          <Image
+            src="/fastrack-green.png"
+            alt="Kudizen"
+            width={150}
+            height={10}
+          />
+        </Link>
+        <MobileMenu location="landing" />
+      </header>
       <main className="block h-full grid-cols-[260px_1fr] lg:grid lg:h-screen lg:overflow-hidden xl:grid-cols-[350px_1fr]">
         <aside className="hidden flex-col bg-siteBg p-5 lg:flex">
           <div className="flex items-center justify-between border-b-1 border-siteHeadingDark/25 py-4">
@@ -120,7 +135,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         </section>
       </main>
       <Toaster />
-    </>
+    </div>
   );
 }
 

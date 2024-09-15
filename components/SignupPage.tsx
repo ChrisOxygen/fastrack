@@ -86,55 +86,59 @@ function SignupPage() {
 
   return (
     <main
-      className=" bg-siteBg h-screen overflow-hidden relative bg-fixed bg-cover bg-center flex"
+      className="relative flex h-screen overflow-hidden bg-siteBg bg-cover bg-fixed bg-center"
       style={{
         backgroundImage: "url('/Lines-No-Background.png')",
       }}
     >
-      <span className=" z-[2] absolute top-0 left-0 right-0 bottom-0  bg-siteBg opacity-95 "></span>
-      <div className="relative w-full max-w-[700px] z-10 bg-white flex flex-col items-start  p-7 justify-between">
+      <span className="absolute bottom-0 left-0 right-0 top-0 z-[2] bg-siteBg opacity-95"></span>
+      <div className="relative z-10 flex w-full max-w-[700px] flex-col items-start justify-between bg-white p-7">
         <Link
           href="/"
-          className="flex text-center font-syne font-bold text-xl gap-2 "
+          className="flex gap-2 text-center font-syne text-xl font-bold"
         >
-          <Image src="/kudizen-icon.png" alt="Kudizen" width={30} height={30} />
-          <h6 className="">Kudizen</h6>
+          <Image
+            src="/fastrack-green.png"
+            alt="Kudizen"
+            width={150}
+            height={10}
+          />
         </Link>
-        <div className="w-full flex flex-col items-start md:p-16">
-          <h1 className="font-syne text-3xl font-bold ">Create an account</h1>
-          <p className=" font-dm_sans text-siteHeadingDark/60 mb-10 ">
+        <div className="flex w-full flex-col items-start md:p-16">
+          <h1 className="font-syne text-3xl font-bold">Create an account</h1>
+          <p className="mb-10 font-dm_sans text-siteHeadingDark/60">
             Already have an account?{" "}
             <Link
-              className=" underline text-siteGreen font-medium"
+              className="font-medium text-siteGreen underline"
               href="/login"
             >
               Log in
             </Link>
           </p>
-          <form className=" w-full flex flex-col gap-5">
-            <div className="flex flex-col gap-1 ">
+          <form className="flex w-full flex-col gap-5">
+            <div className="flex flex-col gap-1">
               <Input
                 type="text"
                 label="First Name"
                 className={`${
-                  errors.firstName && "border-red-600 border rounded-xl"
+                  errors.firstName && "rounded-xl border border-red-600"
                 }`}
                 {...register("firstName", {
                   required: "Field cannot be blank",
                 })}
               />
               {errors.firstName && (
-                <span className="text-sm font-dm_sans text-red-600 self-end mr-2">
+                <span className="mr-2 self-end font-dm_sans text-sm text-red-600">
                   {errors.firstName.message}
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-1 ">
+            <div className="flex flex-col gap-1">
               <Input
                 type="text"
                 label="Last Name"
                 className={`${
-                  errors.lastName && "border-red-600 border rounded-xl"
+                  errors.lastName && "rounded-xl border border-red-600"
                 }`}
                 {...register("lastName", {
                   required: "Field cannot be blank",
@@ -142,17 +146,17 @@ function SignupPage() {
                 })}
               />
               {errors.lastName && (
-                <span className="text-sm font-dm_sans text-red-600 self-end mr-2">
+                <span className="mr-2 self-end font-dm_sans text-sm text-red-600">
                   {errors.lastName.message}
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-1 ">
+            <div className="flex flex-col gap-1">
               <Input
                 type="email"
                 label="Email"
                 className={`${
-                  errors.email && "border-red-600 border rounded-xl"
+                  errors.email && "rounded-xl border border-red-600"
                 }`}
                 {...register("email", {
                   required: "Field cannot be blank",
@@ -160,17 +164,17 @@ function SignupPage() {
                 })}
               />
               {errors.email && (
-                <span className="text-sm font-dm_sans text-red-600 self-end mr-2">
+                <span className="mr-2 self-end font-dm_sans text-sm text-red-600">
                   {errors.email.message}
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-1 ">
+            <div className="flex flex-col gap-1">
               <Input
                 type="password"
                 label="password"
                 className={`${
-                  errors.password && "border-red-600 border rounded-xl"
+                  errors.password && "rounded-xl border border-red-600"
                 }`}
                 {...register("password", {
                   required: "Field cannot be blank",
@@ -178,7 +182,7 @@ function SignupPage() {
                 })}
               />
               {errors.password && (
-                <span className="text-sm font-dm_sans text-red-600 self-end mr-2">
+                <span className="mr-2 self-end font-dm_sans text-sm text-red-600">
                   {errors.password.message}
                 </span>
               )}
@@ -189,7 +193,7 @@ function SignupPage() {
                 type="password"
                 label="confirm password"
                 className={`${
-                  errors.confirmPassword && "border-red-600 border rounded-xl"
+                  errors.confirmPassword && "rounded-xl border border-red-600"
                 }`}
                 {...register("confirmPassword", {
                   required: "Field cannot be blank",
@@ -199,13 +203,13 @@ function SignupPage() {
                 })}
               />
               {errors.confirmPassword && (
-                <span className="text-sm font-dm_sans text-red-600 self-end mr-2">
+                <span className="mr-2 self-end font-dm_sans text-sm text-red-600">
                   {errors.confirmPassword.message}
                 </span>
               )}
             </div>
 
-            <div className=" flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               <Checkbox
                 defaultSelected={hasCode}
                 {...register("hasReferralCode")}
@@ -216,7 +220,7 @@ function SignupPage() {
               {watch("hasReferralCode") === true && (
                 <input
                   type="text"
-                  className=" font-dm_sans uppercase font-extrabold text-2xl rounded-lg w-full px-3 py-3 bg-gray-100 text-gray-500"
+                  className="w-full rounded-lg bg-gray-100 px-3 py-3 font-dm_sans text-2xl font-extrabold uppercase text-gray-500"
                   {...register("referralCode", {
                     disabled: formLoading || !watch("hasReferralCode"),
                     value: params.referralcode || "",
@@ -233,7 +237,7 @@ function SignupPage() {
             {watch("privacyPolicy") === false && (
               <Button
                 disabled
-                className=" rounded-lg bg-gray-400 text-black/40 font-bold py-2"
+                className="rounded-lg bg-gray-400 py-2 font-bold text-black/40"
                 onClick={(e) => {
                   e.preventDefault();
                   handleSubmit(onSubmit)();
@@ -245,7 +249,7 @@ function SignupPage() {
 
             {watch("privacyPolicy") === true && (
               <Button
-                className=" rounded-lg bg-siteGreen text-siteLemon font-bold py-2"
+                className="rounded-lg bg-siteGreen py-2 font-bold text-siteLemon"
                 onClick={(e) => {
                   e.preventDefault();
                   handleSubmit(onSubmit)();

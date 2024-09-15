@@ -52,8 +52,12 @@ function Login() {
           href="/"
           className="flex gap-2 text-center font-syne text-xl font-bold"
         >
-          <Image src="/kudizen-icon.png" alt="Kudizen" width={30} height={30} />
-          <h6 className="">Kudizen</h6>
+          <Image
+            src="/fastrack-green.png"
+            alt="Kudizen"
+            width={150}
+            height={10}
+          />
         </Link>
         <div className="flex w-full flex-col items-start md:p-16">
           <h1 className="font-syne text-3xl font-bold">Welcome back</h1>
