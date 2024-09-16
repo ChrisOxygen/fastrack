@@ -4,7 +4,8 @@ import { connectToDatabase } from "@/app/utils/database";
 import User from "@/models/user";
 import { signIn } from "next-auth/react";
 
-export const siteName = process.env.NEXT_PUBLIC_URL;
+// export const siteName = process.env.NEXT_PUBLIC_URL;
+export const siteName = "https://fastrack-test.vercel.app";
 
 type userSignupDetailsType = {
   firstName: string;
