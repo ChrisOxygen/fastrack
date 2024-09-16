@@ -236,7 +236,6 @@ export const initiateDeposit = async (
   deposit: userDepositDetailsType,
   userId: string,
 ) => {
-  console.log("initiateDeposit fired", deposit);
   const { amount, transferMethod, transferFee, tax, amountToReceive } = deposit;
   try {
     const res = await fetch(`${siteName}/api/deposit/`, {
@@ -254,15 +253,11 @@ export const initiateDeposit = async (
       }),
     });
 
-    console.log("res--------------", res.status);
-
     if (!res.ok) {
       throw new Error("Failed to initiate deposit!");
     }
 
     const data = await res.json();
-
-    console.log("data", data);
 
     return data;
   } catch (error) {
@@ -318,13 +313,10 @@ export const initiateFundsTransfer = async (
       error.message = data.error;
       error.field = data.field;
 
-      console.log("error thrown", error);
       throw error;
     }
 
     const data = await res.json();
-
-    console.log("data", data);
 
     return data;
   } catch (error) {

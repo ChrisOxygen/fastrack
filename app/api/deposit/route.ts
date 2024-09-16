@@ -87,7 +87,10 @@ export async function POST(req: Request, res: Response) {
     console.log("depositTransaction in deposit API", depositTransaction);
 
     const res = new Response(
-      JSON.stringify({ message: "New deposite transaction created" }),
+      JSON.stringify({
+        message: "New deposite transaction created",
+        transactionId: newTransaction.transactionId,
+      }),
     );
 
     console.log("response in deposit API", res);

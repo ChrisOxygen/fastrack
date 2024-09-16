@@ -13,8 +13,6 @@ export type CustomError = Error & {
 };
 
 export async function POST(req: Request, res: Response) {
-  console.log("Bank withdrawal API fired");
-
   try {
     const withdrawalDetails =
       (await req.json()) as BankWithdrawalDetailsType & {
@@ -26,8 +24,6 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-
-    console.log("console log withdrawalDetails in bank", withdrawalDetails);
 
     const {
       amount,
@@ -49,11 +45,9 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-    console.log("currentUser In bank withdrawal API", currentUser);
 
     // verify if user has enough balance to make transfer
 
-    console.log("currentUser balance", currentUser.balance, "amount", amount);
     if (currentUser.balance < deductableAmount) {
       const error = new Error("Insuficient balance") as CustomError;
       error.field = "amount";
@@ -62,24 +56,12 @@ export async function POST(req: Request, res: Response) {
 
     const transactions = (await Transaction.find()) as UserTransaction[];
 
-    console.log("array of transactions In bank withdrawal API", transactions);
-
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
-    console.log(
-      "all transaction IDs In bank withdrawal API",
-      allTransactionIds,
-    );
-
     const uniqueTransactionId = generateUniqueTransactionId(
       allTransactionIds as string[],
-    );
-
-    console.log(
-      "unique transaction ID In bank withdrawal API",
-      uniqueTransactionId,
     );
 
     const newTransaction = await Transaction.create({
@@ -91,15 +73,11 @@ export async function POST(req: Request, res: Response) {
       user: currentUser._id,
     });
 
-    console.log("newTransaction in bank withdrawal API", newTransaction);
-
     await newTransaction.save();
 
     if (!newTransaction) {
       throw new Error("Something went wrong!");
     }
-
-    console.log("newTransaction in bank withdrawal API", newTransaction);
 
     const withdrawalTransaction = await WithdrawalTransaction.create({
       withdrawalMethod: "bank",
@@ -119,20 +97,16 @@ export async function POST(req: Request, res: Response) {
       throw error;
     }
 
-    console.log(
-      "withdrawalTransaction in withdrawal API",
-      withdrawalTransaction,
-    );
-
     currentUser.balance -= deductableAmount;
 
     await currentUser.save();
 
     const res = new Response(
-      JSON.stringify({ message: "New Bank withdrawal transaction created" }),
+      JSON.stringify({
+        message: "New Bank withdrawal transaction created",
+        transactionId: newTransaction.transactionId,
+      }),
     );
-
-    console.log("response in Bank withdrawal API", res);
 
     return res;
   } catch (error: any) {

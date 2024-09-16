@@ -13,8 +13,6 @@ export type CustomError = Error & {
 };
 
 export async function POST(req: Request, res: Response) {
-  console.log("Paypal withdrawal API fired");
-
   try {
     const withdrawalDetails =
       (await req.json()) as PayPalWithdrawalDetailsType & {
@@ -26,8 +24,6 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-
-    console.log("console log withdrawalDetails in paypal", withdrawalDetails);
 
     const { amount, deductableAmount, tax, fee, payPalEmail, userId } =
       withdrawalDetails;
@@ -41,11 +37,9 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-    console.log("currentUser In paypal withdrawal API", currentUser);
 
     // verify if user has enough balance to make transfer
 
-    console.log("currentUser balance", currentUser.balance, "amount", amount);
     if (currentUser.balance < deductableAmount) {
       const error = new Error("Insuficient balance") as CustomError;
       error.field = "amount";
@@ -54,24 +48,12 @@ export async function POST(req: Request, res: Response) {
 
     const transactions = (await Transaction.find()) as UserTransaction[];
 
-    console.log("array of transactions In paypal withdrawal API", transactions);
-
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
-    console.log(
-      "all transaction IDs In paypal withdrawal API",
-      allTransactionIds,
-    );
-
     const uniqueTransactionId = generateUniqueTransactionId(
       allTransactionIds as string[],
-    );
-
-    console.log(
-      "unique transaction ID In paypal withdrawal API",
-      uniqueTransactionId,
     );
 
     const newTransaction = await Transaction.create({
@@ -83,15 +65,11 @@ export async function POST(req: Request, res: Response) {
       user: currentUser._id,
     });
 
-    console.log("newTransaction in paypal withdrawal API", newTransaction);
-
     await newTransaction.save();
 
     if (!newTransaction) {
       throw new Error("Something went wrong!");
     }
-
-    console.log("newTransaction in paypal withdrawal API", newTransaction);
 
     const withdrawalTransaction = await WithdrawalTransaction.create({
       withdrawalMethod: "paypal",
@@ -109,20 +87,16 @@ export async function POST(req: Request, res: Response) {
       throw error;
     }
 
-    console.log(
-      "withdrawalTransaction in withdrawal API",
-      withdrawalTransaction,
-    );
-
     currentUser.balance -= deductableAmount;
 
     await currentUser.save();
 
     const res = new Response(
-      JSON.stringify({ message: "New paypal withdrawal transaction created" }),
+      JSON.stringify({
+        message: "New paypal withdrawal transaction created",
+        transactionId: newTransaction.transactionId,
+      }),
     );
-
-    console.log("response in paypal withdrawal API", res);
 
     return res;
   } catch (error: any) {

@@ -14,6 +14,8 @@ import {
 } from "@/utils/services";
 import ConfirmWithdrawalTrans from "@/components/ConfirmWithdrawalTrans";
 import TransactionSuccess from "@/components/TransactionSuccess";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import StepDisplay from "@/components/StepDisplay";
 
 const bankFees = {
   transferFee: 2.5,
@@ -54,6 +56,7 @@ type InitialStateType = {
     tax: number;
     deductableAmount: number;
   };
+  transID: string;
 };
 
 type ReducerActionType = {
@@ -79,6 +82,7 @@ const initialState: InitialStateType = {
     deductableAmount: 0,
     payPalEmail: "",
   },
+  transID: "",
 };
 
 function reducer(state: InitialStateType, action: ReducerActionType) {
@@ -98,6 +102,9 @@ function reducer(state: InitialStateType, action: ReducerActionType) {
         withdrawalMethod: action.payLoad.withdrawalMethod,
         inputValues: action.payLoad.inputValues,
       };
+
+    case "setTransID":
+      return { ...state, transID: action.payLoad };
     case "reset":
       return { ...initialState };
 
@@ -117,14 +124,15 @@ function WithdrawScreen() {
     taxPecentage,
     inputValues,
     withdrawalMethod,
+    transID,
   } = state;
 
-  const { session, data } = useFetchUserData();
+  const { session, data, status } = useFetchUserData();
   const { balance } = data as UserData;
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () => {
       const paypalDetails = {} as PayPalWithdrawalDetailsType;
 
@@ -151,13 +159,15 @@ function WithdrawScreen() {
       return initiateWithdrawal(bankDetails, session?.user.id!);
     },
     onError: (error) => {
-      console.log("error in useQuery", error);
       const { message, field } = error as any;
       setError(field, { message });
       setStep(1);
     },
     onSuccess: (data) => {
-      setStep(3);
+      if (data.transactionId) {
+        dispatch({ type: "setTransID", payLoad: data.transactionId });
+        setStep(3);
+      }
       console.log("success", data, "step", step);
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
@@ -173,7 +183,7 @@ function WithdrawScreen() {
     setValue,
 
     setError,
-    formState: { errors },
+    formState: { errors, isLoading, isSubmitting, isValidating },
   } = useForm<FormInputs>({
     defaultValues: { ...inputValues, withdrawalMethod: "bank" },
   });
@@ -187,14 +197,10 @@ function WithdrawScreen() {
   }
 
   const submitAfterConfirmation = async () => {
-    console.log("submitting");
-
     mutate();
-    setStep(3);
   };
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    console.log(data);
     const { withdrawalMethod, ...inputValues } = data;
 
     dispatch({
@@ -207,7 +213,6 @@ function WithdrawScreen() {
   };
 
   function handleNextStep() {
-    console.log("clicked next");
     handleSubmit(onSubmit)();
   }
 
@@ -240,50 +245,19 @@ function WithdrawScreen() {
 
   const deductable = +watch("amount") + getValues("tax") + getValues("fee");
 
+  if (
+    status === "pending" ||
+    isLoading ||
+    isSubmitting ||
+    isValidating ||
+    isPending
+  ) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <section className="flex h-screen flex-col gap-16 overflow-hidden">
-      <div
-        className="relative grid h-28 grid-cols-[50px_1fr_50px] items-center justify-between rounded-2xl bg-siteGreen bg-cover bg-left bg-no-repeat px-7 py-6 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:rounded-2xl before:bg-siteGreen/50"
-        style={{
-          backgroundImage: "url('/Lines-No-Background-white.png')",
-        }}
-      >
-        <div className="relative z-10 col-span-1 col-start-2 flex justify-center gap-2">
-          <div className="flex flex-col items-center gap-1">
-            <span className="h-3 w-3 rounded-full border-4 border-siteLemon"></span>
-            <span className="font-dm_sans font-bold text-white">Step 1</span>
-          </div>
-          <span
-            className={`mt-1 h-1 w-[100px] rounded-lg ${
-              step >= 2 && "bg-siteLemon"
-            } ${step === 1 && "bg-white"}`}
-          ></span>
-          <div className="flex flex-col items-center gap-1">
-            <span
-              className={`h-3 w-3 rounded-full border-4 ${
-                step >= 2 && "border-siteLemon"
-              } ${step === 1 && "border-white"}`}
-            ></span>
-            <span className="font-dm_sans font-bold text-white">Step 2</span>
-          </div>
-          <span
-            className={`mt-1 h-1 w-[100px] rounded-lg ${
-              step >= 3 && "bg-siteLemon"
-            } ${step <= 2 && "bg-white"}`}
-          ></span>
-          <div className="flex flex-col items-center gap-1">
-            <span
-              className={`h-3 w-3 rounded-full border-4 ${
-                step >= 3 && "border-siteLemon"
-              } ${step <= 2 && "border-white"}`}
-            ></span>
-            <span className="font-dm_sans font-bold text-white">Step 3</span>
-          </div>
-        </div>
-        <button className="z-10 grid h-6 w-6 place-items-center rounded-lg bg-white text-2xl shadow">
-          <FiX />
-        </button>
-      </div>
+      <StepDisplay step={step} />
       {step === 1 && (
         <div className="mx-auto flex w-full max-w-[700px] flex-col overflow-auto p-5">
           <span className="font-dm_sans text-3xl font-bold">Withdraw</span>
@@ -339,7 +313,7 @@ function WithdrawScreen() {
                   Withdrawal Method:
                 </label>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-6">
+                  <div className="z-[-1] flex items-center gap-6">
                     <Controller
                       control={control}
                       name="withdrawalMethod"
@@ -542,7 +516,13 @@ function WithdrawScreen() {
           submitAfterConfirmation={submitAfterConfirmation}
         />
       )}
-      {step === 3 && <TransactionSuccess reset={resetState} />}
+      {step === 3 && (
+        <TransactionSuccess
+          transactionId={transID}
+          view="withdraw"
+          reset={resetState}
+        />
+      )}
     </section>
   );
 }

@@ -8,7 +8,7 @@ function TotalBalanceSect() {
   const { balance } = data as UserData;
   return (
     <div
-      className="relative flex h-full items-center justify-between rounded-2xl bg-siteGreen bg-cover bg-left bg-no-repeat px-6 py-4 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:rounded-2xl before:bg-siteGreen/50 xl:px-7 xl:py-6"
+      className="relative z-[-1] flex h-full items-center justify-between rounded-2xl bg-siteGreen bg-cover bg-left bg-no-repeat px-6 py-4 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:rounded-2xl before:bg-siteGreen/50 xl:px-7 xl:py-6"
       style={{
         backgroundImage: "url('/Lines-No-Background-white.png')",
       }}

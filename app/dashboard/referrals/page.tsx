@@ -17,14 +17,14 @@ function Referrals() {
     notify();
   }
   return (
-    <section className="mx-auto mt-10 flex w-full max-w-[800px] flex-col gap-20">
+    <section className="mx-auto mb-10 mt-10 flex w-full max-w-[800px] flex-col gap-20">
       <div className="flex flex-col items-center text-center">
         <h3 className="font-syne text-4xl font-bold">Referrals</h3>
         <span className="font-dm_sans text-siteHeadingDark/60">
           invite your friends to kudizen and both of you get rewarded
         </span>
       </div>
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start sm:gap-0">
         <div className="flex w-full max-w-[230px] flex-col items-center gap-2">
           <span className="grid h-[90px] w-[90px] place-items-center rounded-full bg-siteGreen/20 text-4xl text-siteGreen">
             <FiMessageSquare />

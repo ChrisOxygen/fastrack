@@ -11,6 +11,8 @@ import useFetchUserData from "@/hooks/useFetchUserData";
 import { set } from "mongoose";
 import TransactionSuccess from "@/components/TransactionSuccess";
 import ConfirmTransaction from "@/components/ConfirmTransaction";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import StepDisplay from "@/components/StepDisplay";
 
 type FormInputs = {
   reciverEmail: string;
@@ -32,6 +34,7 @@ type InitialStateType = {
       amountToReceive: number;
     };
   };
+  transID: string;
 };
 
 type ReducerActionType = {
@@ -54,6 +57,7 @@ const initialState: InitialStateType = {
       amountToReceive: 0,
     },
   },
+  transID: "",
 };
 
 function reducer(state: InitialStateType, action: ReducerActionType) {
@@ -66,6 +70,10 @@ function reducer(state: InitialStateType, action: ReducerActionType) {
         ...state,
         inputData: { ...state.inputData, values: action.payLoad },
       };
+
+    case "setTransID":
+      return { ...state, transID: action.payLoad };
+
     case "reset":
       return { ...initialState };
 
@@ -78,25 +86,26 @@ function Transfer() {
   const [state, dispatch] = useReducer<
     Reducer<InitialStateType, ReducerActionType>
   >(reducer, initialState);
-  const { step, loading, taxPecentage, inputData } = state;
+  const { step, loading, taxPecentage, inputData, transID } = state;
 
-  const { session } = useFetchUserData();
+  const { session, status } = useFetchUserData();
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () => {
       return initiateFundsTransfer(inputData.values, session?.user.id!);
     },
     onError: (error) => {
-      console.log("error in useQuery", error);
       const { message, field } = error as any;
       setError(field, { message });
       setStep(1);
     },
     onSuccess: (data) => {
-      setStep(3);
-      console.log("success", data, "step", step);
+      if (data.transactionId) {
+        dispatch({ type: "setTransID", payLoad: data.transactionId });
+        setStep(3);
+      }
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
@@ -110,7 +119,7 @@ function Transfer() {
     setValue,
 
     setError,
-    formState: { errors },
+    formState: { errors, isLoading, isSubmitting, isValidating },
   } = useForm({
     defaultValues: inputData.values,
   });
@@ -147,50 +156,19 @@ function Transfer() {
   if (watch("amount")) {
     setValue("amountToReceive", +watch("amount") - getValues("tax"));
   }
+
+  if (
+    status === "pending" ||
+    isLoading ||
+    isSubmitting ||
+    isValidating ||
+    isPending
+  ) {
+    return <LoadingSpinner />;
+  }
   return (
     <section className="flex flex-col gap-16">
-      <div
-        className="relative grid h-full grid-cols-[50px_1fr_50px] items-center justify-between rounded-2xl bg-siteGreen bg-cover bg-left bg-no-repeat px-7 py-6 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:rounded-2xl before:bg-siteGreen/50"
-        style={{
-          backgroundImage: "url('/Lines-No-Background-white.png')",
-        }}
-      >
-        <div className="relative z-10 col-span-1 col-start-2 flex justify-center gap-2">
-          <div className="flex flex-col items-center gap-1">
-            <span className="h-3 w-3 rounded-full border-4 border-siteLemon"></span>
-            <span className="font-dm_sans font-bold text-white">Step 1</span>
-          </div>
-          <span
-            className={`mt-1 h-1 w-[100px] rounded-lg ${
-              step >= 2 && "bg-siteLemon"
-            } ${step === 1 && "bg-white"}`}
-          ></span>
-          <div className="flex flex-col items-center gap-1">
-            <span
-              className={`h-3 w-3 rounded-full border-4 ${
-                step >= 2 && "border-siteLemon"
-              } ${step === 1 && "border-white"}`}
-            ></span>
-            <span className="font-dm_sans font-bold text-white">Step 2</span>
-          </div>
-          <span
-            className={`mt-1 h-1 w-[100px] rounded-lg ${
-              step >= 3 && "bg-siteLemon"
-            } ${step <= 2 && "bg-white"}`}
-          ></span>
-          <div className="flex flex-col items-center gap-1">
-            <span
-              className={`h-3 w-3 rounded-full border-4 ${
-                step >= 3 && "border-siteLemon"
-              } ${step <= 2 && "border-white"}`}
-            ></span>
-            <span className="font-dm_sans font-bold text-white">Step 3</span>
-          </div>
-        </div>
-        <button className="z-10 grid h-6 w-6 place-items-center rounded-lg bg-white text-2xl shadow">
-          <FiX />
-        </button>
-      </div>
+      <StepDisplay step={step} />
 
       {step === 1 && (
         <div className="mx-auto flex w-full max-w-[700px] flex-col">
@@ -342,7 +320,13 @@ function Transfer() {
           transactionType="transfer"
         />
       )}
-      {step === 3 && <TransactionSuccess reset={resetState} />}
+      {step === 3 && (
+        <TransactionSuccess
+          transactionId={transID}
+          view="transfer"
+          reset={resetState}
+        />
+      )}
     </section>
   );
 }

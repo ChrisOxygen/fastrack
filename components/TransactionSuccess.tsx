@@ -1,25 +1,41 @@
-import { useTabSwitch } from "@/contex/TabSwitchProvider";
+import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 import { FiCheckCircle } from "react-icons/fi";
 
 type TransactionSuccessProps = {
   reset: () => void;
+  transactionId: string;
+  view: "deposit" | "withdraw" | "transfer";
 };
 
-function TransactionSuccess({ reset }: TransactionSuccessProps) {
-  const { activeScreen, setActiveScreen } = useTabSwitch();
+function TransactionSuccess({
+  reset,
+  transactionId,
+  view,
+}: TransactionSuccessProps) {
+  const router = useRouter();
+  const btnText =
+    view === "deposit"
+      ? "Make a deposit"
+      : view === "withdraw"
+        ? "Make a withdrawal"
+        : "Transfer funds";
+
   return (
-    <div className=" flex flex-col gap-5 w-full max-w-[700px] mx-auto">
-      <div className="border border-siteHeadingDark/25 rounded-2xl p-4 flex flex-col gap-4 items-center ">
-        <span className=" w-20 h-20 grid place-items-center rounded-full bg-siteGreen text-white text-5xl">
+    <div className="mx-auto flex w-full max-w-[700px] flex-col gap-5">
+      <div className="flex flex-col items-center gap-4 rounded-2xl border border-siteHeadingDark/25 p-4">
+        <span className="grid h-20 w-20 place-items-center rounded-full bg-siteGreen text-5xl text-white">
           <FiCheckCircle />
         </span>
-        <h3 className=" font-dm_sans font-semibold text-3xl text-siteHeadingDark">
+        <h3 className="font-dm_sans text-3xl font-semibold text-siteHeadingDark">
           Transaction Submitted
         </h3>
-        <div className="flex flex-col items-center font-dm_sans text-siteHeadingDark/60 text-center">
-          <Link href="/dashboard" className=" font-semibold text-blue-700">
+        <div className="flex flex-col items-center text-center font-dm_sans text-siteHeadingDark/60">
+          <Link
+            href={`/dashboard/transaction/${transactionId}`}
+            className="font-semibold text-blue-700"
+          >
             View Transaction Details here
           </Link>
 
@@ -30,22 +46,21 @@ function TransactionSuccess({ reset }: TransactionSuccessProps) {
           </p>
         </div>
       </div>
-      <div className="w-full flex gap-4">
+      <div className="flex w-full gap-4">
         <button
-          className=" p-4 w-full rounded-xl text-white font-bold font-dm_sans bg-blue-700"
+          className="w-full rounded-xl bg-blue-700 p-4 font-dm_sans font-bold text-white"
           onClick={function (e) {
             console.log("clicked");
             reset();
           }}
         >
-          Add more Money
+          {btnText}
         </button>
         <button
-          className=" p-4 w-full rounded-xl text-white font-bold font-dm_sans bg-green-700"
+          className="w-full rounded-xl bg-green-700 p-4 font-dm_sans font-bold text-white"
           onClick={function (e) {
-            console.log("clicked");
             reset();
-            setActiveScreen("Dashboard");
+            router.push("/dashboard");
           }}
         >
           Go to Dashboard

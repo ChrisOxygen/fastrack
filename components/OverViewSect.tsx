@@ -17,19 +17,27 @@ function OverViewSect() {
   const { transactions, balance } = data as UserData;
 
   const totalDesposite = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "deposite") return acc + transaction.amount;
+    if (transaction.type === "deposit" && transaction.status === "success")
+      return acc + transaction.amount;
     return acc; // Add a default return value
   }, 0);
 
   const totalWithdraws = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "withdraw") return acc + transaction.amount;
+    if (transaction.type === "withdrawal" && transaction.status === "success")
+      return acc + transaction.amount;
     return acc; // Add a default return value
   }, 0);
 
   const totalTransactions = transactions.length;
 
   const totalReferals = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "referal") return acc + 1;
+    if (transaction.type === "referral bonus") return acc + 1;
+    return acc; // Add a default return value
+  }, 0);
+
+  const totalTransfers = transactions.reduce((acc, transaction) => {
+    if (transaction.type === "transfer" && transaction.status === "success")
+      return acc + 1;
     return acc; // Add a default return value
   }, 0);
 
@@ -52,10 +60,7 @@ function OverViewSect() {
         </span>
         Overview
       </div>
-      {/* <div className="flex w-full gap-3">
-        <div className="w-full rounded-2xl border border-siteHeadingDark/25 px-5 py-4"></div>
-        <div className="w-full rounded-2xl border border-siteHeadingDark/25 px-5 py-4"></div>
-      </div> */}
+
       <div className="flex h-full w-full justify-between p-2">
         <div className="grid-row-3 lg:grid-row-2 flex w-full grid-cols-2 flex-col sm:grid lg:grid-cols-3">
           <div className="flex items-center justify-start gap-6 border-b border-siteHeadingDark/25 px-4 py-3 xl:justify-center xl:gap-2">
@@ -90,7 +95,7 @@ function OverViewSect() {
               <FiTrendingUp />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">$645</span>
+              <span className="font-syne text-3xl">N/A</span>
               <span className="font-dm_sans">Total Investemts</span>
             </div>
           </div>
@@ -99,7 +104,7 @@ function OverViewSect() {
               <FiCornerUpRight />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">$524</span>
+              <span className="font-syne text-3xl">{totalTransfers}</span>
               <span className="font-dm_sans">Total Transfers</span>
             </div>
           </div>
@@ -122,7 +127,9 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-dm_sans font-bold">Main wallet</span>
-              <span className="font-dm_sans text-3xl">${balance}</span>
+              <span className="font-dm_sans text-3xl">
+                ${balance.toFixed(2)}
+              </span>
             </div>
           </div>
           <span className="h-[1px] w-full bg-siteHeadingDark/25"></span>

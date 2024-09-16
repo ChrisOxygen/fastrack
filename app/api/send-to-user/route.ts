@@ -17,8 +17,6 @@ export type CustomError = Error & {
 };
 
 export async function POST(req: Request, res: Response) {
-  console.log("initiateFundsTransfer API fired");
-
   try {
     const transferDetails = (await req.json()) as userTransferDetailsType & {
       userId: string;
@@ -29,8 +27,6 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-
-    console.log("transferDetails", transferDetails);
 
     const { amount, reciverEmail, note, tax, amountToReceive, userId } =
       transferDetails;
@@ -44,11 +40,9 @@ export async function POST(req: Request, res: Response) {
       error.field = "none";
       throw error;
     }
-    console.log("currentUser In transfer API", currentUser);
 
     // verify if user has enough balance to make transfer
 
-    console.log("currentUser balance", currentUser.balance, "amount", amount);
     if (currentUser.balance < amount) {
       const error = new Error("Insuficient balance") as CustomError;
       error.field = "amount";
@@ -65,23 +59,15 @@ export async function POST(req: Request, res: Response) {
       throw error;
     }
 
-    console.log("reciver in transfer API", reciver);
-
     const transactions = (await Transaction.find()) as UserTransaction[];
-
-    console.log("array of transactions In transfer API", transactions);
 
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
-    console.log("all transaction IDs In transfer API", allTransactionIds);
-
     const uniqueTransactionId = generateUniqueTransactionId(
       allTransactionIds as string[],
     );
-
-    console.log("unique transaction ID In transfer API", uniqueTransactionId);
 
     const newTransaction = await Transaction.create({
       transactionId: uniqueTransactionId,
@@ -92,15 +78,11 @@ export async function POST(req: Request, res: Response) {
       user: currentUser._id,
     });
 
-    console.log("newTransaction in transfer API", newTransaction);
-
     await newTransaction.save();
 
     if (!newTransaction) {
       throw new Error("Something went wrong!");
     }
-
-    console.log("newTransaction in transfer API", newTransaction);
 
     const transferTransaction = await TransferTransaction.create({
       amountToRevive: amountToReceive,
@@ -118,17 +100,16 @@ export async function POST(req: Request, res: Response) {
       throw error;
     }
 
-    console.log("transferTransaction in transfer API", transferTransaction);
-
     currentUser.balance -= amount;
 
     await currentUser.save();
 
     const res = new Response(
-      JSON.stringify({ message: "New transfer transaction created" }),
+      JSON.stringify({
+        message: "New transfer transaction created",
+        transactionId: newTransaction.transactionId,
+      }),
     );
-
-    console.log("response in transfer API", res);
 
     return res;
   } catch (error: any) {

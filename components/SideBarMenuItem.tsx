@@ -47,7 +47,7 @@ function SideBarMenuItem({ tabTitle }: { tabTitle: string }) {
     currentPath === "/dashboard" && tabTitle === "dashboard";
 
   return (
-    <li className={`${isReferral && "mt-auto"}`}>
+    <li className={`screen-link ${isReferral && "mt-auto"}`}>
       <Link
         href={pageLink}
         className={`side-bar-btn flex w-full items-center gap-2 rounded-lg bg-transparent px-2 py-2 font-dm_sans font-semibold hover:bg-white/40 ${
