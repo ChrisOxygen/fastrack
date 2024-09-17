@@ -1,5 +1,6 @@
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
+import Link from "next/link";
 import { FiArrowUp, FiPlus } from "react-icons/fi";
 
 function TotalBalanceSect() {
@@ -19,14 +20,20 @@ function TotalBalanceSect() {
       </div>
       <div className="z-10 flex items-center gap-2">
         {" "}
-        <button className="flex items-center justify-center gap-2 rounded-lg bg-siteLemon px-5 py-2 text-siteGreen shadow-sm">
+        <Link
+          href="/dashboard/deposit"
+          className="flex items-center justify-center gap-2 rounded-lg bg-siteLemon px-5 py-2 text-siteGreen shadow-sm"
+        >
           <FiPlus />
           Add
-        </button>
-        <button className="flex items-center justify-center gap-2 rounded-lg bg-[#1A5B4C] px-5 py-2 text-white shadow-sm">
+        </Link>
+        <Link
+          href="/dashboard/transfer"
+          className="flex items-center justify-center gap-2 rounded-lg bg-[#1A5B4C] px-5 py-2 text-white shadow-sm"
+        >
           <FiArrowUp />
           Send
-        </button>
+        </Link>
       </div>
     </div>
   );

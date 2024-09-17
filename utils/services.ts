@@ -115,15 +115,13 @@ export const checkEmail = async (email: string) => {
 
 export const loginUser = async (userDetails: userLoginDetailsType) => {
   const { email, password } = userDetails;
-  console.log("loginUser fired", email);
+
   try {
     const res: any = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
-
-    console.log("res", res);
 
     if (res.error) {
       throw new Error(res.error);

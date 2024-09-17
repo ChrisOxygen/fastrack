@@ -42,6 +42,7 @@ const options: AuthOptions = {
     },
     async session({ session, token }) {
       // Send properties to the client, like an access_token and user id from a provider.
+
       session.user = token.user as {
         id: string;
       } & DefaultSession["user"];
