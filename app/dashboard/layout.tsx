@@ -18,17 +18,6 @@ import { Spinner } from "@nextui-org/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import DashboardMenu from "@/components/DashboardMenu";
 
-// const screenViewList = [
-//   "Dashboard",
-//   "All Transactions",
-//   "Add Money",
-//   "Send Money",
-//   "Withdraw",
-//   "Referral",
-//   "Settings",
-//   "Support Tickets",
-// ];
-
 export type TransactionType = {
   transactionId: string;
   type: string;

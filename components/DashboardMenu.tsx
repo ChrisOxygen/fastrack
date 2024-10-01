@@ -6,9 +6,12 @@ import SideBarMenuItem from "./SideBarMenuItem";
 import { FiPower, FiUserCheck } from "react-icons/fi";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { UserData } from "@/app/dashboard/layout";
+import { useRouter } from "next/navigation";
 
 function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
   const { data } = useFetchUserData();
+
+  const router = useRouter();
 
   const { email, firstName, lastName } = data as UserData;
   return (
@@ -30,7 +33,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
 
         <button
           className="rounded-md border border-siteHeadingDark/25 bg-white/50 p-2 text-siteGreen"
-          onClick={() => signOut()}
+          onClick={() => router.back()}
         >
           <GoMoveToStart />
         </button>

@@ -6,8 +6,8 @@ import {
   awardReferralBonus,
   createTransaction,
 } from "@/utils/transactionServices";
-import Transaction from "@/models/transaction";
 import { generateUniqueReferralCode } from "@/utils/services";
+import { ErrorWithMessageAndStatus } from "../auth/[...nextauth]/route";
 
 export type UserTransaction = {
   transactionId?: string;
@@ -33,22 +33,35 @@ export async function POST(req: Request, res: Response) {
       referralCode?: string;
     };
 
-  console.log("POST fired", email, password);
-
   try {
     await connectToDatabase();
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      throw new Error("User exists already!");
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "User exists already!";
+      error.status = 409;
+      throw error;
+    }
+
+    const hashedPw = await bcrypt.hash(password, 12);
+
+    if (!hashedPw) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Password hashing failed!";
+      error.status = 500;
+      throw error;
     }
 
     const userReferralCode = await generateUniqueReferralCode();
 
-    console.log("userReferralCode", userReferralCode);
-
-    const hashedPw = await bcrypt.hash(password, 12);
+    if (!userReferralCode) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Referral code generation failed!";
+      error.status = 500;
+      throw error;
+    }
 
     const newUser = await User.create({
       firstName,
@@ -58,23 +71,38 @@ export async function POST(req: Request, res: Response) {
       referralCode: userReferralCode,
     });
 
-    console.log("user saved");
+    if (!newUser) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "User creation failed!";
+      error.status = 500;
+      throw error;
+    }
 
-    await createTransaction(
+    const signUpBonus = await createTransaction(
       {
         type: "signup bonus",
         amount: 100,
         status: "success",
         fee: 0,
       },
-      newUser._id
+      newUser._id,
     );
 
-    console.log("signup bonus created");
+    if (!signUpBonus.ok) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Signup bonus creation failed!";
+      error.status = 500;
+      throw error;
+    }
 
     if (referralCode) {
-      await awardReferralBonus(referralCode);
-      console.log("referral bonus awarded");
+      const referalTransaction = await awardReferralBonus(referralCode);
+      if (!referalTransaction.ok) {
+        const error = new Error() as ErrorWithMessageAndStatus;
+        error.message = "Referral bonus creation failed!";
+        error.status = 500;
+        throw error;
+      }
     }
 
     //TODO: fix this error handling to be more specific
@@ -84,8 +112,6 @@ export async function POST(req: Request, res: Response) {
       user: newUser,
     });
   } catch (error: any) {
-    console.log(error);
-
     const deletedUser = await User.findOneAndDelete({
       email,
     });

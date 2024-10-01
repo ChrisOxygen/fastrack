@@ -5,7 +5,7 @@ import User from "@/models/user";
 import { signIn } from "next-auth/react";
 
 // export const siteName = process.env.NEXT_PUBLIC_URL;
-export const siteName = "https://fastrack-test.vercel.app";
+// export const siteName = "https://fastrack-test.vercel.app";
 
 type userSignupDetailsType = {
   firstName: string;
@@ -61,7 +61,7 @@ export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
 
   try {
-    const res = await fetch(`${siteName}/api/signup`, {
+    const res = await fetch(`/api/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export const signupNewUser = async (userDetails: userSignupDetailsType) => {
 };
 export const checkEmail = async (email: string) => {
   try {
-    const res = await fetch("${sitename}/api/checkemail", {
+    const res = await fetch("/api/checkemail", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -218,7 +218,7 @@ export const generateUniqueReferralCode = async () => {
 
 export const getUser = async (id: string) => {
   try {
-    const res = await fetch(`${siteName}/api/user/${id}`, {
+    const res = await fetch(`/api/user/${id}`, {
       method: "GET",
     });
 
@@ -239,7 +239,7 @@ export const initiateDeposit = async (
 ) => {
   const { amount, transferMethod, transferFee, tax, amountToReceive } = deposit;
   try {
-    const res = await fetch(`${siteName}/api/deposit/`, {
+    const res = await fetch(`/api/deposit/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -269,7 +269,7 @@ export const initiateDeposit = async (
 export const validateEmail = async (email: string) => {
   console.log("validateEmail fired", email);
   try {
-    const res = await fetch(`${siteName}/api/checkEmail`, {
+    const res = await fetch(`/api/checkEmail`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -297,7 +297,7 @@ export const initiateFundsTransfer = async (
 ) => {
   console.log("initiateFundsTransfer fired", transferDetails);
   try {
-    const res = await fetch(`${siteName}/api/send-to-user`, {
+    const res = await fetch(`/api/send-to-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -335,7 +335,7 @@ export const initiateWithdrawal = async (
     ? "bank"
     : "paypal";
   try {
-    const res = await fetch(`${siteName}/api/withdraw/${withdrawalMethod}`, {
+    const res = await fetch(`/api/withdraw/${withdrawalMethod}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

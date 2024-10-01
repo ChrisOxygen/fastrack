@@ -5,10 +5,12 @@ import bcrypt from "bcryptjs";
 import User from "@/models/user";
 import Transaction from "@/models/transaction";
 import { generateUniqueTransactionId } from "@/utils/services";
+import { ErrorWithMessageAndStatus } from "@/app/api/auth/[...nextauth]/route";
+import { ok } from "assert";
 
 export const createTransaction = async (
   transactionDetails: UserTransaction,
-  userId: string
+  userId: string,
 ) => {
   const { type, amount, status, fee } = transactionDetails;
   try {
@@ -17,24 +19,28 @@ export const createTransaction = async (
     const user = await User.findById(userId);
 
     if (!user) {
-      throw new Error("User not found!");
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "User not found";
+      error.status = 404;
+      throw error;
     }
 
     const transactions = (await Transaction.find()) as UserTransaction[];
 
-    console.log("transactions", transactions);
+    if (!transactions) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transactions not found";
+      error.status = 404;
+    }
 
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
-    console.log("allIds", allTransactionIds);
-
     const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[]
+      allTransactionIds as string[],
     );
 
-    console.log("unique ID", uniqueTransactionId);
     const transaction = new Transaction({
       transactionId: uniqueTransactionId,
       type: type,
@@ -44,15 +50,14 @@ export const createTransaction = async (
       user: user._id,
     });
 
-    console.log("new transaction", transaction);
-
-    if (!transaction) {
-      throw new Error("Signup bonus creation failed!");
-    }
-
     const newTransaction = await transaction.save();
 
-    console.log("AAAAAAAAAAnew transaction", newTransaction);
+    if (!newTransaction) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transaction creation failed";
+      error.status = 500;
+      throw error;
+    }
 
     if (
       newTransaction.type !== "withdrawal" ||
@@ -63,9 +68,24 @@ export const createTransaction = async (
       }
     }
 
-    await user.save();
+    const savedUser = await user.save();
+
+    if (!savedUser) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "User balance update failed";
+      error.status = 500;
+      throw error;
+    }
+
+    return {
+      message: "Transaction created successfully",
+      ok: true,
+    };
   } catch (error) {
-    throw error as Error;
+    return {
+      message: "Transaction not created",
+      ok: false,
+    };
   }
 };
 
@@ -76,17 +96,26 @@ export const awardReferralBonus = async (referralCode: string) => {
     const referrer = await User.findOne({ referralCode });
 
     if (!referrer) {
-      throw new Error("Referrer not found!");
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "referrer not found";
+      error.status = 404;
+      throw error;
     }
 
     const transactions = (await Transaction.find()) as UserTransaction[];
+
+    if (!transactions) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transactions not found";
+      error.status = 404;
+    }
 
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
     const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[]
+      allTransactionIds as string[],
     );
 
     const newTransaction = await Transaction.create({
@@ -99,7 +128,10 @@ export const awardReferralBonus = async (referralCode: string) => {
     });
 
     if (!newTransaction) {
-      throw new Error("Referral bonus creation failed!");
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transaction creation failed";
+      error.status = 500;
+      throw error;
     }
 
     if (
@@ -111,8 +143,23 @@ export const awardReferralBonus = async (referralCode: string) => {
       }
     }
 
-    await referrer.save();
+    const savedUser = await referrer.save();
+
+    if (!savedUser) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "User balance update failed";
+      error.status = 500;
+      throw error;
+    }
+
+    return {
+      message: "Transaction created successfully",
+      ok: true,
+    };
   } catch (error) {
-    throw error as Error;
+    return {
+      message: "Transaction not created",
+      ok: false,
+    };
   }
 };

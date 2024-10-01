@@ -3,15 +3,21 @@ import { AuthOptions, DefaultSession } from "next-auth";
 import NextAuth from "next-auth/next";
 import Credentials from "next-auth/providers/credentials";
 
+import bcrypt from "bcryptjs";
+
 import User from "@/models/user";
+
+export type ErrorWithMessageAndStatus = {
+  message: string;
+  status: number;
+} & Error;
 
 const options: AuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60, // 1 hour
   },
-  pages: {
-    signIn: "/login",
-  },
+
   providers: [
     Credentials({
       name: "Credentials",
@@ -20,17 +26,40 @@ const options: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<any> {
+        if (!credentials) {
+          return null;
+        }
         try {
           await connectToDatabase();
           const user = await User.findOne({ email: credentials?.email });
 
-          if (user) {
-            return { email: user.email, id: user._id };
-          } else {
-            return null;
+          if (!user) {
+            const error = new Error() as ErrorWithMessageAndStatus;
+            error.message = "user not found";
+            error.status = 404;
+            throw error;
           }
+
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password,
+          );
+
+          if (!isValid) {
+            const error = new Error() as ErrorWithMessageAndStatus;
+            error.message = "Invalid password";
+            error.status = 403;
+            throw error;
+          }
+
+          return { email: user.email, id: user._id };
         } catch (error) {
-          console.log(error);
+          const { message, status } = error as ErrorWithMessageAndStatus;
+          console.log("error in authorize", message, status);
+          const customError = new Error() as ErrorWithMessageAndStatus;
+          customError.message = message;
+          customError.status = status;
+          throw customError;
         }
       },
     }),
@@ -47,10 +76,6 @@ const options: AuthOptions = {
         id: string;
       } & DefaultSession["user"];
       return session;
-    },
-    async signIn({ user, account, profile }) {
-      console.log("signIn", user, account, profile);
-      return true;
     },
   },
 };
