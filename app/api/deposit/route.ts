@@ -5,9 +5,12 @@ import { getToken } from "next-auth/jwt";
 import { UserTransaction } from "../signup/route";
 import {
   generateUniqueTransactionId,
+  userCryptoDepositDetailsType,
   userDepositDetailsType,
 } from "@/utils/services";
 import DepositTransaction from "@/models/depositTransaction";
+import { getallTransactions } from "@/utils/transactionServices";
+import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
 
 type CustomRequest = Request & {
   params: {
@@ -17,11 +20,9 @@ type CustomRequest = Request & {
 
 export async function POST(req: Request, res: Response) {
   console.log("depositDetail API fired");
-  const depositDetail = (await req.json()) as userDepositDetailsType & {
+  const depositDetail = (await req.json()) as userCryptoDepositDetailsType & {
     userId: string;
   };
-
-  console.log("depositDetail", depositDetail);
 
   const { amount, transferMethod, transferFee, tax, amountToReceive, userId } =
     depositDetail;
@@ -34,23 +35,19 @@ export async function POST(req: Request, res: Response) {
     if (!currentUser) {
       return new Response("User not found", { status: 404 });
     }
-    console.log("currentUser In deposit API", currentUser);
+    console.log("current user", currentUser);
 
-    const transactions = (await Transaction.find()) as UserTransaction[];
+    const transactions = (await getallTransactions()) as UserTransaction[];
 
-    console.log("array of transactions In deposit API", transactions);
+    console.log("transactions", transactions);
 
     const allTransactionIds = transactions.map((transaction) => {
       return transaction.transactionId;
     });
 
-    console.log("all transaction IDs In deposit API", allTransactionIds);
-
     const uniqueTransactionId = generateUniqueTransactionId(
       allTransactionIds as string[],
     );
-
-    console.log("unique transaction ID In deposit API", uniqueTransactionId);
 
     const newTransaction = await Transaction.create({
       transactionId: uniqueTransactionId,
@@ -61,15 +58,11 @@ export async function POST(req: Request, res: Response) {
       user: currentUser._id,
     });
 
-    console.log("newTransaction in deposit API", newTransaction);
-
     await newTransaction.save();
 
     if (!newTransaction) {
       throw new Error("Referral bonus creation failed!");
     }
-
-    console.log("newTransaction in deposit API", newTransaction);
 
     const depositTransaction = await DepositTransaction.create({
       amountToRevive: amountToReceive,
@@ -84,16 +77,17 @@ export async function POST(req: Request, res: Response) {
       throw new Error("Deposit transaction creation failed!");
     }
 
-    console.log("depositTransaction in deposit API", depositTransaction);
-
     const res = new Response(
       JSON.stringify({
         message: "New deposite transaction created",
-        transactionId: newTransaction.transactionId,
+        transaction: {
+          ...newTransaction.toJSON(),
+          transferMethod:
+            depositTransaction.transferMethod as CyptoTransferMethodType,
+          amountToReceive: depositTransaction.amountToRevive,
+        },
       }),
     );
-
-    console.log("response in deposit API", res);
 
     return res;
   } catch (error: any) {

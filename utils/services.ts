@@ -1,11 +1,11 @@
 import { CustomError } from "@/app/api/send-to-user/route";
-import { TransferMethodType } from "@/app/dashboard/deposit/page";
+import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
+
 import { connectToDatabase } from "@/app/utils/database";
 import User from "@/models/user";
 import { signIn } from "next-auth/react";
 
-// export const siteName = process.env.NEXT_PUBLIC_URL;
-// export const siteName = "https://fastrack-test.vercel.app";
+//
 
 type userSignupDetailsType = {
   firstName: string;
@@ -20,12 +20,12 @@ type userLoginDetailsType = {
   password: string;
 };
 
-export type userDepositDetailsType = {
+export type userCryptoDepositDetailsType = {
   amount: number;
-  transferMethod: TransferMethodType;
+  transferMethod: CyptoTransferMethodType;
   transferFee: number;
-  tax: number;
   amountToReceive: number;
+  tax: number;
 };
 export type userTransferDetailsType = {
   reciverEmail: string;
@@ -251,6 +251,38 @@ export const initiateDeposit = async (
         transferFee,
         tax,
         amountToReceive,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to initiate deposit!");
+    }
+
+    const data = await res.json();
+
+    return data;
+  } catch (error) {
+    throw error as Error;
+  }
+};
+export const initiateCyptoDeposit = async (
+  deposit: userCryptoDepositDetailsType,
+  userId: string,
+) => {
+  const { amount, tax, transferMethod, transferFee, amountToReceive } = deposit;
+  try {
+    const res = await fetch(`/api/deposit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount,
+        userId,
+        transferMethod,
+        transferFee,
+        amountToReceive,
+        tax,
       }),
     });
 

@@ -2,7 +2,7 @@
 
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { useParams, useRouter } from "next/navigation";
-import React, { use } from "react";
+import React from "react";
 import { UserData } from "../../layout";
 import { BiCheckCircle, BiCopy } from "react-icons/bi";
 import Link from "next/link";

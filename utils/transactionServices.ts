@@ -163,3 +163,39 @@ export const awardReferralBonus = async (referralCode: string) => {
     };
   }
 };
+
+export const getallTransactions = async () => {
+  try {
+    const currentTime = new Date();
+
+    const updatedTransactions = await Transaction.updateMany(
+      {
+        status: "pending",
+        type: "deposit",
+        createdAt: { $lt: currentTime.getTime() - 24 * 60 * 60 * 1000 },
+      },
+      { status: "error" },
+    );
+
+    if (!updatedTransactions.acknowledged) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transactions cound not be updated";
+      error.status = 500;
+      throw error;
+    }
+
+    console.log("Transactions updated successfully", updatedTransactions);
+
+    const transactions = await Transaction.find();
+    if (!transactions) {
+      const error = new Error() as ErrorWithMessageAndStatus;
+      error.message = "Transactions not found";
+      error.status = 404;
+      throw error;
+    }
+
+    return transactions;
+  } catch (error) {
+    throw error;
+  }
+};

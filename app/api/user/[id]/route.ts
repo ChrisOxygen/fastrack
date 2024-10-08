@@ -12,7 +12,6 @@ type CustomRequest = Request & {
 export async function GET(req: CustomRequest, res: Response) {
   const secret = process.env.NEXTAUTH_SECRET;
   const payload = (await getToken({ req, secret } as any)) as any;
-  console.log("GET API ", payload);
 
   const id = payload.user.id;
 
@@ -20,8 +19,6 @@ export async function GET(req: CustomRequest, res: Response) {
     await connectToDatabase();
 
     const currentUser = await User.findById(id);
-
-    console.log("currentUser", currentUser);
 
     if (!currentUser) {
       return new Response("User not found", { status: 404 });
@@ -51,16 +48,6 @@ export async function GET(req: CustomRequest, res: Response) {
     };
 
     return new Response(JSON.stringify(userObj), { status: 200 });
-
-    // const newPrompt = await Prompt.create({
-    //   creator: userId,
-    //   promptText: prompt,
-    //   tag: tag,
-    // });
-
-    // await newPrompt.save();
-
-    // return new Response(JSON.stringify(newPrompt), { status: 201 });
   } catch (error: any) {
     return new Response("Something went wrong", { status: 500 });
   }

@@ -5,14 +5,13 @@ import { FiCopy, FiGift, FiMessageSquare, FiUserCheck } from "react-icons/fi";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { UserData } from "@/app/dashboard/layout";
 import { notify } from "@/components/ReferEarnBox";
-import { siteName } from "@/utils/services";
 
 function Referrals() {
   const { data, error, status } = useFetchUserData();
 
   const { referralCode } = data as UserData;
   function handleCopy() {
-    copy(siteName + "/signup/" + referralCode);
+    copy(window.location.origin + "/signup/" + referralCode);
     console.log("copied");
     notify();
   }
@@ -69,7 +68,7 @@ function Referrals() {
           Your refferal link is:
         </span>
         <span className="my-5 rounded-xl bg-green-800/25 px-4 py-2 font-dm_sans font-bold text-green-800">
-          {siteName}/signup/{referralCode}
+          {window.location.origin}/signup/{referralCode}
         </span>
 
         <button

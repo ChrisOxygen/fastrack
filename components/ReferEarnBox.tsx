@@ -1,6 +1,5 @@
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
-import { siteName } from "@/utils/services";
 import copy from "copy-to-clipboard";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
@@ -17,7 +16,7 @@ function ReferEarnBox() {
 
   const { referralCode } = data as UserData;
   function handleCopy() {
-    copy(siteName + "/signup/" + referralCode);
+    copy(window.location.origin + "/signup/" + referralCode);
     console.log("copied");
     notify();
   }

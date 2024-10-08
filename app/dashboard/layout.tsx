@@ -53,9 +53,10 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
         >
           <Image
             src="/fastrack-green.png"
-            alt="Kudizen"
+            alt="fastrack logo"
             width={150}
             height={10}
+            className="h-auto w-auto"
           />
         </Link>
         <MobileMenu location="dashboard" />
