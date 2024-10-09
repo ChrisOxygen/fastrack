@@ -99,7 +99,7 @@ const initialState: InitialStateType = {
 function reducer(state: InitialStateType, action: ReducerActionType) {
   switch (action.type) {
     case "nextStep":
-      return { ...state, step: state.step++ };
+      return { ...state, step: state.step + 1 };
 
     case "setInputData":
       return {
