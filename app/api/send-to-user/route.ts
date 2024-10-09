@@ -5,7 +5,6 @@ import { getToken } from "next-auth/jwt";
 import { UserTransaction } from "../signup/route";
 import {
   generateUniqueTransactionId,
-  userDepositDetailsType,
   userTransferDetailsType,
 } from "@/utils/services";
 import DepositTransaction from "@/models/depositTransaction";

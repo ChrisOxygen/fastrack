@@ -6,7 +6,6 @@ import { UserTransaction } from "../signup/route";
 import {
   generateUniqueTransactionId,
   userCryptoDepositDetailsType,
-  userDepositDetailsType,
 } from "@/utils/services";
 import DepositTransaction from "@/models/depositTransaction";
 import { getallTransactions } from "@/utils/transactionServices";

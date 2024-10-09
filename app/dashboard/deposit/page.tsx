@@ -3,19 +3,17 @@
 import { Reducer, useReducer } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useFetchUserData from "@/hooks/useFetchUserData";
-import { TransactionType, UserData } from "@/app/dashboard/layout";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { initiateCyptoDeposit } from "@/utils/services";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import StepDisplay from "@/components/StepDisplay";
-import copy from "copy-to-clipboard";
-import { notify } from "@/components/ReferEarnBox";
+
 import clsx from "clsx";
-import { BiCopy } from "react-icons/bi";
-import { UserTransaction } from "@/app/api/signup/route";
+
 import DepositTransCreated from "@/components/DepositTransCreated";
 
-export const transferMethods = [
+const transferMethods = [
   {
     id: 1,
     key: "BTC",
@@ -329,63 +327,7 @@ function Deposit() {
           </div>
         )}
 
-        {step === 3 && transOBJ && (
-          // <div className="flex w-full flex-col items-center gap-5">
-          //   <div className="flex w-full flex-col items-center gap-3">
-          //     <h4 className="font-dm_sans text-xl font-bold capitalize text-siteHeadingDark">
-          //       Transaction Created
-          //     </h4>
-          //     <button
-          //       className="flex items-center font-dm_sans text-5xl font-bold capitalize text-siteHeadingDark"
-          //       onClick={function () {
-          //         handleCopy();
-          //       }}
-          //     >
-          //       <span className="text-siteHeadingDark/20">#</span>
-          //       44rfdgrrtg{" "}
-          //     </button>
-          //   </div>
-          //   <div className="relative flex w-full flex-col gap-4 border border-siteHeadingDark/25 p-5">
-          //     <div className="flex w-full items-center justify-between gap-6 font-dm_sans text-siteHeadingDark">
-          //       <span className="uppercase">Amount</span>
-          //       <span className="h-[1px] w-full bg-siteHeadingDark/20"></span>
-          //       <span className="font-bold">{inputData.amount}</span>
-          //     </div>
-          //     <div className="flex w-full items-center justify-between gap-6 font-dm_sans text-siteHeadingDark">
-          //       <span className="shrink-0 uppercase">Transfer Fee</span>
-          //       <span className="h-[1px] w-full bg-siteHeadingDark/20"></span>
-          //       <span className="font-bold">{inputData.amount}</span>
-          //     </div>
-          //     <div className="flex w-full items-center justify-between gap-6 font-dm_sans text-siteHeadingDark">
-          //       <span className="shrink-0 uppercase">Amount to Recive</span>
-          //       <span className="h-[1px] w-full bg-siteHeadingDark/20"></span>
-          //       <span className="font-bold">{inputData.amount}</span>
-          //     </div>
-          //   </div>
-          //   <div className="flex flex-col items-center text-siteHeadingDark">
-          //     <span className="font-dm_sans text-lg font-bold">
-          //       Your refferal code is:
-          //     </span>
-          //     <span className="font-dm_sans text-[80px] font-bold text-stone-500/40">
-          //       {transOBJ?.transactionId}
-          //     </span>
-          //     <span className="font-dm_sans text-lg font-bold">
-          //       Your refferal link is:
-          //     </span>
-
-          //     <button
-          //       className="flex items-center justify-center gap-2 rounded-lg bg-[#1A5B4C] px-5 py-2 text-white shadow-sm"
-          //       onClick={function () {
-          //         handleCopy();
-          //       }}
-          //     >
-          //       <FiCopy />
-          //       copy referal link
-          //     </button>
-          //   </div>
-          // </div>
-          <DepositTransCreated transOBJ={transOBJ} />
-        )}
+        {step === 3 && transOBJ && <DepositTransCreated transOBJ={transOBJ} />}
       </section>
     </>
   );

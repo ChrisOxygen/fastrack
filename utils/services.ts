@@ -233,38 +233,6 @@ export const getUser = async (id: string) => {
   }
 };
 
-export const initiateDeposit = async (
-  deposit: userDepositDetailsType,
-  userId: string,
-) => {
-  const { amount, transferMethod, transferFee, tax, amountToReceive } = deposit;
-  try {
-    const res = await fetch(`/api/deposit/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount,
-        userId,
-        transferMethod,
-        transferFee,
-        tax,
-        amountToReceive,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to initiate deposit!");
-    }
-
-    const data = await res.json();
-
-    return data;
-  } catch (error) {
-    throw error as Error;
-  }
-};
 export const initiateCyptoDeposit = async (
   deposit: userCryptoDepositDetailsType,
   userId: string,

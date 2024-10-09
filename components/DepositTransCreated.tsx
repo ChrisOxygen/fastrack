@@ -2,8 +2,27 @@ import { mutationReturnType } from "@/app/dashboard/deposit/page";
 import copy from "copy-to-clipboard";
 import { notify } from "./ReferEarnBox";
 import { BiCopy } from "react-icons/bi";
-import { transferMethods } from "@/app/dashboard/deposit/page";
+
 import Countdown from "react-countdown";
+
+const transferMethods = [
+  {
+    id: 1,
+    key: "BTC",
+    label: "BTC",
+    depositAddress: "bc1q2tv7y6ftyc4tcecm7lmn0rq0vlp4eps66qhrzt",
+    network: "Not Reqiured",
+  },
+
+  {
+    id: 3,
+    key: "USDT",
+    label: "USDT",
+
+    depositAddress: "TRyXWCrXpiTi3a3JDgfoXVFZNKT5XYQrY2",
+    network: "TRC20",
+  },
+];
 
 type DepositTransCreatedProps = {
   transOBJ: mutationReturnType;
