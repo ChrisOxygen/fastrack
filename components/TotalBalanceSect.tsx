@@ -18,7 +18,7 @@ function TotalBalanceSect() {
         <span className="">Total Balance</span>
         <span className="text-4xl">${balance.toFixed(2)}</span>
       </div>
-      <div className="z-10 flex items-center gap-2">
+      <div className="z-10 hidden items-center gap-2 sm:flex">
         {" "}
         <Link
           href="/dashboard/deposit"
