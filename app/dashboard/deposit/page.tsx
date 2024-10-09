@@ -230,7 +230,7 @@ function Deposit() {
                     type="number"
                     {...register("amount", { required: true })}
                     placeholder="0.00"
-                    className="inputField py-3 font-dm_sans text-6xl font-bold text-siteHeadingDark placeholder-shown:text-siteHeadingDark/10 focus:border-0 focus:outline-none active:border-0 active:outline-none"
+                    className="inputField py-3 font-dm_sans text-6xl font-bold text-siteHeadingDark placeholder-shown:text-siteHeadingDark/10 focus:border-0 focus:outline-none active:border-0 active:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                 </div>
                 <span className=""></span>
