@@ -182,6 +182,7 @@ function Deposit() {
   }
 
   function setStep() {
+    console.log("setStep");
     dispatch({ type: "nextStep" });
   }
 
