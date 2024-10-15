@@ -199,3 +199,20 @@ export const getallTransactions = async () => {
     throw error;
   }
 };
+
+export const getTransactionAndUniqueTransactionId = async () => {
+  try {
+    const transactions = await getallTransactions();
+
+    const allTransactionIds = transactions.map((transaction) => {
+      return transaction.transactionId;
+    });
+
+    const uniqueTransactionId = generateUniqueTransactionId(
+      allTransactionIds as string[],
+    );
+    return { uniqueTransactionId };
+  } catch (error) {
+    throw error;
+  }
+};

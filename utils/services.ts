@@ -1,4 +1,5 @@
 import { CustomError } from "@/app/api/send-to-user/route";
+import { WithdrawalDetails } from "@/app/api/withdraw/route";
 import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
 
 import { connectToDatabase } from "@/app/utils/database";
@@ -53,9 +54,15 @@ export type PayPalWithdrawalDetailsType = {
   deductableAmount: number;
 };
 
-export type WithdrawalDetailsType =
-  | BankWithdrawalDetailsType
-  | PayPalWithdrawalDetailsType;
+export type UserWdrawalDetailsType = {
+  amount: number;
+  deductableAmount: number;
+  tax: number;
+  fee: number;
+  tfMethod: "BTC" | "USDT";
+  walletAddress: string;
+  network?: string;
+};
 
 export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
@@ -326,16 +333,13 @@ export const initiateFundsTransfer = async (
 };
 
 export const initiateWithdrawal = async (
-  withdrawalDetails: BankWithdrawalDetailsType | PayPalWithdrawalDetailsType,
+  withdrawalDetails: WithdrawalDetails,
   userId: string,
 ) => {
   console.log("initiateWithdrawal fired", withdrawalDetails);
 
-  const withdrawalMethod = withdrawalDetails.hasOwnProperty("bankName")
-    ? "bank"
-    : "paypal";
   try {
-    const res = await fetch(`/api/withdraw/${withdrawalMethod}`, {
+    const res = await fetch(`/api/withdraw`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

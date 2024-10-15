@@ -5,19 +5,31 @@ import {
   BankWithdrawalDetailsType,
   generateUniqueTransactionId,
 } from "@/utils/services";
-import WithdrawalTransaction from "@/models/withdrawalTransaction";
-import { UserTransaction } from "../../signup/route";
+import WithdrawalTransaction, {
+  IWithdrawalTransaction,
+} from "@/models/withdrawalTransaction";
+import { UserTransaction } from "../signup/route";
+import { getTransactionAndUniqueTransactionId } from "@/utils/transactionServices";
 
 export type CustomError = Error & {
   field: string;
 };
 
+export type WithdrawalDetails = {
+  amount: number;
+  deductableAmount: number;
+  tax: number;
+  fee: number;
+  withdrawalMethod: "BTC" | "USDT";
+  walletAddress: string;
+  network?: string;
+};
+
 export async function POST(req: Request, res: Response) {
   try {
-    const withdrawalDetails =
-      (await req.json()) as BankWithdrawalDetailsType & {
-        userId: string;
-      };
+    const withdrawalDetails = (await req.json()) as WithdrawalDetails & {
+      userId: string;
+    };
 
     if (!withdrawalDetails) {
       const error = new Error("Somthing went wrong") as CustomError;
@@ -30,9 +42,9 @@ export async function POST(req: Request, res: Response) {
       deductableAmount,
       tax,
       fee,
-      bankName,
-      accountName,
-      accountNumber,
+      withdrawalMethod,
+      walletAddress,
+      network,
       userId,
     } = withdrawalDetails;
 
@@ -54,15 +66,8 @@ export async function POST(req: Request, res: Response) {
       throw error;
     }
 
-    const transactions = (await Transaction.find()) as UserTransaction[];
-
-    const allTransactionIds = transactions.map((transaction) => {
-      return transaction.transactionId;
-    });
-
-    const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[],
-    );
+    const { uniqueTransactionId } =
+      await getTransactionAndUniqueTransactionId();
 
     const newTransaction = await Transaction.create({
       transactionId: uniqueTransactionId,
@@ -73,23 +78,18 @@ export async function POST(req: Request, res: Response) {
       user: currentUser._id,
     });
 
-    await newTransaction.save();
-
     if (!newTransaction) {
       throw new Error("Something went wrong!");
     }
 
     const withdrawalTransaction = await WithdrawalTransaction.create({
-      withdrawalMethod: "bank",
+      withdrawalMethod: withdrawalMethod,
       deductableAmount: deductableAmount,
       tax: tax,
-      bankName: bankName,
-      accountName: accountName,
-      accountNumber: accountNumber,
+      walletAddress: walletAddress,
+      network: network && network,
       transaction: newTransaction._id,
     });
-
-    await withdrawalTransaction.save();
 
     if (!withdrawalTransaction) {
       const error = new Error("Somthing went wrong") as CustomError;

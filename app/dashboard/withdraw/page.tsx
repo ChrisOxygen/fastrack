@@ -4,7 +4,7 @@ import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { Checkbox, Radio, RadioGroup } from "@nextui-org/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Reducer, use, useEffect, useReducer } from "react";
+import { Reducer, use, useEffect, useReducer, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { FiX } from "react-icons/fi";
 import {
@@ -16,147 +16,36 @@ import ConfirmWithdrawalTrans from "@/components/ConfirmWithdrawalTrans";
 import TransactionSuccess from "@/components/TransactionSuccess";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import StepDisplay from "@/components/StepDisplay";
-
-const bankFees = {
-  transferFee: 2.5,
-  tax: 0.03,
-};
-
-const paypalFees = {
-  transferFee: 3.2,
-  tax: 0.02,
-};
+import { WithdrawalDetails } from "@/app/api/withdraw/route";
+import { set } from "mongoose";
+import clsx from "clsx";
 
 type FormInputs = {
   amount: number;
-  withdrawalMethod: "bank" | "paypal";
-  bankName?: string;
-  accountNumber?: string;
-  accountName?: string;
-  payPalEmail?: string;
+  withdrawalMethod: "USDT" | "BTC";
+  walletAddress: string;
+
   fee: number;
   tax: number;
+  network?: string;
   deductableAmount: number;
 };
 
-type InitialStateType = {
-  step: number;
-  loading: boolean;
-  taxPecentage: number;
-  withdrawalFee: number;
-  withdrawalMethod: "bank" | "paypal";
-
-  inputValues: {
-    amount: number;
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-    payPalEmail?: string;
-    fee: number;
-    tax: number;
-    deductableAmount: number;
-  };
-  transID: string;
-};
-
-type ReducerActionType = {
-  type: string;
-  payLoad?: any;
-};
-
-const initialState: InitialStateType = {
-  step: 1,
-  loading: false,
-  taxPecentage: 0.03,
-  withdrawalFee: 2.5,
-
-  withdrawalMethod: "bank" as "bank" | "paypal",
-
-  inputValues: {
-    amount: 0.0,
-    bankName: "",
-    accountNumber: "",
-    accountName: "",
-    fee: 0,
-    tax: 0,
-    deductableAmount: 0,
-    payPalEmail: "",
-  },
-  transID: "",
-};
-
-function reducer(state: InitialStateType, action: ReducerActionType) {
-  switch (action.type) {
-    case "setStep":
-      return { ...state, step: action.payLoad };
-    case "setTaxPecentageAndFee":
-      return {
-        ...state,
-        taxPecentage: action.payLoad.tax,
-        withdrawalFee: action.payLoad.transferFee,
-      };
-
-    case "setInputValues":
-      return {
-        ...state,
-        withdrawalMethod: action.payLoad.withdrawalMethod,
-        inputValues: action.payLoad.inputValues,
-      };
-
-    case "setTransID":
-      return { ...state, transID: action.payLoad };
-    case "reset":
-      return { ...initialState };
-
-    default:
-      throw new Error("unknown action");
-  }
-}
-
 function WithdrawScreen() {
-  const [state, dispatch] = useReducer<
-    Reducer<InitialStateType, ReducerActionType>
-  >(reducer, initialState);
-  const {
-    step,
-    loading,
-    withdrawalFee,
-    taxPecentage,
-    inputValues,
-    withdrawalMethod,
-    transID,
-  } = state;
+  const [step, setStep] = useState(1);
+  const [inputValues, setInputValues] = useState<WithdrawalDetails | null>(
+    null,
+  );
+  const [transID, setTransID] = useState<string | null>(null);
 
-  const { session, data, status } = useFetchUserData();
+  const { session, data } = useFetchUserData();
   const { balance } = data as UserData;
 
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () => {
-      const paypalDetails = {} as PayPalWithdrawalDetailsType;
-
-      const bankDetails = {} as BankWithdrawalDetailsType;
-
-      if (withdrawalMethod === "paypal") {
-        paypalDetails.payPalEmail = inputValues.payPalEmail!;
-        paypalDetails.amount = inputValues.amount;
-        paypalDetails.fee = withdrawalFee;
-        paypalDetails.tax = taxPecentage;
-        paypalDetails.deductableAmount = inputValues.deductableAmount;
-
-        return initiateWithdrawal(paypalDetails, session?.user.id!);
-      }
-
-      bankDetails.bankName = inputValues.bankName!;
-      bankDetails.accountNumber = inputValues.accountNumber!;
-      bankDetails.accountName = inputValues.accountName!;
-      bankDetails.amount = inputValues.amount;
-      bankDetails.fee = withdrawalFee;
-      bankDetails.tax = taxPecentage;
-      bankDetails.deductableAmount = inputValues.deductableAmount;
-
-      return initiateWithdrawal(bankDetails, session?.user.id!);
+    mutationFn: (details: WithdrawalDetails) => {
+      return initiateWithdrawal(details, session?.user.id!);
     },
     onError: (error) => {
       const { message, field } = error as any;
@@ -164,11 +53,10 @@ function WithdrawScreen() {
       setStep(1);
     },
     onSuccess: (data) => {
-      if (data.transactionId) {
-        dispatch({ type: "setTransID", payLoad: data.transactionId });
-        setStep(3);
-      }
-      console.log("success", data, "step", step);
+      const { transactionId } = data;
+      setTransID(transactionId);
+
+      setStep(3);
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
@@ -184,32 +72,12 @@ function WithdrawScreen() {
 
     setError,
     formState: { errors, isLoading, isSubmitting, isValidating },
-  } = useForm<FormInputs>({
-    defaultValues: { ...inputValues, withdrawalMethod: "bank" },
-  });
-
-  function setStep(step: number) {
-    dispatch({ type: "setStep", payLoad: step });
-  }
-
-  function resetState() {
-    dispatch({ type: "reset" });
-  }
-
-  const submitAfterConfirmation = async () => {
-    mutate();
-  };
+  } = useForm<FormInputs>();
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    const { withdrawalMethod, ...inputValues } = data;
+    setInputValues(data);
 
-    dispatch({
-      type: "setInputValues",
-      payLoad: { withdrawalMethod, inputValues },
-    });
     setStep(2);
-
-    // submitAfterConfirmation();
   };
 
   function handleNextStep() {
@@ -218,8 +86,8 @@ function WithdrawScreen() {
 
   if (watch("amount") > 0) {
     console.log("error", errors.amount);
-    setValue("fee", withdrawalFee);
-    setValue("tax", watch("amount") * taxPecentage);
+    setValue("fee", 1);
+    setValue("tax", watch("amount") * 0);
     setValue(
       "deductableAmount",
       watch("amount") + getValues("tax") + getValues("fee"),
@@ -254,6 +122,15 @@ function WithdrawScreen() {
   ) {
     return <LoadingSpinner />;
   }
+
+  const resetState = () => {
+    setStep(1);
+    setInputValues(null);
+  };
+
+  const submitAfterConfirmation = () => {
+    mutate(inputValues!);
+  };
 
   return (
     <section className="flex h-screen flex-col gap-16 overflow-hidden">
@@ -313,7 +190,7 @@ function WithdrawScreen() {
                   Withdrawal Method:
                 </label>
                 <div className="flex items-center justify-between">
-                  <div className="z-[-1] flex items-center gap-6">
+                  <div className="flex items-center gap-6">
                     <Controller
                       control={control}
                       name="withdrawalMethod"
@@ -321,17 +198,11 @@ function WithdrawScreen() {
                         <RadioGroup
                           id="withdrawalMethodId"
                           orientation="horizontal"
-                          onValueChange={onChange}
                           value={value}
-                          onChange={() => {
-                            dispatch({
-                              type: "setTaxPecentageAndFee",
-                              payLoad: value === "bank" ? bankFees : paypalFees,
-                            });
-                          }}
+                          onValueChange={onChange}
                         >
-                          <Radio value="paypal">Paypal</Radio>
-                          <Radio value="bank">Bank Transfer</Radio>
+                          <Radio value="USDT">USDT</Radio>
+                          <Radio value="BTC">BTC</Radio>
                         </RadioGroup>
                       )}
                     />
@@ -343,97 +214,50 @@ function WithdrawScreen() {
                   )}
                 </div>
               </div>
-              {watch("withdrawalMethod") === "paypal" ? (
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor=""
+                  className="font-dm_sans font-bold text-siteHeadingDark"
+                >
+                  Wallet Address
+                </label>
+                <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
+                  <input
+                    type="text"
+                    id=""
+                    className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
+                    {...register("walletAddress", { required: true })}
+                  />
+                </div>
+
+                {errors?.walletAddress && (
+                  <span className="capitalize text-red-500">
+                    {errors?.walletAddress.message}
+                  </span>
+                )}
+              </div>
+              {watch("withdrawalMethod") === "USDT" && (
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor=""
                     className="font-dm_sans font-bold text-siteHeadingDark"
                   >
-                    Enter PayPal Email
+                    Network
                   </label>
                   <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
                     <input
                       type="email"
                       id=""
                       className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
-                      {...register("payPalEmail", { required: true })}
+                      {...register("network", { required: true })}
                     />
                   </div>
 
-                  {errors?.payPalEmail && (
+                  {errors?.network && (
                     <span className="capitalize text-red-500">
-                      {errors?.payPalEmail.message}
+                      {errors?.network.message}
                     </span>
                   )}
-                </div>
-              ) : (
-                <div className="">
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor=""
-                      className="font-dm_sans font-bold text-siteHeadingDark"
-                    >
-                      Bank Name
-                    </label>
-                    <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
-                      <input
-                        type="text"
-                        id=""
-                        className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
-                        {...register("bankName", { required: true })}
-                      />
-                    </div>
-
-                    {errors?.bankName && (
-                      <span className="capitalize text-red-500">
-                        {errors?.bankName.message}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor=""
-                      className="font-dm_sans font-bold text-siteHeadingDark"
-                    >
-                      Acount Number
-                    </label>
-                    <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
-                      <input
-                        type="number"
-                        id=""
-                        className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
-                        {...register("accountNumber", { required: true })}
-                      />
-                    </div>
-
-                    {errors?.accountNumber && (
-                      <span className="capitalize text-red-500">
-                        {errors?.accountNumber.message}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor=""
-                      className="font-dm_sans font-bold text-siteHeadingDark"
-                    >
-                      Acount Name
-                    </label>
-                    <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
-                      <input
-                        type="text"
-                        id=""
-                        className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
-                        {...register("accountName", { required: true })}
-                      />
-                    </div>
-
-                    {errors?.accountName && (
-                      <span className="capitalize text-red-500">
-                        {errors?.accountName.message}
-                      </span>
-                    )}
-                  </div>
                 </div>
               )}
 
@@ -450,14 +274,7 @@ function WithdrawScreen() {
                           Transfer fee
                         </span>
                       </p>
-                      <span className="">{withdrawalFee}$</span>
-                    </div>
-                    <div className="flex items-center justify-between font-dm_sans font-bold text-siteHeadingDark">
-                      <p className="flex items-center gap-1">
-                        <span className="h-2 w-2 rounded-full bg-green-700"></span>
-                        <span className="text-siteHeadingDark/50">Tax</span>
-                      </p>
-                      <span className="">244 USD({taxPecentage} %)</span>
+                      <span className="">1$</span>
                     </div>
                   </div>
                   <span className="grid h-[1px] bg-siteHeadingDark/25"></span>
@@ -496,7 +313,17 @@ function WithdrawScreen() {
                 })}
               />
               <button
-                className="w-full rounded-xl bg-siteGreen p-4 font-dm_sans font-bold text-white"
+                disabled={
+                  watch("withdrawalMethod") === undefined ||
+                  watch("withdrawalMethod") === null
+                }
+                className={clsx(
+                  "w-full rounded-xl bg-siteGreen p-4 font-dm_sans font-bold text-white",
+                  watch("withdrawalMethod") === undefined ||
+                    watch("withdrawalMethod") === null
+                    ? "cursor-not-allowed bg-siteGreen/50"
+                    : "bg-siteGreen",
+                )}
                 onClick={function (e) {
                   e.preventDefault();
                   handleNextStep();
@@ -510,15 +337,15 @@ function WithdrawScreen() {
       )}
       {step === 2 && (
         <ConfirmWithdrawalTrans
-          values={inputValues}
+          values={inputValues!}
           reset={resetState}
-          taxPecentage={taxPecentage}
+          taxPecentage={0}
           submitAfterConfirmation={submitAfterConfirmation}
         />
       )}
       {step === 3 && (
         <TransactionSuccess
-          transactionId={transID}
+          transactionId={transID!}
           view="withdraw"
           reset={resetState}
         />
@@ -528,3 +355,28 @@ function WithdrawScreen() {
 }
 
 export default WithdrawScreen;
+
+{
+  /* <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor=""
+                      className="font-dm_sans font-bold text-siteHeadingDark"
+                    >
+                      Bank Name
+                    </label>
+                    <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
+                      <input
+                        type="text"
+                        id=""
+                        className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
+                        {...register("bankName", { required: true })}
+                      />
+                    </div>
+
+                    {errors?.bankName && (
+                      <span className="capitalize text-red-500">
+                        {errors?.bankName.message}
+                      </span>
+                    )}
+                  </div> */
+}
