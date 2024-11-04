@@ -1,11 +1,9 @@
-import { connectToDatabase } from "@/app/utils/database";
 import { AuthOptions, DefaultSession } from "next-auth";
 import NextAuth from "next-auth/next";
 import Credentials from "next-auth/providers/credentials";
-
 import bcrypt from "bcryptjs";
-
-import User from "@/models/user";
+import User from "@/utils/database/models/user.model";
+import { connectToDatabase } from "@/utils/database";
 
 export type ErrorWithMessageAndStatus = {
   message: string;
@@ -21,6 +19,7 @@ const options: AuthOptions = {
   providers: [
     Credentials({
       name: "Credentials",
+      id: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -32,6 +31,8 @@ const options: AuthOptions = {
         try {
           await connectToDatabase();
           const user = await User.findOne({ email: credentials?.email });
+
+          console.log("user", user);
 
           if (!user) {
             const error = new Error() as ErrorWithMessageAndStatus;

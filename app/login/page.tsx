@@ -1,6 +1,8 @@
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LoginForm from "@/components/LoginForm";
+import { useSession } from "next-auth/react";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { getServerSession } from "next-auth";
 
 type LoginInputs = {
   email: string;
@@ -15,6 +17,7 @@ async function Login() {
   }
 
   return <LoginForm />;
+  // return <div className="">Zod mando</div>;
 }
 
 export default Login;

@@ -1,9 +1,11 @@
-import { mutationReturnType } from "@/app/dashboard/deposit/page";
 import copy from "copy-to-clipboard";
 import { notify } from "./ReferEarnBox";
 import { BiCopy } from "react-icons/bi";
 
 import Countdown from "react-countdown";
+import { useQuery } from "@tanstack/react-query";
+import { getTransaction } from "@/utils/actions/transaction.actions";
+import LoadingSpinner from "./LoadingSpinner";
 
 const transferMethods = [
   {
@@ -25,18 +27,32 @@ const transferMethods = [
 ];
 
 type DepositTransCreatedProps = {
-  transOBJ: mutationReturnType;
+  transOBJ: {
+    transferMethod: string;
+    transaction: string;
+
+    amountToReceive: number;
+  };
 };
 
 function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
+  const { transferMethod, amountToReceive, transaction: id } = transOBJ;
   const {
-    amount,
-    createdAt,
-    transferMethod,
-    fee,
-    transactionId,
-    amountToReceive,
-  } = transOBJ.transaction;
+    data: transaction,
+    error,
+    status: transactionStatus,
+  } = useQuery({
+    queryKey: ["user", "transaction"],
+    queryFn: () => {
+      return getTransaction(id);
+    },
+  });
+
+  if (transactionStatus === "pending") return <LoadingSpinner />;
+
+  const { transactionId, createdAt, amount, fee } = transaction!;
+
+  console.log("transOBJ", transOBJ, "transaction", transaction);
 
   // convert createdAt to date and add 24 hours
   const date = new Date(createdAt).getTime() + 24 * 60 * 60 * 1000;
@@ -55,6 +71,7 @@ function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
   const transferMethodObj = transferMethods.find(
     (method) => method.key === transferMethod,
   )!;
+
   return (
     <div className="flex w-full flex-col gap-5">
       <div className="flex justify-between gap-3 px-4 font-dm_sans text-xl font-bold text-siteHeadingDark sm:items-center sm:gap-0 sm:px-5 sm:text-3xl">

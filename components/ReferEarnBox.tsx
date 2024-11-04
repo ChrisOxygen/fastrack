@@ -1,3 +1,5 @@
+"use client";
+
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import copy from "copy-to-clipboard";

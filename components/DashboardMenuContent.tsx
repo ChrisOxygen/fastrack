@@ -8,11 +8,13 @@ import SideBarMenuItem from "./SideBarMenuItem";
 import Image from "next/image";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { UserData } from "@/app/dashboard/layout";
+import LoadingSpinner from "./LoadingSpinner";
 
 function DashboardMenuContent() {
-  const { data } = useFetchUserData();
+  const { data, status, error } = useFetchUserData();
 
   const { email, firstName, lastName } = data as UserData;
+
   return (
     <>
       <div className="w-full">
@@ -21,7 +23,7 @@ function DashboardMenuContent() {
             <SideBarMenuItem tabTitle="dashboard" />
             <SideBarMenuItem tabTitle="all transactions" />
             <SideBarMenuItem tabTitle="deposit" />
-            <SideBarMenuItem tabTitle="transfer" />
+            <SideBarMenuItem tabTitle="investment" />
             <SideBarMenuItem tabTitle="withdraw" />
             <SideBarMenuItem tabTitle="referrals" />
             <SideBarMenuItem tabTitle="settings" />

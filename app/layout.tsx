@@ -5,7 +5,6 @@ import "@/styles/globals.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextAuthProvider from "@/providers/NextAuthProvider";
 import { getServerSession } from "next-auth";
-import { TabSwitchProvider } from "@/contex/TabSwitchProvider";
 
 const syne = Syne({ subsets: ["latin"], variable: "--syne" });
 const dm_sans = DM_Sans({ subsets: ["latin"], variable: "--dm-sans" });
@@ -26,9 +25,7 @@ export default async function RootLayout({
       <body suppressHydrationWarning={true}>
         <NextAuthProvider session={session}>
           <ReactQueryProvider>
-            <TabSwitchProvider>
-              <NextProvider>{children}</NextProvider>
-            </TabSwitchProvider>
+            <NextProvider>{children}</NextProvider>
           </ReactQueryProvider>
         </NextAuthProvider>
       </body>

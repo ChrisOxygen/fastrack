@@ -1,4 +1,4 @@
-import { WithdrawalDetails } from "@/app/api/withdraw/route";
+import { WithdrawalDetails } from "@/types";
 
 type ConfirmWithdrawalTransProps = {
   values: WithdrawalDetails;

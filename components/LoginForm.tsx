@@ -7,7 +7,9 @@ import { Button, Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "@/utils/services";
+
+import { useSession } from "next-auth/react";
+import { loginUser } from "@/utils/actions/user.actions";
 
 type LoginInputs = {
   email: string;
@@ -22,6 +24,8 @@ function LoginForm() {
     formState: { errors },
   } = useForm<LoginInputs>();
 
+  const { data: session } = useSession();
+
   const router = useRouter();
 
   const { mutate } = useMutation({
@@ -30,7 +34,9 @@ function LoginForm() {
       router.push("/dashboard");
     },
   });
-  const onSubmit: SubmitHandler<LoginInputs> = (data) => {
+  const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    console.log(data);
+
     mutate(data);
   };
 

@@ -1,5 +1,3 @@
-"use client";
-
 import ContactSupportBox from "@/components/ContactSupportBox";
 import OverViewSect from "@/components/OverViewSect";
 import RecentActivity from "@/components/RecentActivity";

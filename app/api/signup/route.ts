@@ -1,13 +1,12 @@
-import { connectToDatabase } from "@/app/utils/database";
 import bcrypt from "bcryptjs";
-import User from "@/models/user";
+
 import { NextResponse } from "next/server";
-import {
-  awardReferralBonus,
-  createTransaction,
-} from "@/utils/transactionServices";
-import { generateUniqueReferralCode } from "@/utils/services";
+
+import { generateUniqueReferralCode, handleError } from "@/utils/services";
 import { ErrorWithMessageAndStatus } from "../auth/[...nextauth]/route";
+import { connectToDatabase } from "@/utils/database";
+import User from "@/utils/database/models/user.model";
+import { createTransaction } from "@/utils/actions/transaction.actions";
 
 export type UserTransaction = {
   transactionId?: string;
@@ -24,14 +23,19 @@ export type UserTransaction = {
 
 export async function POST(req: Request, res: Response) {
   console.log("POST fired API");
-  const { firstName, lastName, email, password, referralCode } =
-    (await req.json()) as {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      referralCode?: string;
-    };
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    referralCode: referrersReferralCode,
+  } = (await req.json()) as {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    referralCode?: string;
+  };
 
   try {
     await connectToDatabase();
@@ -71,51 +75,31 @@ export async function POST(req: Request, res: Response) {
       referralCode: userReferralCode,
     });
 
-    if (!newUser) {
-      const error = new Error() as ErrorWithMessageAndStatus;
-      error.message = "User creation failed!";
-      error.status = 500;
-      throw error;
-    }
+    const signUpBonus = await createTransaction({
+      type: "signup bonus",
+      amount: 100,
+      status: "success",
+      fee: 0,
+      userId: newUser._id,
+    });
 
-    const signUpBonus = await createTransaction(
-      {
-        type: "signup bonus",
-        amount: 100,
-        status: "success",
-        fee: 0,
-      },
-      newUser._id,
-    );
-
-    if (!signUpBonus.ok) {
-      const error = new Error() as ErrorWithMessageAndStatus;
-      error.message = "Signup bonus creation failed!";
-      error.status = 500;
-      throw error;
-    }
-
-    if (referralCode) {
-      const referalTransaction = await awardReferralBonus(referralCode);
-      if (!referalTransaction.ok) {
-        const error = new Error() as ErrorWithMessageAndStatus;
-        error.message = "Referral bonus creation failed!";
-        error.status = 500;
-        throw error;
+    if (referrersReferralCode) {
+      const referrer = await User.findOne({
+        referralCode: referrersReferralCode,
+      });
+      if (referrer) {
+        const referralBonus = await createTransaction({
+          type: "referral bonus",
+          amount: 50,
+          status: "success",
+          fee: 0,
+          userId: referrer._id,
+        });
       }
     }
 
-    //TODO: fix this error handling to be more specific
-
-    return NextResponse.json({
-      message: "User created successfully!",
-      user: newUser,
-    });
-  } catch (error: any) {
-    const deletedUser = await User.findOneAndDelete({
-      email,
-    });
-
-    return new Response(error.message, { status: 422 });
+    return newUser ? JSON.parse(JSON.stringify(newUser)) : null;
+  } catch (error) {
+    handleError(error, "signupNewUser");
   }
 }

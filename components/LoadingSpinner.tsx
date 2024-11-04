@@ -3,7 +3,7 @@ import React from "react";
 
 function LoadingSpinner() {
   return (
-    <div className="fixed left-0 top-0 grid h-screen w-screen place-items-center bg-white/85">
+    <div className="fixed left-0 top-0 z-50 grid h-screen w-screen place-items-center bg-white/85">
       <Spinner
         classNames={{
           wrapper: "w-[100px] h-[100px] ",

@@ -46,6 +46,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
           <SideBarMenuItem tabTitle="dashboard" />
           <SideBarMenuItem tabTitle="all transactions" />
           <SideBarMenuItem tabTitle="deposit" />
+          <SideBarMenuItem tabTitle="investment" />
           <SideBarMenuItem tabTitle="transfer" />
           <SideBarMenuItem tabTitle="withdraw" />
           <SideBarMenuItem tabTitle="referrals" />

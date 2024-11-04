@@ -8,8 +8,9 @@ import { Button, Checkbox, Input } from "@nextui-org/react";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { signupNewUser } from "@/utils/services";
 import { useParams, useRouter } from "next/navigation";
+import { signupNewUser } from "@/utils/services";
+// import { signupNewUser } from "@/utils/actions/user.actions";
 
 type SignupInputs = {
   firstName: string;

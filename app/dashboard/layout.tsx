@@ -1,22 +1,16 @@
 "use client";
 
-import SideBarMenuItem from "@/components/SideBarMenuItem";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
-import { BiExit } from "react-icons/bi";
-import { signOut } from "next-auth/react";
-import { FiPower, FiUserCheck } from "react-icons/fi";
-import { GoMoveToStart } from "react-icons/go";
 
 import useFetchUserData from "@/hooks/useFetchUserData";
-import { useTabSwitch } from "@/contex/TabSwitchProvider";
 import MobileMenu from "@/components/MobileMenu";
 import { Spinner } from "@nextui-org/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import DashboardMenu from "@/components/DashboardMenu";
+import Loading from "./loading";
 
 export type TransactionType = {
   transactionId: string;
@@ -64,6 +58,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <main className="block h-full grid-cols-[260px_1fr] lg:grid lg:h-screen lg:overflow-hidden xl:grid-cols-[350px_1fr]">
         <DashboardMenu device="desktop" />
         <section className="h-full max-h-[1080px] w-full overflow-auto p-4 lg:h-screen lg:overflow-hidden">
+          <Suspense fallback={<Loading />}></Suspense>
           {children}
         </section>
       </main>

@@ -1,6 +1,6 @@
 import SignupPage from "@/components/SignupPage";
 
-function Signup() {
+async function Signup() {
   return <SignupPage />;
 }
 

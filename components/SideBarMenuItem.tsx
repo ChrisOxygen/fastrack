@@ -1,10 +1,9 @@
-import { screenViewListType } from "@/contex/TabSwitchProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dispatch } from "react";
+
 import { BiExit } from "react-icons/bi";
 import { FiArchive, FiSend, FiSettings, FiTool, FiUsers } from "react-icons/fi";
-import { GoArrowSwitch, GoMoveToStart } from "react-icons/go";
+import { GoArrowSwitch } from "react-icons/go";
 import { GrMoney } from "react-icons/gr";
 
 function itemIcon(listItem: string) {
@@ -15,7 +14,7 @@ function itemIcon(listItem: string) {
       return <GoArrowSwitch />;
     case "deposit":
       return <GrMoney />;
-    case "transfer":
+    case "investment":
       return <FiSend />;
     case "withdraw":
       return <BiExit />;

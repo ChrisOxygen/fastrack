@@ -1,3 +1,5 @@
+"use client";
+
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import {
@@ -10,47 +12,25 @@ import {
   FiLoader,
   FiTrendingUp,
 } from "react-icons/fi";
+import LoadingSpinner from "./LoadingSpinner";
+import useUserOverview from "@/hooks/useUserOverview";
 
 function OverViewSect() {
   const { data, error, status } = useFetchUserData();
+  const { overviewData, useOverviewStatus } = useUserOverview();
 
-  const { transactions, balance } = data as UserData;
+  if (status === "pending" || useOverviewStatus === "pending")
+    return <LoadingSpinner />;
 
-  const totalDesposite = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "deposit" && transaction.status === "success")
-      return acc + transaction.amount;
-    return acc; // Add a default return value
-  }, 0);
+  const {
+    totalDeposit,
+    totalReferralBonus,
+    totalTransfer,
+    numberOfTransactions,
+    totalWithdrawal,
+  } = overviewData!;
 
-  const totalWithdraws = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "withdrawal" && transaction.status === "success")
-      return acc + transaction.amount;
-    return acc; // Add a default return value
-  }, 0);
-
-  const totalTransactions = transactions.length;
-
-  const totalReferals = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "referral bonus") return acc + 1;
-    return acc; // Add a default return value
-  }, 0);
-
-  const totalTransfers = transactions.reduce((acc, transaction) => {
-    if (transaction.type === "transfer" && transaction.status === "success")
-      return acc + 1;
-    return acc; // Add a default return value
-  }, 0);
-
-  const totalProfit = transactions.reduce((acc, transaction) => {
-    if (
-      transaction.type === "signup bonus" ||
-      transaction.type === "referral bonus"
-    ) {
-      return acc + transaction.amount;
-    }
-    if (transaction.type === "transfer") return acc - transaction.amount;
-    return acc; // Add a default return value
-  }, 0);
+  const { balance } = data as UserData;
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-siteHeadingDark/25 px-5 py-4 2xl:px-7 2xl:py-6">
@@ -68,7 +48,7 @@ function OverViewSect() {
               <FiArrowDown />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">${totalDesposite}</span>
+              <span className="font-syne text-3xl">${totalDeposit}</span>
               <span className="font-dm_sans">Total Deposite</span>
             </div>
           </div>
@@ -77,7 +57,7 @@ function OverViewSect() {
               <FiArrowDownRight />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">${totalWithdraws}</span>
+              <span className="font-syne text-3xl">${totalWithdrawal}</span>
               <span className="font-dm_sans">Total Withdraws</span>
             </div>
           </div>
@@ -86,7 +66,7 @@ function OverViewSect() {
               <FiGift />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">{totalReferals}</span>
+              <span className="font-syne text-3xl">{totalReferralBonus}</span>
               <span className="font-dm_sans">Total Referals</span>
             </div>
           </div>
@@ -104,7 +84,7 @@ function OverViewSect() {
               <FiCornerUpRight />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">{totalTransfers}</span>
+              <span className="font-syne text-3xl">{totalTransfer}</span>
               <span className="font-dm_sans">Total Transfers</span>
             </div>
           </div>
@@ -113,7 +93,7 @@ function OverViewSect() {
               <FiFolder />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">{totalTransactions}</span>
+              <span className="font-syne text-3xl">{numberOfTransactions}</span>
               <span className="font-dm_sans">All Transactions</span>
             </div>
           </div>
@@ -139,7 +119,7 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-dm_sans font-bold">Profit wallet</span>
-              <span className="font-dm_sans text-3xl">${totalProfit}</span>
+              <span className="font-dm_sans text-3xl">$245</span>
             </div>
           </div>
         </div>

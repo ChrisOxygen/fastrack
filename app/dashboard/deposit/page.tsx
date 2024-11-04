@@ -1,17 +1,19 @@
 "use client";
 
-import { Reducer, useReducer } from "react";
+import { Reducer, use, useReducer } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useFetchUserData from "@/hooks/useFetchUserData";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { initiateCyptoDeposit } from "@/utils/services";
+
 import LoadingSpinner from "@/components/LoadingSpinner";
 import StepDisplay from "@/components/StepDisplay";
 
 import clsx from "clsx";
 
 import DepositTransCreated from "@/components/DepositTransCreated";
+import { useSession } from "next-auth/react";
+import { createDepositTransaction } from "@/utils/actions/transaction.actions";
 
 const transferMethods = [
   {
@@ -71,7 +73,11 @@ type InitialStateType = {
     transferFee: number;
     amountToReceive: number;
   };
-  transOBJ: mutationReturnType | null;
+  transOBJ: {
+    transferMethod: string;
+    amountToReceive: number;
+    transaction: string;
+  } | null;
 };
 
 type ReducerActionType = {
@@ -131,28 +137,42 @@ function Deposit() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => {
-      return initiateCyptoDeposit({ ...inputData, tax: 0 }, session?.user.id!);
+      return createDepositTransaction({
+        ...inputData,
+        tax: 0,
+        userId: session?.user.id!,
+      });
     },
     onError: (error) => {
       console.log("error", error);
     },
     onSuccess: (data) => {
       console.log("data", data);
-      const { message, transaction } = data as mutationReturnType;
-      if (message === "New deposite transaction created") {
-        dispatch({
-          type: "setTransOBJ",
-          payLoad: data,
-        });
+      const {
+        amount,
+        createdAt,
+        transferMethod,
+        fee,
+        transaction,
+        amountToReceive,
+      } = data;
 
-        setStep();
-      }
+      dispatch({
+        type: "setTransOBJ",
+        payLoad: {
+          transferMethod,
+          amountToReceive,
+          transaction,
+        },
+      });
+
+      setStep();
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
-  const { status, session } = useFetchUserData();
+  const { data: session, status } = useSession();
 
   const {
     register,
@@ -162,8 +182,6 @@ function Deposit() {
     getValues,
     formState: { errors, isLoading, isSubmitting, isValidating },
   } = useForm<FormInputs>({});
-
-  console.log("tm", watch("transferMethod"));
 
   watch("transferMethod") !== null &&
     watch("transferMethod") !== undefined &&
@@ -196,7 +214,7 @@ function Deposit() {
   };
 
   if (
-    status === "pending" ||
+    status === "loading" ||
     isLoading ||
     isSubmitting ||
     isValidating ||
@@ -204,8 +222,6 @@ function Deposit() {
   ) {
     return <LoadingSpinner />;
   }
-
-  console.log("transOBJ", transOBJ, "step", step);
 
   return (
     <>

@@ -1,9 +1,10 @@
 import LandingPageHeader from "@/components/LandingPageHeader";
-import { Button } from "@nextui-org/react";
+
 import Image from "next/image";
 import Link from "next/link";
 
 function LandingPage() {
+  console.log("LandingPage");
   return (
     <main
       className="relative h-screen overflow-hidden bg-siteBg bg-cover bg-fixed bg-center"
@@ -37,7 +38,7 @@ function LandingPage() {
       </div>
       <div className="relative z-10 mx-auto flex w-full justify-center px-5 py-5 lg:container xl:px-0">
         <Image
-          className="h-full rounded-lg border-[8px] border-transparent bg-gradient-to-r from-siteGreen to-siteLemon bg-cover bg-center"
+          className="rounded-lg border-[8px] border-transparent bg-gradient-to-r from-siteGreen to-siteLemon bg-cover bg-center"
           src="/app-image.png"
           alt="hero"
           width={1000}

@@ -1,9 +1,5 @@
-import { CustomError } from "@/app/api/send-to-user/route";
-import { WithdrawalDetails } from "@/app/api/withdraw/route";
-import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
+"use client";
 
-import { connectToDatabase } from "@/app/utils/database";
-import User from "@/models/user";
 import { signIn } from "next-auth/react";
 
 //
@@ -16,53 +12,42 @@ type userSignupDetailsType = {
   referralCode?: string;
 };
 
-type userLoginDetailsType = {
-  email: string;
-  password: string;
-};
+import { NextApiRequest, NextApiResponse } from "next";
 
-export type userCryptoDepositDetailsType = {
-  amount: number;
-  transferMethod: CyptoTransferMethodType;
-  transferFee: number;
-  amountToReceive: number;
-  tax: number;
-};
-export type userTransferDetailsType = {
-  reciverEmail: string;
-  amount: number;
-  note?: string;
-  tax: number;
-  amountToReceive: number;
-};
+import { connectToDatabase } from "./database";
+import { userLoginDetailsType } from "@/types";
+import User from "./database/models/user.model";
 
-export type BankWithdrawalDetailsType = {
-  bankName: string;
-  accountNumber: string;
-  accountName: string;
-  amount: number;
-  fee: number;
-  tax: number;
-  deductableAmount: number;
-};
+// Define custom error classes using ES6+ syntax
+class ValidationError extends Error {
+  details: string;
 
-export type PayPalWithdrawalDetailsType = {
-  payPalEmail: string;
-  amount: number;
-  fee: number;
-  tax: number;
-  deductableAmount: number;
-};
+  constructor(details: string) {
+    super(`Validation Error: ${details}`);
+    this.name = "ValidationError";
+    this.details = details;
+  }
+}
 
-export type UserWdrawalDetailsType = {
-  amount: number;
-  deductableAmount: number;
-  tax: number;
-  fee: number;
-  tfMethod: "BTC" | "USDT";
-  walletAddress: string;
-  network?: string;
-};
+class DatabaseError extends Error {
+  query: string;
+
+  constructor(query: string, message: string) {
+    super(`Database Error: ${message}`);
+    this.name = "DatabaseError";
+    this.query = query;
+  }
+}
+
+class NotFoundError extends Error {
+  resource: string;
+
+  constructor(resource: string) {
+    super(`Not Found: ${resource} was not found`);
+    this.name = "NotFoundError";
+    this.resource = resource;
+  }
+}
 
 export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
@@ -120,24 +105,6 @@ export const checkEmail = async (email: string) => {
   }
 };
 
-export const loginUser = async (userDetails: userLoginDetailsType) => {
-  const { email, password } = userDetails;
-
-  try {
-    const res: any = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
-    if (res.error) {
-      throw new Error(res.error);
-    }
-  } catch (error) {
-    throw error as Error;
-  }
-};
-
 function getRandomString(length: number) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -147,57 +114,6 @@ function getRandomString(length: number) {
   }
   return result;
 }
-
-export const getUserTransactions = () => {
-  function getRandomString(length: number) {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length),
-      );
-    }
-    return result;
-  }
-
-  function getRandomDate(start: Date, end: Date) {
-    return new Date(
-      start.getTime() + Math.random() * (end.getTime() - start.getTime()),
-    )
-      .toISOString()
-      .split("T")[0];
-  }
-
-  function getRandomAmount() {
-    return (Math.random() * 1000).toFixed(2);
-  }
-
-  function getRandomFee() {
-    return (Math.random() * 10).toFixed(2);
-  }
-
-  const transactionTypes = [
-    "investment",
-    "deposit",
-    "transfer",
-    "investment bonus",
-    "referral bonus",
-  ];
-  const statuses = ["pending", "success", "error"];
-
-  const accountActivities = Array.from({ length: 35 }, () => ({
-    transactionId: getRandomString(10),
-    transactionType:
-      transactionTypes[Math.floor(Math.random() * transactionTypes.length)],
-    date: getRandomDate(new Date(2023, 0, 1), new Date()),
-    amount: getRandomAmount(),
-    status: statuses[Math.floor(Math.random() * statuses.length)],
-    fee: getRandomFee(),
-  }));
-
-  return accountActivities;
-};
 
 export const generateUniqueTransactionId = (allTransactionsIds: string[]) => {
   let newTransactionId = getRandomString(10);
@@ -221,56 +137,6 @@ export const generateUniqueReferralCode = async () => {
 
     return newReferralCode;
   } catch (error) {}
-};
-
-export const getUser = async (id: string) => {
-  try {
-    const res = await fetch(`/api/user/${id}`, {
-      method: "GET",
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch user data!");
-    }
-    return res.json();
-  } catch (error) {
-    console.log(error);
-
-    throw error as Error;
-  }
-};
-
-export const initiateCyptoDeposit = async (
-  deposit: userCryptoDepositDetailsType,
-  userId: string,
-) => {
-  const { amount, tax, transferMethod, transferFee, amountToReceive } = deposit;
-  try {
-    const res = await fetch(`/api/deposit/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount,
-        userId,
-        transferMethod,
-        transferFee,
-        amountToReceive,
-        tax,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to initiate deposit!");
-    }
-
-    const data = await res.json();
-
-    return data;
-  } catch (error) {
-    throw error as Error;
-  }
 };
 
 export const validateEmail = async (email: string) => {
@@ -298,74 +164,69 @@ export const validateEmail = async (email: string) => {
   }
 };
 
-export const initiateFundsTransfer = async (
-  transferDetails: userTransferDetailsType,
-  userId: string,
-) => {
-  console.log("initiateFundsTransfer fired", transferDetails);
-  try {
-    const res = await fetch(`/api/send-to-user`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...transferDetails,
-        userId,
-      }),
-    });
+// General error handler function compatible with Next.js
+export const handleError = (
+  error: unknown,
+  context?: string,
+  res?: NextApiResponse,
+): never | void => {
+  const errorMessage = (msg: string) => (context ? `[${context}] ${msg}` : msg);
 
-    if (!res.ok) {
-      const data = await res.json();
-      const error = new Error() as CustomError;
-      error.message = data.error;
-      error.field = data.field;
+  if (error instanceof Error) {
+    const formattedMessage = errorMessage(error.message);
 
-      throw error;
+    // Differentiating custom error types
+    if (error instanceof ValidationError) {
+      console.error("Validation Error:", formattedMessage);
+    } else if (error instanceof DatabaseError) {
+      console.error("Database Error:", formattedMessage, "Query:", error.query);
+    } else if (error instanceof NotFoundError) {
+      console.error("Not Found:", formattedMessage);
+    } else {
+      console.error("General Error:", formattedMessage);
     }
 
-    const data = await res.json();
+    console.error("Stack Trace:", error.stack);
 
-    return data;
-  } catch (error) {
-    throw error as CustomError;
-  }
-};
-
-export const initiateWithdrawal = async (
-  withdrawalDetails: WithdrawalDetails,
-  userId: string,
-) => {
-  console.log("initiateWithdrawal fired", withdrawalDetails);
-
-  try {
-    const res = await fetch(`/api/withdraw`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...withdrawalDetails,
-        userId,
-      }),
-    });
-
-    if (!res.ok) {
-      const data = await res.json();
-      const error = new Error() as CustomError;
-      error.message = data.error;
-      error.field = data.field;
-
-      console.log("error thrown", error);
-      throw error;
+    // If the response object is provided, send a JSON response for API routes
+    if (res) {
+      return res.status(500).json({ error: formattedMessage });
     }
 
-    const data = await res.json();
+    // Throw a new error with more context
+    throw new Error(`Error: ${formattedMessage}`);
+  } else if (typeof error === "string") {
+    const formattedMessage = errorMessage(error);
+    console.error("Error:", formattedMessage);
 
-    console.log("data", data);
+    if (res) {
+      return res.status(500).json({ error: formattedMessage });
+    }
 
-    return data;
-  } catch (error) {
-    throw error as CustomError;
+    throw new Error(`Error: ${formattedMessage}`);
+  } else if (typeof error === "object" && error !== null) {
+    try {
+      const errorString = JSON.stringify(error);
+      const formattedMessage = errorMessage(`Unknown error: ${errorString}`);
+      console.error("Unknown object error:", formattedMessage);
+
+      if (res) {
+        return res.status(500).json({ error: formattedMessage });
+      }
+
+      throw new Error(formattedMessage);
+    } catch (stringifyError) {
+      console.error("Failed to stringify the error object:", error);
+      throw new Error("Unknown error: Unable to process error object.");
+    }
+  } else {
+    const formattedMessage = errorMessage("An unexpected error occurred.");
+    console.error("Unexpected error type:", error);
+
+    if (res) {
+      return res.status(500).json({ error: formattedMessage });
+    }
+
+    throw new Error(formattedMessage);
   }
 };

@@ -355,28 +355,3 @@ function WithdrawScreen() {
 }
 
 export default WithdrawScreen;
-
-{
-  /* <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor=""
-                      className="font-dm_sans font-bold text-siteHeadingDark"
-                    >
-                      Bank Name
-                    </label>
-                    <div className="flex items-stretch overflow-hidden rounded-xl border border-siteHeadingDark/25">
-                      <input
-                        type="text"
-                        id=""
-                        className="w-full px-3 py-2 font-dm_sans text-2xl font-semibold focus:border-none focus:outline-none active:border-none active:outline-none"
-                        {...register("bankName", { required: true })}
-                      />
-                    </div>
-
-                    {errors?.bankName && (
-                      <span className="capitalize text-red-500">
-                        {errors?.bankName.message}
-                      </span>
-                    )}
-                  </div> */
-}

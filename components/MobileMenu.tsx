@@ -3,13 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { FiMenu, FiPower, FiUserCheck, FiX } from "react-icons/fi";
-import DashboardMenu from "./DashboardMenu";
-import { signOut } from "next-auth/react";
-import useFetchUserData from "@/hooks/useFetchUserData";
-import { UserData } from "@/app/dashboard/layout";
-import SideBarMenuItem from "./SideBarMenuItem";
-import { useRouter } from "next/navigation";
+import { FiMenu, FiX } from "react-icons/fi";
+
 import LandingMenuContent from "./LandingMenuContent";
 import DashboardMenuContent from "./DashboardMenuContent";
 
@@ -46,7 +41,7 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
       </button>
       <div
         ref={myRef}
-        className={` ${menuOpen ? "flex" : "hidden"} fixed right-0 top-0 h-screen w-full flex-row-reverse bg-black/40 backdrop-blur-sm`}
+        className={` ${menuOpen ? "flex" : "hidden"} fixed right-0 top-0 z-[100] h-screen w-full flex-row-reverse bg-black/40 backdrop-blur-sm`}
       >
         <div
           className={`flex h-screen w-[75%] flex-col justify-between bg-white p-5`}

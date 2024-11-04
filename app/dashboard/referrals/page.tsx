@@ -5,6 +5,7 @@ import { FiCopy, FiGift, FiMessageSquare, FiUserCheck } from "react-icons/fi";
 import useFetchUserData from "@/hooks/useFetchUserData";
 import { UserData } from "@/app/dashboard/layout";
 import { notify } from "@/components/ReferEarnBox";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function Referrals() {
   const { data, error, status } = useFetchUserData();
@@ -14,6 +15,10 @@ function Referrals() {
     copy(window.location.origin + "/signup/" + referralCode);
     console.log("copied");
     notify();
+  }
+
+  if (status === "pending") {
+    return <LoadingSpinner />;
   }
   return (
     <section className="mx-auto mb-10 mt-10 flex w-full max-w-[800px] flex-col gap-20">

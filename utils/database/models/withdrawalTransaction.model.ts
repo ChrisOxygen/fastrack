@@ -1,41 +1,39 @@
-import { Model, Schema, model, Document, models } from "mongoose";
+import { model, models, Schema, Document } from "mongoose";
 
+// TypeScript interface for the WithdrawalTransaction model
 export interface IWithdrawalTransaction extends Document {
-  _id: string;
   withdrawalMethod: "USDT" | "BTC";
   deductableAmount: number;
   tax: number;
   walletAddress: string;
-  network: string;
-  transaction: Schema.Types.ObjectId;
+  network?: string;
+  transaction: string; // Optional reference to Transaction
 }
 
-const withdrawalTransactionSchema = new Schema<IWithdrawalTransaction>(
+const withdrawalTransactionSchema = new Schema(
   {
     withdrawalMethod: {
       type: String,
       enum: ["USDT", "BTC"],
-      required: true,
+      required: [true, "Withdrawal method is required"],
     },
     deductableAmount: {
       type: Number,
-      required: [true, "amount is required"],
+      required: [true, "Deductable amount is required"],
     },
-
     tax: {
       type: Number,
-      required: [true, "tax is required"],
+      required: [true, "Tax is required"],
     },
     walletAddress: {
       type: String,
-      required: [true, "wallet address is required"],
+      required: [true, "Wallet address is required"],
     },
     network: {
       type: String,
       default: "N/A",
-      required: [true, "network is required"],
+      required: [true, "Network is required"],
     },
-
     transaction: {
       type: Schema.Types.ObjectId,
       ref: "Transaction",
@@ -44,8 +42,12 @@ const withdrawalTransactionSchema = new Schema<IWithdrawalTransaction>(
   { timestamps: true },
 );
 
+// Create or retrieve the existing Mongoose model
 const WithdrawalTransaction =
   models.WithdrawalTransaction ||
-  model("WithdrawalTransaction", withdrawalTransactionSchema);
+  model<IWithdrawalTransaction>(
+    "WithdrawalTransaction",
+    withdrawalTransactionSchema,
+  );
 
 export default WithdrawalTransaction;
