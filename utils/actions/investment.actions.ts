@@ -3,9 +3,10 @@
 import { InvestmentTransactionType } from "@/types";
 import { connectToDatabase } from "../database";
 import Investment, { IInvestment } from "../database/models/investment.model";
-import { handleError } from "../services";
+import { handleError, handleServerError } from "../services";
 import { createTransaction } from "./transaction.actions";
 import User from "../database/models/user.model";
+import { INVESTMENT_PLANS } from "@/constants";
 
 export const getInvestments = async () => {
   try {
@@ -26,7 +27,7 @@ export const getInvestments = async () => {
 export const getInvestment = async (id: string) => {
   try {
     await connectToDatabase();
-    const investment = await Investment.findOne({ _id: id });
+    const investment = await Investment.findById(id);
     return investment ? JSON.parse(JSON.stringify(investment)) : null;
   } catch (error) {
     handleError(error, "getInvestment");
@@ -51,21 +52,99 @@ export const getUserInvestments = async (id: string) => {
 export const createInvestment = async (
   investmentDetails: InvestmentTransactionType,
 ) => {
-  const { transactionTier, amount, userId, status, fee, type } =
+  const { investmentPackage, amount, userId, status, fee, type } =
     investmentDetails;
   try {
     await connectToDatabase();
     const newTransaction = await createTransaction(investmentDetails);
+    // gets the investment package returns from the investment package imported from constants
+
+    const ivReturns =
+      amount +
+      (INVESTMENT_PLANS.find(
+        (plan) => plan.packageName.toLocaleLowerCase() === investmentPackage,
+      )!.roiPercent /
+        100) *
+        amount;
+
     const investmentObj = {
-      investmentTier: transactionTier,
+      investmentPackage: investmentPackage,
       amount: amount,
       user: userId,
       status: "running",
-      returns: amount + amount * 0.2,
+      returns: ivReturns,
     };
     const newInvestment = await Investment.create(investmentObj as IInvestment);
     return newInvestment ? JSON.parse(JSON.stringify(newInvestment)) : null;
   } catch (error) {
-    handleError(error, "createInvestment");
+    // handleError(error, "createInvestment");
+    // handleServerError(error, "createInvestment");
+
+    throw error;
   }
 };
+
+// export const updateInvestments = async () => {
+//   try {
+//     await connectToDatabase();
+//     const updatedInvestment = await Investment.updateMany(
+//       { status: "running" },
+//       { status: processing },
+//       { new: true },
+//     );
+//     return updatedInvestment
+//       ? JSON.parse(JSON.stringify(updatedInvestment))
+//       : null;
+//   } catch (error) {
+//     handleError(error, "updateInvestment");
+//   }
+// };
+
+const investmentPackages = {
+  Sapphire: { durationDays: 2 },
+  Emerald: { durationDays: 7 },
+  Diamond: { durationDays: 30 },
+};
+
+export async function updateInvestmentsBasedOnDuration(id: string) {
+  console.log("updateInvestmentsBasedOnDuration fired", id);
+  try {
+    // Get the current date in milliseconds
+    const currentDate = new Date().getTime();
+
+    // Prepare an array of conditions based on each investment package's duration
+    const conditions = Object.entries(investmentPackages).map(
+      ([packageName, { durationDays }]) => {
+        // Calculate the date before which the investment should have been created to be marked as "completed"
+        const cutoffDate = new Date(
+          currentDate - durationDays * 24 * 60 * 60 * 1000,
+        );
+        return {
+          investmentPackage: packageName.toLocaleLowerCase(),
+          createdAt: { $lte: cutoffDate },
+        };
+      },
+    );
+
+    console.log("conditions", conditions);
+
+    const resuls = await Investment.find({
+      user: id,
+    }).updateMany(
+      {
+        status: "running",
+        user: id,
+        $or: conditions,
+      },
+      { $set: { status: "processing" } },
+    );
+
+    console.log("result", resuls);
+
+    // console.log(
+    //   `${result.modifiedCount} investment(s) updated to "completed" based on duration.`,
+    // );
+  } catch (error) {
+    console.error("Error updating investments:", error);
+  }
+}

@@ -9,7 +9,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 
 import { useSession } from "next-auth/react";
-import { loginUser } from "@/utils/actions/user.actions";
+import { loginUser } from "@/utils/services";
+// import { loginUser } from "@/utils/actions/user.actions";
 
 type LoginInputs = {
   email: string;
@@ -20,7 +21,7 @@ function LoginForm() {
   const {
     register,
     handleSubmit,
-    watch,
+    setError,
     formState: { errors },
   } = useForm<LoginInputs>();
 
@@ -33,12 +34,22 @@ function LoginForm() {
     onSuccess: () => {
       router.push("/dashboard");
     },
+    onError: (error) => {
+      if (
+        error.message === "Invalid password" ||
+        error.message === "user not found"
+      ) {
+        setError("root", { message: "Invalid Cridentials" });
+      }
+    },
   });
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
-    console.log(data);
-
     mutate(data);
   };
+
+  if (session) {
+    router.push("/dashboard");
+  }
 
   return (
     <main
@@ -74,6 +85,11 @@ function LoginForm() {
           <form action="" className="flex w-full flex-col gap-5">
             <Input type="email" label="Email" {...register("email")} />
             <Input type="password" label="password" {...register("password")} />
+            {errors?.root && (
+              <span className="text-red-500">
+                {errors.root && errors.root.message}
+              </span>
+            )}
 
             <Button
               className="rounded-lg bg-siteGreen py-2 font-bold text-siteLemon"

@@ -8,6 +8,9 @@ import { BiCheckCircle, BiCopy } from "react-icons/bi";
 import Link from "next/link";
 import copy from "copy-to-clipboard";
 import { notify } from "@/components/ReferEarnBox";
+import { useQuery } from "@tanstack/react-query";
+import { getTransaction } from "@/utils/actions/transaction.actions";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function getTransactionTitle(type: string) {
   switch (type) {
@@ -53,18 +56,28 @@ function getStatusColor(status: string) {
 }
 
 function Transaction() {
-  const { data, error, status } = useFetchUserData();
-
   const router = useRouter();
 
   const { transactionId } = useParams();
 
-  const { email, firstName, lastName, transactions, referralCode, balance } =
-    data as UserData;
+  const {
+    data: transaction,
+    error,
+    status,
+  } = useQuery({
+    queryKey: ["transaction"],
+    queryFn: () => {
+      return getTransaction({ transId: transactionId as string });
+    },
+  });
 
-  const transaction = transactions.find(
-    (transaction) => transaction.transactionId === transactionId,
-  );
+  if (status === "pending") {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    console.log("error", error);
+  }
 
   if (!transaction) {
     router.push("/dashboard");
@@ -163,7 +176,7 @@ function Transaction() {
               Transaction ID
             </span>
             <div className="flex items-center gap-2 text-lg font-black text-black">
-              <span className="">#3ujhh456</span>
+              <span className="">{id}</span>
               <button
                 className="text-2xl text-green-600"
                 onClick={() => handleCopy()}

@@ -1,46 +1,83 @@
+import { INVESTMENT_PLANS } from "@/constants";
+import { formatToUSD } from "@/utils/services";
+import clsx from "clsx";
+import { stat } from "fs";
+import Link from "next/link";
+
 type InvestmentRowProps = {
   investment: {
-    investmentTier: string;
+    investmentPackage: string;
     amount: number;
     status: string;
     returns: number;
     createdAt: string;
+    _id: string;
   };
   num: number;
 };
 
-// 48 hours from createdAt is end date
+const getDurationDays = (packageName: string) => {
+  return INVESTMENT_PLANS.find(
+    (plan) => plan.packageName.toLocaleLowerCase() === packageName,
+  )!.durationDays;
+};
 
-const endDate = (createdAt: string) => {
+const endDate = (createdAt: string, duration: number) => {
   const date = new Date(createdAt);
-  date.setDate(date.getDate() + 2);
+  date.setDate(date.getDate() + duration);
   //   return date.toDateString();
   // return dat without year
   return date.toDateString().slice(0, -5);
 };
 
 function InvestmentRow({ investment, num }: InvestmentRowProps) {
-  const { investmentTier, amount, status, returns, createdAt } = investment;
-  console.log(endDate(createdAt));
+  const { amount, investmentPackage, status, createdAt, _id } = investment;
+
+  console.log("investment", investment);
+
+  const packageDurationDays = getDurationDays(investmentPackage);
+
+  const roiP = INVESTMENT_PLANS.find(
+    (plan) => plan.packageName.toLocaleLowerCase() === investmentPackage,
+  )!.roiPercent;
+
+  const ivLink =
+    status === "running"
+      ? `/dashboard/investment/${_id}`
+      : status === "completed"
+        ? `/dashboard/investment/completed/${_id}`
+        : `/dashboard/investment/processing/${_id}`;
+
   return (
-    <div className="grid grid-cols-[25px_minmax(40px,100px)_minmax(40px,60px)_minmax(40px,60px)_minmax(60px,80px)_minmax(70px,90px)] justify-between">
-      <span className="text-sm text-siteHeadingDark/60">#{num}</span>
-      <span className="text-sm text-siteHeadingDark/60">
-        {investment.investmentTier}
-      </span>
-      <span className="text-sm text-siteHeadingDark/60">
-        {investment.amount}
-      </span>
-      <span className="text-sm text-siteHeadingDark/60">
-        {investment.returns}
-      </span>
-      <span className="text-sm text-siteHeadingDark/60">
-        {investment.status}
-      </span>
-      <span className="text-sm text-siteHeadingDark/60">
-        {endDate(createdAt)}
-      </span>
-    </div>
+    <Link href={ivLink} className="border-b last:border-none even:bg-slate-50">
+      <div className="grid grid-cols-[25px_minmax(40px,100px)_minmax(80px,120px)_minmax(80px,120px)_minmax(60px,80px)_minmax(70px,90px)] items-center justify-between p-2">
+        <span className="text-sm text-siteHeadingDark/60">#{num}</span>
+        <span className="text-xs font-bold uppercase text-siteHeadingDark/70">
+          {investmentPackage}
+        </span>
+        <span className="justify-self-center text-xs font-semibold text-green-600">
+          {formatToUSD(amount)}
+        </span>
+        <span className="justify-self-center text-xs font-semibold text-siteHeadingDark/60">
+          Up to {roiP}%
+        </span>
+        <span
+          className={clsx(
+            "grid place-items-center justify-self-center rounded-xl border px-2 py-[2px] text-xs uppercase",
+            status === "running" &&
+              "border-orange-200 bg-orange-100 text-orange-500",
+            status === "completed" &&
+              "border-green-200 bg-green-100 text-green-500",
+            status === "pending" && "border-gray-200 bg-gray-100 text-gray-500",
+          )}
+        >
+          {investment.status}
+        </span>
+        <span className="justify-self-center text-sm text-siteHeadingDark/60">
+          {endDate(createdAt, packageDurationDays)}
+        </span>
+      </div>
+    </Link>
   );
 }
 

@@ -42,17 +42,16 @@ function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
     error,
     status: transactionStatus,
   } = useQuery({
-    queryKey: ["user", "transaction"],
+    queryKey: ["transaction"],
     queryFn: () => {
-      return getTransaction(id);
+      return getTransaction({ id });
     },
   });
 
   if (transactionStatus === "pending") return <LoadingSpinner />;
 
-  const { transactionId, createdAt, amount, fee } = transaction!;
-
   console.log("transOBJ", transOBJ, "transaction", transaction);
+  const { transactionId, createdAt, amount, fee } = transaction!;
 
   // convert createdAt to date and add 24 hours
   const date = new Date(createdAt).getTime() + 24 * 60 * 60 * 1000;

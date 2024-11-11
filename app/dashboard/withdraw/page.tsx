@@ -2,23 +2,19 @@
 
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
-import { Checkbox, Radio, RadioGroup } from "@nextui-org/react";
+import { Radio, RadioGroup } from "@nextui-org/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Reducer, use, useEffect, useReducer, useState } from "react";
+import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { FiX } from "react-icons/fi";
-import {
-  BankWithdrawalDetailsType,
-  initiateWithdrawal,
-  PayPalWithdrawalDetailsType,
-} from "@/utils/services";
+
 import ConfirmWithdrawalTrans from "@/components/ConfirmWithdrawalTrans";
 import TransactionSuccess from "@/components/TransactionSuccess";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import StepDisplay from "@/components/StepDisplay";
-import { WithdrawalDetails } from "@/app/api/withdraw/route";
-import { set } from "mongoose";
+
 import clsx from "clsx";
+import { WithdrawalDetails } from "@/types";
+import { createWithdrawalTransaction } from "@/utils/actions/transaction.actions";
 
 type FormInputs = {
   amount: number;
@@ -45,7 +41,10 @@ function WithdrawScreen() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (details: WithdrawalDetails) => {
-      return initiateWithdrawal(details, session?.user.id!);
+      return createWithdrawalTransaction({
+        ...details,
+        userId: session?.user.id!,
+      });
     },
     onError: (error) => {
       const { message, field } = error as any;
@@ -53,6 +52,8 @@ function WithdrawScreen() {
       setStep(1);
     },
     onSuccess: (data) => {
+      console.log(data);
+
       const { transactionId } = data;
       setTransID(transactionId);
 
@@ -69,12 +70,14 @@ function WithdrawScreen() {
     getValues,
     control,
     setValue,
+    reset,
 
     setError,
     formState: { errors, isLoading, isSubmitting, isValidating },
   } = useForm<FormInputs>();
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    console.log(data);
     setInputValues(data);
 
     setStep(2);
@@ -113,19 +116,14 @@ function WithdrawScreen() {
 
   const deductable = +watch("amount") + getValues("tax") + getValues("fee");
 
-  if (
-    status === "pending" ||
-    isLoading ||
-    isSubmitting ||
-    isValidating ||
-    isPending
-  ) {
+  if (isLoading || isSubmitting || isValidating || isPending) {
     return <LoadingSpinner />;
   }
 
   const resetState = () => {
     setStep(1);
     setInputValues(null);
+    reset();
   };
 
   const submitAfterConfirmation = () => {

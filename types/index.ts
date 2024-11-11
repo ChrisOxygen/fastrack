@@ -1,7 +1,7 @@
 import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
 
 export type InvestmentTransactionType = {
-  transactionTier: "silver" | "gold";
+  investmentPackage: "sapphire" | "emerald" | "diamond";
   amount: number;
   userId: string;
   status: "pending" | "success" | "error";

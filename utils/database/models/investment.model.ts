@@ -2,9 +2,9 @@ import { model, models, Schema, Document } from "mongoose";
 
 // TypeScript interface matching the Mongoose schema style
 export interface IInvestment extends Document {
-  investmentTier: "silver" | "gold" | "platinum";
+  investmentPackage: "sapphire" | "emerald" | "diamond";
   amount: number;
-  status: "running" | "completed";
+  status: "running" | "completed" | "processing" | "cancelled";
   returns?: number;
 
   user: string;
@@ -12,7 +12,7 @@ export interface IInvestment extends Document {
 
 const investmentSchema = new Schema(
   {
-    investmentTier: {
+    investmentPackage: {
       type: String,
       required: true,
     },

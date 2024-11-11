@@ -2,7 +2,7 @@ import { model, models, Schema, Document } from "mongoose";
 
 // TypeScript interface for the DepositTransaction model
 export interface IDepositTransaction extends Document {
-  amountToRevive: number;
+  amountToReceive: number;
   tax: number;
   transferMethod: string;
   transaction?: string;
@@ -10,7 +10,7 @@ export interface IDepositTransaction extends Document {
 
 const depositTransactionSchema = new Schema<IDepositTransaction>(
   {
-    amountToRevive: {
+    amountToReceive: {
       type: Number,
       required: [true, "Amount to revive is required"],
     },

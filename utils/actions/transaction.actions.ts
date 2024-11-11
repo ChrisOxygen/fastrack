@@ -1,23 +1,19 @@
 "use server";
 
 import { connectToDatabase } from "../database";
-import { ObjectId } from "mongodb";
-import { generateUniqueTransactionId, handleError } from "../services";
-import Transaction, {
-  ITransaction,
-} from "../database/models/transaction.model";
+import { handleError } from "../services";
+import Transaction from "../database/models/transaction.model";
 import {
   CreateTransactionType,
-  CustomError,
   DepositTransactionType,
   WithdrawalDetails,
 } from "@/types";
 import User from "../database/models/user.model";
 import { TransactionType } from "@/app/dashboard/layout";
-import Deposit from "@/app/dashboard/deposit/page";
+
 import DepositTransaction from "../database/models/depositTransaction.model";
 import WithdrawalTransaction from "../database/models/withdrawalTransaction.model";
-import TransferTransaction from "../database/models/transferTransaction.model";
+import ShortUniqueId from "short-unique-id";
 
 const TRANSACTIONS_PER_PAGE = 10;
 
@@ -34,10 +30,25 @@ export const getAlltransactions = async () => {
   }
 };
 
-export const getTransaction = async (id: string) => {
+export const getTransaction = async ({
+  transId,
+  id,
+}: {
+  transId?: string;
+  id?: string;
+}) => {
+  console.log("getTransaction fired", id, transId);
   try {
     await connectToDatabase();
-    const transaction = await Transaction.findOne({ _id: id });
+    let transaction;
+    if (transId) {
+      transaction = await Transaction.findOne({ transactionId: transId });
+    }
+    if (id) {
+      transaction = await Transaction.findById(id);
+    }
+
+    console.log("transaction", transaction);
     return transaction ? JSON.parse(JSON.stringify(transaction)) : null;
   } catch (error) {
     handleError(error, "getTransaction");
@@ -136,21 +147,20 @@ export const getUserOverview = async (id: string) => {
 export const createTransaction = async (
   transactionDetails: CreateTransactionType,
 ) => {
+  console.log("transactionDetails", transactionDetails);
   const { type, amount, status, fee, userId } = transactionDetails;
   try {
     await connectToDatabase();
 
     const user = await User.findById({ _id: userId });
 
-    const transactions = await getAlltransactions();
+    if (user.balance < amount + fee) {
+      throw new Error("Insufficient balance");
+    }
 
-    const allTransactionIds = transactions.map((transaction: ITransaction) => {
-      return transaction.transactionId;
-    });
+    const uid = new ShortUniqueId();
 
-    const uniqueTransactionId = generateUniqueTransactionId(
-      allTransactionIds as string[],
-    );
+    const uniqueTransactionId = `TR-${uid.stamp(10)}`;
 
     const transactionObj = {
       transactionId: uniqueTransactionId,
@@ -161,18 +171,29 @@ export const createTransaction = async (
       user: user._id,
     };
 
-    if (status === "success") {
-      if (type === "investment") {
+    const newTransaction = await Transaction.create(transactionObj);
+
+    if (newTransaction.status === "success") {
+      if (newTransaction.type === "investment") {
         user.balance -= amount;
+      }
+      if (type === "signup bonus") {
+        user.balance += amount;
+      }
+    }
+    if (newTransaction.status === "pending") {
+      if (newTransaction.type === "withdrawal") {
+        user.balance -= amount + fee;
       }
     }
 
     await user.save();
 
-    const newTransaction = await Transaction.create(transactionObj);
     return newTransaction ? JSON.parse(JSON.stringify(newTransaction)) : null;
   } catch (error) {
-    handleError(error, "createTransaction");
+    // handleError(error, "createTransaction");
+
+    throw error;
   }
 };
 
@@ -194,7 +215,7 @@ export const createDepositTransaction = async (
 
     const newTransaction = await createTransaction(transactionDetails);
     const newDepositTransaction = await DepositTransaction.create({
-      amountToRevive: amountToReceive,
+      amountToReceive: amountToReceive,
       tax: tax,
       transferMethod: transferMethod,
       transaction: newTransaction._id,
@@ -223,6 +244,8 @@ export const createWithdrawalTransaction = async (
     userId,
   } = withdrawalDetails;
 
+  console.log("withdrawalDetails", withdrawalDetails);
+
   const transactionDetails = {
     type: "withdrawal",
     amount: amount,
@@ -245,7 +268,12 @@ export const createWithdrawalTransaction = async (
     });
 
     return newWithdrawalTransaction
-      ? JSON.parse(JSON.stringify(newWithdrawalTransaction))
+      ? JSON.parse(
+          JSON.stringify({
+            ...newWithdrawalTransaction,
+            transactionId: newTransaction.transactionId,
+          }),
+        )
       : null;
   } catch (error) {
     handleError(error, "createWithdrawalTransaction");

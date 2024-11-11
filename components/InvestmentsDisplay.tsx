@@ -1,98 +1,60 @@
 import clsx from "clsx";
 import React, { useState } from "react";
 import InvestmentRow from "./InvestmentRow";
+import IvFilters from "./IvFilters";
 
 function InvestmentsDisplay({ investments }: { investments: any }) {
   const [filters, setFilters] = useState({
     isRunning: false,
     isCompleted: false,
+    isProcessing: false,
   });
 
-  const { isRunning, isCompleted } = filters;
+  const { isRunning, isCompleted, isProcessing } = filters;
 
-  const toggleFilter = (filter: string) => {
-    if (filter === "isRunning") {
-      setFilters((prev) => ({ ...prev, isRunning: !prev.isRunning }));
-    }
-    if (filter === "isCompleted") {
-      setFilters((prev) => ({ ...prev, isCompleted: !prev.isCompleted }));
-    }
-  };
+  const filteredInvestments = investments.filter((investment: any) => {
+    if (isRunning && investment.status === "running") return true;
+    if (isCompleted && investment.status === "completed") return true;
+    if (isProcessing && investment.status === "processing") return true;
+    return false;
+  });
 
-  console.log("filters", filters);
+  const filterActive = isRunning || isCompleted || isProcessing;
+
+  const investmentsToDisplay = filterActive ? filteredInvestments : investments;
 
   return (
     <div className="">
       <div className="flex w-full flex-col gap-4 p-5">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <h3 className="font-dm_sans font-bold uppercase text-siteHeadingDark">
             Active Investments
           </h3>
-          <div className="flex items-center gap-3">
-            <h3 className="font-dm_sans uppercase text-siteHeadingDark/70">
-              Filters:
-            </h3>
-            <button
-              className={clsx(
-                "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
-                isRunning ? "opacity-100" : "opacity-50",
-              )}
-              onClick={() => toggleFilter("isRunning")}
-            >
-              <span
-                className={clsx(
-                  "block size-2 rounded-full",
-                  isRunning ? "bg-orange-500" : "bg-gray-500",
-                )}
-              ></span>
-              <span className={` ${isRunning ? "opacity-100" : "opacity-50"}`}>
-                Running
-              </span>
-            </button>
-            <button
-              className={clsx(
-                "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
-                isCompleted ? "opacity-100" : "opacity-50",
-              )}
-              onClick={() => toggleFilter("isCompleted")}
-            >
-              <span
-                className={clsx(
-                  "block size-2 rounded-full",
-                  isCompleted ? "bg-green-500" : "bg-gray-500",
-                )}
-              ></span>
-              <span
-                className={` ${isCompleted ? "opacity-100" : "opacity-50"}`}
-              >
-                completed
-              </span>
-            </button>
-          </div>
+          <IvFilters filters={filters} setFilters={setFilters} />
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="grid grid-cols-[25px_minmax(40px,100px)_minmax(40px,60px)_minmax(30px,50px)_minmax(60px,80px)_minmax(70px,90px)] justify-between">
-            <span className="text-sm uppercase text-siteHeadingDark/60">
+        <div className="flex flex-col gap-1 overflow-hidden rounded-xl border">
+          <div className="grid grid-cols-[25px_minmax(40px,100px)_minmax(80px,120px)_minmax(80px,120px)_minmax(60px,80px)_minmax(70px,90px)] items-center justify-between bg-slate-100 px-2 py-[5px]">
+            <span className="text-xs uppercase text-siteHeadingDark/60">
               No.
             </span>
-            <span className="text-sm uppercase text-siteHeadingDark/60">
-              Tier
+            <span className="text-xs font-semibold uppercase text-siteHeadingDark">
+              Package
             </span>
-            <span className="text-sm uppercase text-siteHeadingDark/60">
+            <span className="justify-self-center text-xs font-semibold uppercase text-siteHeadingDark">
               Amount
             </span>
-            <span className="text-sm uppercase text-siteHeadingDark/60">
+            <span className="justify-self-center text-xs font-semibold uppercase text-siteHeadingDark">
               ROI(%)
             </span>
-            <span className="text-sm uppercase text-siteHeadingDark/60">
+            <span className="justify-self-center text-xs font-semibold uppercase text-siteHeadingDark">
               Status
             </span>
-            <span className="text-sm uppercase text-siteHeadingDark/60">
+            <span className="justify-self-center text-xs font-semibold uppercase text-siteHeadingDark">
               End Date
             </span>
           </div>
           <div className="flex flex-col">
-            {investments.map((investment: any, index: number) => (
+            {investmentsToDisplay.map((investment: any, index: number) => (
               <InvestmentRow
                 key={index}
                 investment={investment}
@@ -102,8 +64,6 @@ function InvestmentsDisplay({ investments }: { investments: any }) {
           </div>
         </div>
       </div>
-      <div className="">Invest</div>
-      <div className="">Invest</div>
     </div>
   );
 }

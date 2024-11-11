@@ -2,18 +2,20 @@
 
 import { createTransaction, getUserTransactions } from "./transaction.actions";
 import bcrypt from "bcryptjs";
-import { generateUniqueReferralCode, handleError } from "../services";
+import { handleError } from "../services";
 import { connectToDatabase } from "../database";
 import User from "../database/models/user.model";
 import { ErrorWithMessageAndStatus } from "@/app/api/auth/[...nextauth]/route";
-import { userLoginDetailsType } from "@/types";
-import { signIn } from "next-auth/react";
+import ShortUniqueId from "short-unique-id";
+import { updateInvestmentsBasedOnDuration } from "./investment.actions";
 
 export const getUserData = async (id: string) => {
   try {
     await connectToDatabase();
 
     const currentUser = await User.findById(id);
+
+    await updateInvestmentsBasedOnDuration(id);
 
     const userObj = {
       email: currentUser.email,
@@ -35,6 +37,7 @@ export const signupNewUser = async (userDetails: {
   password: string;
   referralCode?: string;
 }) => {
+  console.log("signupNewUser fired", userDetails);
   const {
     firstName,
     lastName,
@@ -47,6 +50,8 @@ export const signupNewUser = async (userDetails: {
 
     const existingUser = await User.findOne({ email });
 
+    console.log("existingUser", existingUser);
+
     if (existingUser) {
       const error = new Error() as ErrorWithMessageAndStatus;
       error.message = "User exists already!";
@@ -56,6 +61,8 @@ export const signupNewUser = async (userDetails: {
 
     const hashedPw = await bcrypt.hash(password, 12);
 
+    console.log("hashedPw", hashedPw);
+
     if (!hashedPw) {
       const error = new Error() as ErrorWithMessageAndStatus;
       error.message = "Password hashing failed!";
@@ -63,14 +70,8 @@ export const signupNewUser = async (userDetails: {
       throw error;
     }
 
-    const userReferralCode = await generateUniqueReferralCode();
-
-    if (!userReferralCode) {
-      const error = new Error() as ErrorWithMessageAndStatus;
-      error.message = "Referral code generation failed!";
-      error.status = 500;
-      throw error;
-    }
+    const uid = new ShortUniqueId();
+    const userReferralCode = uid.stamp(10);
 
     const newUser = await User.create({
       firstName,
@@ -80,6 +81,8 @@ export const signupNewUser = async (userDetails: {
       referralCode: userReferralCode,
     });
 
+    console.log("newUserr", newUser);
+
     const signUpBonus = await createTransaction({
       type: "signup bonus",
       amount: 100,
@@ -87,6 +90,8 @@ export const signupNewUser = async (userDetails: {
       fee: 0,
       userId: newUser._id,
     });
+
+    console.log("signUpBonus", signUpBonus);
 
     if (referrersReferralCode) {
       const referrer = await User.findOne({
@@ -105,22 +110,6 @@ export const signupNewUser = async (userDetails: {
 
     return newUser ? JSON.parse(JSON.stringify(newUser)) : null;
   } catch (error) {
-    handleError(error, "signupNewUser");
+    throw error as Error;
   }
-};
-
-export const loginUser = async (userDetails: userLoginDetailsType) => {
-  const { email, password } = userDetails;
-
-  console.log("loginUser fired", userDetails);
-
-  await signIn("credentials", {
-    email,
-    password,
-    redirect: false,
-  });
-  // try {
-  // } catch (error) {
-  //   handleError(error, "loginUser");
-  // }
 };

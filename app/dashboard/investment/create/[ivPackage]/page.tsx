@@ -29,15 +29,45 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createInvestment } from "@/utils/actions/investment.actions";
 import { InvestmentTransactionType } from "@/types";
 import useFetchUserData from "@/hooks/useFetchUserData";
+import { INVESTMENT_PLANS } from "@/constants";
+import { formatToUSD } from "@/utils/services";
+import { set } from "mongoose";
 
-const formSchema = z.object({
-  transactionTier: z.enum(["silver", "gold"]),
-  amount: z.coerce.number().min(50).lt(100),
-});
+const formSchema = z
+  .object({
+    investmentPackage: z.enum(["sapphire", "emerald", "diamond"]),
+    amount: z.coerce.number(),
+  })
+  .refine(
+    (data) => {
+      const { investmentPackage, amount } = data;
+
+      if (investmentPackage === "sapphire" && amount < 100) {
+        return false;
+      }
+
+      if (investmentPackage === "emerald" && amount < 5000) {
+        return false;
+      }
+
+      if (investmentPackage === "diamond" && amount < 20000) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message:
+        "Amount does not meet the minimum requirement for the selected investment package",
+      path: ["amount"],
+    },
+  );
 
 function CreateInvestment() {
   const { session, status } = useFetchUserData();
-  const { investmentTier } = useParams();
+  const { ivPackage } = useParams<{
+    ivPackage: "sapphire" | "emerald" | "diamond";
+  }>();
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -46,7 +76,14 @@ function CreateInvestment() {
     mutationFn: (formData: InvestmentTransactionType) => {
       return createInvestment(formData);
     },
-    onError: (error) => {},
+    onError: (error) => {
+      if (error && error.message === "Insufficient balance") {
+        form.setError("amount", {
+          message: "Insufficient balance",
+        });
+        return;
+      }
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
       router.push("/dashboard/investment");
@@ -56,8 +93,8 @@ function CreateInvestment() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      transactionTier: investmentTier
-        ? (investmentTier as "silver" | "gold")
+      investmentPackage: ivPackage
+        ? (ivPackage as "sapphire" | "emerald" | "diamond")
         : undefined,
     },
   });
@@ -78,34 +115,44 @@ function CreateInvestment() {
     mutate(investmentDetails);
   }
 
-  console.log(investmentTier);
+  if (!["sapphire", "emerald", "diamond"].includes(ivPackage)) {
+    return router.push("/dashboard/investment");
+  }
 
   if (status === "pending") {
     return <div>Loading...</div>;
   }
+
+  const getMinimumAmount = (packageName: string) => {
+    return packageName === "sapphire"
+      ? formatToUSD(100)
+      : packageName === "emerald"
+        ? formatToUSD(5000)
+        : formatToUSD(20000);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="transactionTier"
+          name="investmentPackage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Transaction Tier</FormLabel>
+              <FormLabel>InvestMent Package</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a Transaction Tier" />
+                    <SelectValue placeholder="Select an InvestMent Package" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="silver">silver</SelectItem>
-                  <SelectItem value="gold">gold</SelectItem>
+                  <SelectItem value="sapphire">sapphire</SelectItem>
+                  <SelectItem value="emerald">emerald</SelectItem>
+                  <SelectItem value="diamond">diamond</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                You can manage email addresses in your{" "}
-              </FormDescription>
+
               <FormMessage />
             </FormItem>
           )}
@@ -120,7 +167,8 @@ function CreateInvestment() {
                 <Input placeholder="50" {...field} />
               </FormControl>
               <FormDescription>
-                Enter the amount you wish to invest, $50 min.
+                Enter the amount you wish to invest.{" "}
+                {getMinimumAmount(form.watch("investmentPackage"))} minimum
               </FormDescription>
               <FormMessage />
             </FormItem>

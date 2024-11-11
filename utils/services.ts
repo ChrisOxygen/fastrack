@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import { revalidatePath } from "next/cache";
 
 //
 
@@ -48,6 +49,29 @@ class NotFoundError extends Error {
     this.resource = resource;
   }
 }
+
+export const loginUser = async (userDetails: userLoginDetailsType) => {
+  const { email, password } = userDetails;
+
+  console.log("loginUser fired", userDetails);
+
+  try {
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    console.log("res", res);
+
+    if (res && !res.ok) {
+      throw new Error(res.error!);
+    }
+  } catch (error) {
+    throw error as Error;
+    // handleError(error, "loginUser");
+  }
+};
 
 export const signupNewUser = async (userDetails: userSignupDetailsType) => {
   console.log("signupNewUser fired", userDetails);
@@ -103,40 +127,6 @@ export const checkEmail = async (email: string) => {
   } catch (error) {
     throw error as Error;
   }
-};
-
-function getRandomString(length: number) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-
-export const generateUniqueTransactionId = (allTransactionsIds: string[]) => {
-  let newTransactionId = getRandomString(10);
-  while (allTransactionsIds.includes(newTransactionId)) {
-    newTransactionId = getRandomString(10);
-  }
-
-  return newTransactionId;
-};
-export const generateUniqueReferralCode = async () => {
-  try {
-    await connectToDatabase();
-
-    const users = await User.find();
-
-    const allReferralCodes = users.map((user) => user.referralCode);
-    let newReferralCode = getRandomString(10);
-    while (allReferralCodes.includes(newReferralCode)) {
-      newReferralCode = getRandomString(10);
-    }
-
-    return newReferralCode;
-  } catch (error) {}
 };
 
 export const validateEmail = async (email: string) => {
@@ -229,4 +219,65 @@ export const handleError = (
 
     throw new Error(formattedMessage);
   }
+};
+
+export function getReadableDuration(targetDate: Date): string {
+  const now = new Date();
+  const diff = targetDate.getTime() - now.getTime();
+
+  if (diff <= 0) return "Expired";
+
+  const seconds = Math.floor((diff / 1000) % 60);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days} day${days > 1 ? "s" : ""}`);
+  if (hours > 0) parts.push(`${hours} hour${hours > 1 ? "s" : ""}`);
+  if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
+  if (seconds > 0) parts.push(`${seconds} second${seconds > 1 ? "s" : ""}`);
+
+  return parts.join(", ");
+}
+
+export function formatToUSD(amount: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(amount);
+}
+
+export const handleServerError = (
+  error: unknown,
+  context?: string,
+): { error: string; code: number } => {
+  const errorMessage = (msg: string) => (context ? `[${context}] ${msg}` : msg);
+
+  let formattedMessage: string;
+  let statusCode = 500; // Default to internal server error
+
+  if (error instanceof Error) {
+    formattedMessage = errorMessage(error.message);
+
+    if (error instanceof ValidationError) {
+      statusCode = 400; // Bad request
+      console.error("Validation Error:", formattedMessage);
+    } else if (error instanceof NotFoundError) {
+      statusCode = 404; // Not found
+      console.error("Not Found:", formattedMessage);
+    } else {
+      console.error("General Error:", formattedMessage);
+    }
+  } else if (typeof error === "string") {
+    formattedMessage = errorMessage(error);
+    console.error("Error:", formattedMessage);
+  } else {
+    formattedMessage = errorMessage("Unknown error occurred.");
+    console.error("Unknown error type:", error);
+  }
+
+  // Return error response (instead of using res, return an object)
+  return { error: formattedMessage, code: statusCode };
 };
