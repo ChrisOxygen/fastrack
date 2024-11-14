@@ -84,27 +84,11 @@ export const createInvestment = async (
   }
 };
 
-// export const updateInvestments = async () => {
-//   try {
-//     await connectToDatabase();
-//     const updatedInvestment = await Investment.updateMany(
-//       { status: "running" },
-//       { status: processing },
-//       { new: true },
-//     );
-//     return updatedInvestment
-//       ? JSON.parse(JSON.stringify(updatedInvestment))
-//       : null;
-//   } catch (error) {
-//     handleError(error, "updateInvestment");
-//   }
+// const investmentPackages = {
+//   Sapphire: { durationDays: 2 },
+//   Emerald: { durationDays: 7 },
+//   Diamond: { durationDays: 30 },
 // };
-
-const investmentPackages = {
-  Sapphire: { durationDays: 2 },
-  Emerald: { durationDays: 7 },
-  Diamond: { durationDays: 30 },
-};
 
 export async function updateInvestmentsBasedOnDuration(id: string) {
   console.log("updateInvestmentsBasedOnDuration fired", id);
@@ -113,18 +97,29 @@ export async function updateInvestmentsBasedOnDuration(id: string) {
     const currentDate = new Date().getTime();
 
     // Prepare an array of conditions based on each investment package's duration
-    const conditions = Object.entries(investmentPackages).map(
-      ([packageName, { durationDays }]) => {
-        // Calculate the date before which the investment should have been created to be marked as "completed"
-        const cutoffDate = new Date(
-          currentDate - durationDays * 24 * 60 * 60 * 1000,
-        );
-        return {
-          investmentPackage: packageName.toLocaleLowerCase(),
-          createdAt: { $lte: cutoffDate },
-        };
-      },
-    );
+    // const conditions = Object.entries(INVESTMENT_PLANS).map(
+    //   ([packageName, { durationDays }]) => {
+    //     // Calculate the date before which the investment should have been created to be marked as "completed"
+    //     const cutoffDate = new Date(
+    //       currentDate - durationDays * 24 * 60 * 60 * 1000,
+    //     );
+    //     return {
+    //       investmentPackage: packageName.toLocaleLowerCase(),
+    //       createdAt: { $lte: cutoffDate },
+    //     };
+    //   },
+    // );
+
+    const conditions = INVESTMENT_PLANS.map((plan) => {
+      // Calculate the date before which the investment should have been created to be marked as "completed"
+      const cutoffDate = new Date(
+        currentDate - plan.durationDays * 24 * 60 * 60 * 1000,
+      );
+      return {
+        investmentPackage: plan.packageName.toLocaleLowerCase(),
+        createdAt: { $lte: cutoffDate },
+      };
+    });
 
     console.log("conditions", conditions);
 
@@ -144,6 +139,42 @@ export async function updateInvestmentsBasedOnDuration(id: string) {
     // console.log(
     //   `${result.modifiedCount} investment(s) updated to "completed" based on duration.`,
     // );
+  } catch (error) {
+    console.error("Error updating investments:", error);
+  }
+}
+
+export async function updateSingleInvestmentBasedOnDuration(id: string) {
+  console.log("updateSingleInvestmentBasedOnDuration fired", id);
+  try {
+    // Get the current date in milliseconds
+    const currentDate = new Date().getTime();
+
+    // Prepare an array of conditions based on each investment package's duration
+    const conditions = INVESTMENT_PLANS.map((plan) => {
+      // Calculate the date before which the investment should have been created to be marked as "completed"
+      const cutoffDate = new Date(
+        currentDate - plan.durationDays * 24 * 60 * 60 * 1000,
+      );
+      return {
+        investmentPackage: plan.packageName.toLocaleLowerCase(),
+        createdAt: { $lte: cutoffDate },
+      };
+    });
+
+    console.log("conditions", conditions);
+
+    const updatedIv = await Investment.findById(id).updateOne(
+      {
+        status: "running",
+        _id: id,
+        $or: conditions,
+      },
+      { $set: { status: "processing" } },
+    );
+
+    console.log("result", updatedIv);
+    return updatedIv ? JSON.parse(JSON.stringify(updatedIv)) : null;
   } catch (error) {
     console.error("Error updating investments:", error);
   }

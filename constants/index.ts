@@ -2,12 +2,12 @@ export const INVESTMENT_PLANS = [
   {
     packageName: "Sapphire",
     minimumInvestment: 100,
-    durationDays: 1 / 96,
+    durationDays: 3 / 1440,
     roiPercent: 15,
   },
   {
     packageName: "Emerald",
-    minimumInvestment: 5000,
+    minimumInvestment: 400,
     durationDays: 7,
     roiPercent: 49.8,
   },

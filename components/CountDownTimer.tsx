@@ -1,3 +1,6 @@
+import { updateSingleInvestmentBasedOnDuration } from "@/utils/actions/investment.actions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useCallback } from "react";
 
 interface TimerData {}
@@ -6,6 +9,7 @@ interface CountdownTimerProps {
   isActive: boolean;
   createdAt: string; // ISO date string
   durationInDays: number;
+  id: string;
 }
 
 interface TimeLeft {
@@ -18,6 +22,7 @@ function CountDownTimer({
   isActive,
   createdAt,
   durationInDays,
+  id,
 }: CountdownTimerProps) {
   const calculateTimeLeft = useCallback((): TimeLeft => {
     const targetDate = new Date(
@@ -26,7 +31,7 @@ function CountDownTimer({
     const now = new Date();
     const difference = targetDate.getTime() - now.getTime();
 
-    const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+    const hours = Math.floor(difference / (1000 * 60 * 60));
     const minutes = Math.floor((difference / 1000 / 60) % 60);
     const seconds = Math.floor((difference / 1000) % 60);
 
@@ -42,6 +47,7 @@ function CountDownTimer({
   useEffect(() => {
     const countdown = setInterval(() => {
       const newTime = calculateTimeLeft();
+
       setTime(newTime);
 
       if (

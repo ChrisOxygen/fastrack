@@ -1,9 +1,12 @@
 import clsx from "clsx";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 
 import { INVESTMENT_PLANS } from "@/constants";
 import CountDownTimer from "./CountDownTimer";
 import IvSim from "./IvSim";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateSingleInvestmentBasedOnDuration } from "@/utils/actions/investment.actions";
+import { useRouter } from "next/navigation";
 
 //   {
 //     "_id": "672b6f04de6393391ae9f72d",
@@ -19,6 +22,24 @@ import IvSim from "./IvSim";
 
 function IvTrading({ investment }: { investment: any }) {
   const [addedAmt, setAddedAmt] = useState(0);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => {
+      return updateSingleInvestmentBasedOnDuration(investment._id);
+    },
+    onError: (error) => {
+      console.log("error", error);
+    },
+    onSuccess: (data) => {
+      console.log("data", data);
+
+      queryClient.invalidateQueries({ queryKey: ["user", "investment"] });
+
+      router.push(`/dashboard/investment/processing/${investment._id}`);
+    },
+  });
   const {
     investmentPackage,
     amount,
@@ -26,6 +47,9 @@ function IvTrading({ investment }: { investment: any }) {
     status: ivStatus,
     returns,
   } = investment;
+
+  const createdAtDate = new Date(createdAt);
+  console.log("createdAtDate FRom DB", createdAtDate);
 
   const packageDurationDays = INVESTMENT_PLANS.find(
     (plan) =>
@@ -56,14 +80,28 @@ function IvTrading({ investment }: { investment: any }) {
 
   const durationPercentage = useCallback(
     (createdAt: string, durationInDays: number) => {
+      const durationInMs = durationInDays * 24 * 60 * 60 * 1000;
+      console.log("createdAt", createdAt, "durationInDays", durationInDays);
+      const sD = new Date(createdAt);
+      console.log("sD", sD);
       const startDate = new Date(createdAt).getTime();
+      console.log("startDate", startDate);
       const endDate = new Date(createdAt);
-      endDate.setDate(endDate.getDate() + durationInDays);
+      endDate.setMilliseconds(durationInMs);
+      console.log("endDate", new Date(endDate));
       const endDateInMs = endDate.getTime();
+      console.log("endDate", endDateInMs);
       const currentDate = new Date().getTime();
 
+      console.log("currentDate", new Date());
+
       const duration = endDateInMs - startDate;
+      console.log("duration", duration);
       const remaining = endDateInMs - currentDate;
+      console.log("remaining", remaining);
+      if (remaining <= 0) {
+        return 0;
+      }
       const percentage = (remaining / duration) * 100;
       return percentage;
     },
@@ -88,6 +126,19 @@ function IvTrading({ investment }: { investment: any }) {
     }
   }, [createdAt, packageDurationDays, roi, durationPercentage]);
 
+  useEffect(() => {
+    const createdMs = new Date(createdAt).getTime();
+    const durationMs = packageDurationDays * 24 * 60 * 60 * 1000;
+    const endDateMs = createdMs + durationMs;
+    const remainingTimeMs = endDateMs - new Date().getTime();
+
+    const countdown = setTimeout(() => {
+      mutate();
+    }, remainingTimeMs);
+
+    return () => clearTimeout(countdown);
+  }, [createdAt, mutate, packageDurationDays]);
+
   console.log(
     "durationPecentage",
     durationPercentage(createdAt, packageDurationDays),
@@ -110,6 +161,7 @@ function IvTrading({ investment }: { investment: any }) {
             isActive={isRunning}
             createdAt={createdAt}
             durationInDays={packageDurationDays}
+            id={investment._id}
           />
           <div
             className={clsx(

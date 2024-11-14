@@ -46,7 +46,7 @@ const formSchema = z
         return false;
       }
 
-      if (investmentPackage === "emerald" && amount < 5000) {
+      if (investmentPackage === "emerald" && amount < 400) {
         return false;
       }
 
