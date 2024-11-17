@@ -8,16 +8,15 @@ import { createTransaction } from "./transaction.actions";
 import User from "../database/models/user.model";
 import { INVESTMENT_PLANS } from "@/constants";
 
-export const getInvestments = async () => {
+export const getInvestments = async (id: string) => {
   try {
     await connectToDatabase();
-    const investments = await Investment.find();
-    console.log("investments", investments);
+    const investments = await Investment.find({ user: id });
+
     const allInvestments = investments.sort((a, b) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
-    console.log("allInvestments", allInvestments);
     return allInvestments ? JSON.parse(JSON.stringify(allInvestments)) : null;
   } catch (error) {
     handleError(error, "getInvestments");
@@ -40,8 +39,6 @@ export const getUserInvestments = async (id: string) => {
     const userInvestments = await Investment.find({ user: id }, null, {
       sort: { createdAt: -1 },
     });
-
-    console.log("userInvestments", userInvestments);
 
     return userInvestments ? JSON.parse(JSON.stringify(userInvestments)) : null;
   } catch (error) {
@@ -83,12 +80,6 @@ export const createInvestment = async (
     throw error;
   }
 };
-
-// const investmentPackages = {
-//   Sapphire: { durationDays: 2 },
-//   Emerald: { durationDays: 7 },
-//   Diamond: { durationDays: 30 },
-// };
 
 export async function updateInvestmentsBasedOnDuration(id: string) {
   console.log("updateInvestmentsBasedOnDuration fired", id);

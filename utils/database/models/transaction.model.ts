@@ -9,7 +9,8 @@ export interface ITransaction extends Document {
     | "transfer"
     | "signup bonus"
     | "referral bonus"
-    | "investment";
+    | "investment deposit"
+    | "investment payout";
   amount: number;
   status: "pending" | "success" | "error";
   fee: number;
@@ -30,7 +31,8 @@ const transactionSchema = new Schema(
         "transfer",
         "signup bonus",
         "referral bonus",
-        "investment",
+        "investment deposit",
+        "investment payout",
       ],
       required: true,
     },

@@ -28,6 +28,7 @@ function OverViewSect() {
     totalTransfer,
     numberOfTransactions,
     totalWithdrawal,
+    investmentCount,
   } = overviewData!;
 
   const { balance } = data as UserData;
@@ -75,7 +76,7 @@ function OverViewSect() {
               <FiTrendingUp />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">N/A</span>
+              <span className="font-syne text-3xl">{investmentCount}</span>
               <span className="font-dm_sans">Total Investemts</span>
             </div>
           </div>

@@ -1,6 +1,10 @@
 "use server";
 
-import { createTransaction, getUserTransactions } from "./transaction.actions";
+import {
+  createTransaction,
+  getUserTransactions,
+  updateAllTransactionType,
+} from "./transaction.actions";
 import bcrypt from "bcryptjs";
 import { handleError } from "../services";
 import { connectToDatabase } from "../database";

@@ -14,6 +14,7 @@ import { TransactionType } from "@/app/dashboard/layout";
 import DepositTransaction from "../database/models/depositTransaction.model";
 import WithdrawalTransaction from "../database/models/withdrawalTransaction.model";
 import ShortUniqueId from "short-unique-id";
+import { getUserInvestments } from "./investment.actions";
 
 const TRANSACTIONS_PER_PAGE = 10;
 
@@ -124,6 +125,9 @@ export const getUserOverview = async (id: string) => {
       return acc + transaction.amount;
     }, 0);
 
+    const totalInvestments = await getUserInvestments(id);
+    const investmentCount = totalInvestments.length;
+
     console.log("total deposite", totalDeposit);
 
     return {
@@ -132,12 +136,14 @@ export const getUserOverview = async (id: string) => {
       totalReferralBonus,
       totalWithdrawal,
       totalTransfer,
+      investmentCount,
     } as {
       numberOfTransactions: number;
       totalDeposit: number;
       totalReferralBonus: number;
       totalWithdrawal: number;
       totalTransfer: number;
+      investmentCount: number;
     };
   } catch (error) {
     handleError(error, "getUserTransactions");
@@ -147,7 +153,6 @@ export const getUserOverview = async (id: string) => {
 export const createTransaction = async (
   transactionDetails: CreateTransactionType,
 ) => {
-  console.log("transactionDetails", transactionDetails);
   const { type, amount, status, fee, userId } = transactionDetails;
   try {
     await connectToDatabase();
@@ -174,7 +179,7 @@ export const createTransaction = async (
     const newTransaction = await Transaction.create(transactionObj);
 
     if (newTransaction.status === "success") {
-      if (newTransaction.type === "investment") {
+      if (newTransaction.type === "investment deposit") {
         user.balance -= amount;
       }
       if (type === "signup bonus") {
@@ -277,5 +282,17 @@ export const createWithdrawalTransaction = async (
       : null;
   } catch (error) {
     handleError(error, "createWithdrawalTransaction");
+  }
+};
+
+export const updateAllTransactionType = async () => {
+  try {
+    await connectToDatabase();
+    const transactions = await Transaction.updateMany(
+      { type: "investment" },
+      { type: "investment deposit" },
+    );
+  } catch (error) {
+    handleError(error, "updateAllTransactionType");
   }
 };

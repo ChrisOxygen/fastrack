@@ -1,3 +1,5 @@
+"use client";
+
 import { formatToUSD, getReadableDuration } from "@/utils/services";
 import Link from "next/link";
 

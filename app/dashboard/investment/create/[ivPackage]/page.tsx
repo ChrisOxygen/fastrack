@@ -29,7 +29,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createInvestment } from "@/utils/actions/investment.actions";
 import { InvestmentTransactionType } from "@/types";
 import useFetchUserData from "@/hooks/useFetchUserData";
-import { INVESTMENT_PLANS } from "@/constants";
 import { formatToUSD } from "@/utils/services";
 import { set } from "mongoose";
 
@@ -109,7 +108,7 @@ function CreateInvestment() {
       userId: session?.user.id!,
       status: "success",
       fee: 0,
-      type: "investment",
+      type: "investment deposit",
     };
 
     mutate(investmentDetails);

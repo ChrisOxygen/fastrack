@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { stat } from "fs";
 import Link from "next/link";
 
+import { useViewport } from "react-viewport-hooks";
+
 type InvestmentRowProps = {
   investment: {
     investmentPackage: string;
@@ -33,7 +35,9 @@ const endDate = (createdAt: string, duration: number) => {
 function InvestmentRow({ investment, num }: InvestmentRowProps) {
   const { amount, investmentPackage, status, createdAt, _id } = investment;
 
-  console.log("investment", investment);
+  const { vw, vh } = useViewport();
+
+  const isMobile = vw < 700;
 
   const packageDurationDays = getDurationDays(investmentPackage);
 
@@ -47,6 +51,58 @@ function InvestmentRow({ investment, num }: InvestmentRowProps) {
       : status === "completed"
         ? `/dashboard/investment/completed/${_id}`
         : `/dashboard/investment/processing/${_id}`;
+
+  if (isMobile) {
+    return (
+      <Link
+        href={ivLink}
+        className="flex w-full flex-col gap-2 rounded-xl border px-2 py-3"
+      >
+        <div className="flex items-center justify-between border-b py-2">
+          <span className="text-xs font-semibold uppercase text-siteHeadingDark">
+            Package
+          </span>
+          <span className="text-xs font-bold uppercase text-siteHeadingDark/70">
+            {investmentPackage}
+          </span>
+        </div>
+        <div className="flex items-center justify-between border-b py-2">
+          <span className="text-xs font-semibold uppercase text-siteHeadingDark">
+            Amount
+          </span>
+          <span className="justify-self-center text-xs font-semibold text-green-600">
+            {formatToUSD(amount)}
+          </span>
+        </div>
+        <div className="flex items-center justify-between border-b py-2">
+          <span className="text-xs font-semibold uppercase text-siteHeadingDark">
+            ROI(%)
+          </span>
+          <span className="justify-self-center text-xs font-semibold text-siteHeadingDark/60">
+            Up to {roiP}%
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span
+            className={clsx(
+              "grid place-items-center justify-self-center rounded-xl border px-2 py-[2px] text-xs uppercase",
+              status === "running" &&
+                "border-orange-200 bg-orange-100 text-orange-500",
+              status === "completed" &&
+                "border-green-200 bg-green-100 text-green-500",
+              status === "pending" &&
+                "border-gray-200 bg-gray-100 text-gray-500",
+            )}
+          >
+            {investment.status}
+          </span>
+          <span className="justify-self-center text-sm text-siteHeadingDark/60">
+            {endDate(createdAt, packageDurationDays)}
+          </span>
+        </div>
+      </Link>
+    );
+  }
 
   return (
     <Link href={ivLink} className="border-b last:border-none even:bg-slate-50">

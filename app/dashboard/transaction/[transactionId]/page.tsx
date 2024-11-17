@@ -14,8 +14,10 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 function getTransactionTitle(type: string) {
   switch (type) {
-    case "investment":
-      return "Investment";
+    case "investment deposit":
+      return "Investment deposit";
+    case "investment payout":
+      return "Investment payout";
     case "deposit":
       return "Deposit";
     case "transfer":
@@ -139,7 +141,7 @@ function Transaction() {
         <span className="font-dm_sans text-6xl font-bold">${amount}</span>
         <div className="flex items-center gap-3 rounded-full border border-siteHeadingDark/25 px-3 py-1">
           <span
-            className={`h-2 w-2 rounded-full bg-${getStatusColor(transactionStatus)}`}
+            className={`block h-2 w-2 rounded-full bg-${getStatusColor(transactionStatus)}`}
           ></span>
           <span className="font-dm_sans font-bold capitalize text-siteHeadingDark">
             {transactionStatus}

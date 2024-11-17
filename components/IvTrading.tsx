@@ -35,7 +35,9 @@ function IvTrading({ investment }: { investment: any }) {
     onSuccess: (data) => {
       console.log("data", data);
 
-      queryClient.invalidateQueries({ queryKey: ["user", "investment"] });
+      queryClient.invalidateQueries({
+        queryKey: ["user", "investment", "investments"],
+      });
 
       router.push(`/dashboard/investment/processing/${investment._id}`);
     },
@@ -161,7 +163,6 @@ function IvTrading({ investment }: { investment: any }) {
             isActive={isRunning}
             createdAt={createdAt}
             durationInDays={packageDurationDays}
-            id={investment._id}
           />
           <div
             className={clsx(

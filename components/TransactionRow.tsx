@@ -15,8 +15,10 @@ type TransactionRowProps = {
 
 function getColorString(transactionType: string) {
   switch (transactionType) {
-    case "investment":
+    case "investment deposit":
       return "text-siteGreen bg-siteGreen/15";
+    case "investment payout":
+      return "text-yellow-500  bg-yellow-500/15";
     case "deposit":
       return "text-siteGreen bg-siteGreen/15";
     case "transfer":
@@ -32,7 +34,9 @@ function getColorString(transactionType: string) {
 
 function getIcon(transactionType: string) {
   switch (transactionType) {
-    case "investment":
+    case "investment deposit":
+      return <FiTrendingUp />;
+    case "investment payout":
       return <FiTrendingUp />;
     case "deposit":
       return <FiPlus />;
@@ -131,7 +135,7 @@ function TransactionRow({ isLast, transaction, isFirst }: TransactionRowProps) {
         </Link>
       ) : (
         <div
-          className={`grid1364:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] grid1364:gap-3 grid w-full grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] items-center justify-between gap-0 py-2 lg:grid-cols-[minmax(180px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(0,250px)_minmax(0,140px)_minmax(70px,140px)] ${
+          className={`grid w-full grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] items-center justify-between gap-0 py-2 lg:grid-cols-[minmax(180px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(0,250px)_minmax(0,140px)_minmax(70px,140px)] grid1364:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] grid1364:gap-3 ${
             !isLast && "border-b border-siteHeadingDark/20"
           }`}
         >
@@ -166,10 +170,10 @@ function TransactionRow({ isLast, transaction, isFirst }: TransactionRowProps) {
               {status}
             </span>
           </div>
-          <span className="grid1364:block block justify-self-center text-sm font-bold text-siteHeadingDark/70 lg:hidden">
+          <span className="block justify-self-center text-sm font-bold text-siteHeadingDark/70 lg:hidden grid1364:block">
             {transactionId}
           </span>
-          <span className="grid1364:block block justify-self-center text-sm font-bold text-siteHeadingDark/60 lg:hidden">
+          <span className="block justify-self-center text-sm font-bold text-siteHeadingDark/60 lg:hidden grid1364:block">
             ${fee}
           </span>
 

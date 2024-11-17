@@ -2,6 +2,7 @@
 
 import { UserData } from "@/app/dashboard/layout";
 import useFetchUserData from "@/hooks/useFetchUserData";
+import clsx from "clsx";
 import Link from "next/link";
 import { FiArrowUp, FiPlus, FiTrendingUp } from "react-icons/fi";
 
@@ -24,8 +25,21 @@ function TotalBalanceSect({
         <span className="">Total Balance</span>
         <span className="text-4xl">${balance.toFixed(2)}</span>
       </div>
-      <div className="z-10 hidden items-center gap-2 sm:flex">
-        {isInvestmenyPage ? null : (
+      <div
+        className={clsx(
+          "z-10 items-center gap-2 sm:flex",
+          !isInvestmenyPage && "hidden",
+        )}
+      >
+        {isInvestmenyPage ? (
+          <Link
+            href="/dashboard/investment/create"
+            className="flex items-center justify-center gap-2 rounded-lg bg-siteLemon px-5 py-2 text-siteGreen shadow-sm"
+          >
+            <FiPlus />
+            Invest Now
+          </Link>
+        ) : (
           <>
             <Link
               href="/dashboard/deposit"

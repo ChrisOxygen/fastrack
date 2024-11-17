@@ -7,7 +7,7 @@ export type InvestmentTransactionType = {
   status: "pending" | "success" | "error";
   fee: number;
   type:
-    | "investment"
+    | "investment deposit"
     | "withdrawal"
     | "transfer"
     | "signup bonus"
@@ -26,7 +26,7 @@ export type DepositTransactionType = {
 
 export type CreateTransactionType = {
   type:
-    | "investment"
+    | "investment deposit"
     | "withdrawal"
     | "transfer"
     | "signup bonus"

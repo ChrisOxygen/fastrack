@@ -31,14 +31,14 @@ function IvFilters({ filters, setFilters }: IvFiltersProps) {
     }
   };
   return (
-    <div className="flex w-full items-center justify-between gap-3">
+    <div className="flex w-full flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
       <h3 className="font-dm_sans uppercase text-siteHeadingDark/70">
         Filters:
       </h3>
       <div className="flex items-center gap-3">
         <button
           className={clsx(
-            "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
+            "flex items-center gap-2 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-xs uppercase sm:gap-3 sm:text-sm",
             isRunning ? "opacity-100" : "opacity-50",
           )}
           onClick={() => toggleFilter("isRunning")}
@@ -55,7 +55,7 @@ function IvFilters({ filters, setFilters }: IvFiltersProps) {
         </button>
         <button
           className={clsx(
-            "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
+            "flex items-center gap-2 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-xs uppercase sm:gap-3 sm:text-sm",
             isCompleted ? "opacity-100" : "opacity-50",
           )}
           onClick={() => toggleFilter("isCompleted")}
@@ -72,7 +72,7 @@ function IvFilters({ filters, setFilters }: IvFiltersProps) {
         </button>
         <button
           className={clsx(
-            "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
+            "flex items-center gap-2 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-xs uppercase sm:gap-3 sm:text-sm",
             isProcessing ? "opacity-100" : "opacity-50",
           )}
           onClick={() => toggleFilter("isProcessing")}
