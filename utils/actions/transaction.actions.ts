@@ -187,7 +187,7 @@ export const createTransaction = async (
       if (newTransaction.type === "investment deposit") {
         user.balance -= amount;
       }
-      if (type === "signup bonus") {
+      if (type === "signup bonus" || type === "referral bonus") {
         user.balance += amount;
       }
     }

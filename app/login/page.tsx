@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
 import LoginForm from "@/components/LoginForm";
-import { useSession } from "next-auth/react";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import { getServerSession } from "next-auth";
 
 type LoginInputs = {

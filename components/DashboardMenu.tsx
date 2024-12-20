@@ -8,6 +8,8 @@ import useFetchUserData from "@/hooks/useFetchUserData";
 import { UserData } from "@/app/dashboard/layout";
 import { useRouter } from "next/navigation";
 
+import { DASHBOARD_MENU_ITEMS } from "@/constants";
+
 function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
   const { data } = useFetchUserData();
 
@@ -43,15 +45,9 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
           GENERAL
         </p>
         <menu className="flex h-full flex-col gap-2">
-          <SideBarMenuItem tabTitle="dashboard" />
-          <SideBarMenuItem tabTitle="all transactions" />
-          <SideBarMenuItem tabTitle="deposit" />
-          <SideBarMenuItem tabTitle="investment" />
-          <SideBarMenuItem tabTitle="transfer" />
-          <SideBarMenuItem tabTitle="withdraw" />
-          <SideBarMenuItem tabTitle="referrals" />
-          <SideBarMenuItem tabTitle="settings" />
-          <SideBarMenuItem tabTitle="support" />
+          {DASHBOARD_MENU_ITEMS.map((item) => (
+            <SideBarMenuItem key={item.tabTitle} tabTitle={item.tabTitle} />
+          ))}
         </menu>
       </div>
 

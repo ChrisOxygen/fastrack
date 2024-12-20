@@ -57,4 +57,31 @@ export const TRANSFER_METHODS = [
   },
 ];
 
+export const DASHBOARD_MENU_ITEMS = [
+  {
+    tabTitle: "dashboard",
+  },
+  {
+    tabTitle: "all transactions",
+  },
+  {
+    tabTitle: "deposit",
+  },
+  {
+    tabTitle: "investment",
+  },
+  {
+    tabTitle: "withdraw",
+  },
+  {
+    tabTitle: "referrals",
+  },
+  {
+    tabTitle: "settings",
+  },
+  {
+    tabTitle: "support",
+  },
+];
+
 //duration: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now

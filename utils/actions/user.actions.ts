@@ -97,6 +97,8 @@ export const signupNewUser = async (userDetails: {
 
     console.log("signUpBonus", signUpBonus);
 
+    console.log("referrersReferralCode", referrersReferralCode);
+
     if (referrersReferralCode) {
       const referrer = await User.findOne({
         referralCode: referrersReferralCode,

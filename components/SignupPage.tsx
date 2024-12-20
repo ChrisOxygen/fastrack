@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 // import { signupNewUser } from "@/utils/services";
 import { signupNewUser } from "@/utils/actions/user.actions";
+import LoadingSpinner from "./LoadingSpinner";
 
 type SignupInputs = {
   firstName: string;
@@ -52,7 +53,7 @@ function SignupPage() {
     },
   });
 
-  const { mutate, error, data } = useMutation({
+  const { mutate, error, data, isPending } = useMutation({
     mutationFn: signupNewUser,
     onSuccess: () => {
       // Invalidate and refetch
@@ -69,13 +70,13 @@ function SignupPage() {
     },
   });
 
-  useEffect(() => {
-    if (isValidating || isSubmitting || isLoading) {
-      setFormLoading(true);
-    } else {
-      setFormLoading(false);
-    }
-  }, [isValidating, isSubmitting, isLoading]);
+  // useEffect(() => {
+  //   if (isValidating || isSubmitting || isLoading) {
+  //     setFormLoading(true);
+  //   } else {
+  //     setFormLoading(false);
+  //   }
+  // }, [isValidating, isSubmitting, isLoading]);
 
   const onSubmit: SubmitHandler<SignupInputs> = (data) => {
     console.log(data, "onSubmit fired");
@@ -84,6 +85,10 @@ function SignupPage() {
 
     mutate(rest);
   };
+
+  if (isPending) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <main
