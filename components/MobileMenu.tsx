@@ -7,6 +7,7 @@ import { FiMenu, FiX } from "react-icons/fi";
 
 import LandingMenuContent from "./LandingMenuContent";
 import DashboardMenuContent from "./DashboardMenuContent";
+import { CgMenuLeft } from "react-icons/cg";
 
 function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,10 +35,10 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
   return (
     <>
       <button
-        className="z-[6000] mt-[-2px] text-2xl text-siteHeadingDark"
+        className="z-[6000] ml-2 grid place-items-center text-4xl text-siteGreen"
         onClick={() => handleMenuToggle()}
       >
-        {menuOpen ? <FiX /> : <FiMenu />}
+        {menuOpen ? <FiX /> : <CgMenuLeft />}
       </button>
       <div
         ref={myRef}

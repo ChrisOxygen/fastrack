@@ -6,25 +6,9 @@ import Countdown from "react-countdown";
 import { useQuery } from "@tanstack/react-query";
 import { getTransaction } from "@/utils/actions/transaction.actions";
 import LoadingSpinner from "./LoadingSpinner";
+import CustomButton from "./ui/CustomButton";
 
-const transferMethods = [
-  {
-    id: 1,
-    key: "BTC",
-    label: "BTC",
-    depositAddress: "bc1q2tv7y6ftyc4tcecm7lmn0rq0vlp4eps66qhrzt",
-    network: "Not Reqiured",
-  },
-
-  {
-    id: 3,
-    key: "USDT",
-    label: "USDT",
-
-    depositAddress: "TRyXWCrXpiTi3a3JDgfoXVFZNKT5XYQrY2",
-    network: "TRC20",
-  },
-];
+import { TRANSFER_METHODS } from "@/constants";
 
 type DepositTransCreatedProps = {
   transOBJ: {
@@ -33,9 +17,13 @@ type DepositTransCreatedProps = {
 
     amountToReceive: number;
   };
+  resetState: () => void;
 };
 
-function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
+function DepositTransCreated({
+  transOBJ,
+  resetState,
+}: DepositTransCreatedProps) {
   const { transferMethod, amountToReceive, transaction: id } = transOBJ;
   const {
     data: transaction,
@@ -46,11 +34,11 @@ function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
     queryFn: () => {
       return getTransaction({ id });
     },
+    enabled: !!id,
   });
 
   if (transactionStatus === "pending") return <LoadingSpinner />;
 
-  console.log("transOBJ", transOBJ, "transaction", transaction);
   const { transactionId, createdAt, amount, fee } = transaction!;
 
   // convert createdAt to date and add 24 hours
@@ -67,7 +55,7 @@ function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
     notify();
   }
 
-  const transferMethodObj = transferMethods.find(
+  const transferMethodObj = TRANSFER_METHODS.find(
     (method) => method.key === transferMethod,
   )!;
 
@@ -157,6 +145,15 @@ function DepositTransCreated({ transOBJ }: DepositTransCreatedProps) {
           <span className="font-dm_sans text-[70px] font-bold leading-[100%]">
             <Countdown daysInHours={true} date={date} />
           </span>
+        </div>
+        <div className="flex w-full items-center gap-4">
+          <CustomButton
+            text="Deposit Again"
+            bgColor="green"
+            hoverBgColor="orange"
+            textColor="white"
+            onClickFn={() => resetState()}
+          />
         </div>
       </div>
     </div>

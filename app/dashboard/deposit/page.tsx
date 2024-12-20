@@ -1,8 +1,7 @@
 "use client";
 
-import { Reducer, use, useReducer } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import useFetchUserData from "@/hooks/useFetchUserData";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -14,25 +13,7 @@ import clsx from "clsx";
 import DepositTransCreated from "@/components/DepositTransCreated";
 import { useSession } from "next-auth/react";
 import { createDepositTransaction } from "@/utils/actions/transaction.actions";
-
-const transferMethods = [
-  {
-    id: 1,
-    key: "BTC",
-    label: "BTC",
-    depositAddress: "bc1q2tv7y6ftyc4tcecm7lmn0rq0vlp4eps66qhrzt",
-    network: "Not Reqiured",
-  },
-
-  {
-    id: 3,
-    key: "USDT",
-    label: "USDT",
-
-    depositAddress: "TRyXWCrXpiTi3a3JDgfoXVFZNKT5XYQrY2",
-    network: "TRC20",
-  },
-];
+import { toast } from "sonner";
 
 export type CyptoTransferMethodType = "BTC" | "USDT" | null;
 
@@ -61,118 +42,54 @@ export type mutationReturnType = {
   };
 };
 
-type InitialStateType = {
-  step: number;
-  loading: boolean;
-  transferFee: number;
-  taxPecentage: number;
-  transferMethod: CyptoTransferMethodType;
-  inputData: {
-    amount: number;
-    transferMethod: CyptoTransferMethodType;
-    transferFee: number;
-    amountToReceive: number;
-  };
-  transOBJ: {
+function Deposit() {
+  const [step, setStep] = useState(1);
+  const [transferMethod, setTransferMethod] =
+    useState<CyptoTransferMethodType>(null);
+
+  const [transOBJ, setTransOBJ] = useState<{
     transferMethod: string;
     amountToReceive: number;
     transaction: string;
-  } | null;
-};
-
-type ReducerActionType = {
-  type: string;
-  payLoad?: any;
-};
-
-const initialState: InitialStateType = {
-  step: 1,
-  loading: false,
-  transferFee: 1, //$1
-  taxPecentage: 0.02,
-  transferMethod: null,
-
-  inputData: {
-    amount: 0.0,
-    transferMethod: null,
-    transferFee: 1,
-    amountToReceive: 0,
-  },
-
-  transOBJ: null,
-};
-
-function reducer(state: InitialStateType, action: ReducerActionType) {
-  switch (action.type) {
-    case "nextStep":
-      return { ...state, step: state.step + 1 };
-
-    case "setInputData":
-      return {
-        ...state,
-        inputData: action.payLoad,
-      };
-
-    case "setTransferMethod":
-      return { ...state, transferMethod: action.payLoad };
-
-    case "setTransOBJ":
-      return { ...state, transOBJ: action.payLoad };
-
-    case "reset":
-      return { ...initialState };
-
-    default:
-      throw new Error("unknown action");
-  }
-}
-
-function Deposit() {
-  const [state, dispatch] = useReducer<
-    Reducer<InitialStateType, ReducerActionType>
-  >(reducer, initialState);
-  const { step, transferFee, transferMethod, inputData, transOBJ } = state;
+  } | null>(null);
 
   const queryClient = useQueryClient();
 
+  const { data: session, status } = useSession();
+
   const { mutate, isPending } = useMutation({
-    mutationFn: () => {
-      return createDepositTransaction({
-        ...inputData,
-        tax: 0,
-        userId: session?.user.id!,
-      });
-    },
+    mutationFn: createDepositTransaction,
     onError: (error) => {
-      console.log("error", error);
+      // toast("Event has been created", {
+      //   description: "Sunday, December 03, 2023 at 9:00 AM",
+      //   action: {
+      //     label: "Undo",
+      //     onClick: () => console.log("Undo"),
+      //   },
+      // })
     },
     onSuccess: (data) => {
-      console.log("data", data);
+      reset();
+      setTransferMethod(null);
+
       const {
-        amount,
-        createdAt,
         transferMethod,
-        fee,
+
         transaction,
         amountToReceive,
       } = data;
 
-      dispatch({
-        type: "setTransOBJ",
-        payLoad: {
-          transferMethod,
-          amountToReceive,
-          transaction,
-        },
+      setTransOBJ({
+        transferMethod,
+        amountToReceive,
+        transaction,
       });
 
-      setStep();
+      setStep(2);
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
-
-  const { data: session, status } = useSession();
 
   const {
     register,
@@ -180,37 +97,25 @@ function Deposit() {
     watch,
     setValue,
     getValues,
+    reset,
     formState: { errors, isLoading, isSubmitting, isValidating },
-  } = useForm<FormInputs>({});
-
-  watch("transferMethod") !== null &&
-    watch("transferMethod") !== undefined &&
-    setValue("transferFee", transferFee);
-
-  +watch("amount") > 0 &&
-    setValue("amountToReceive", +watch("amount") - transferFee);
-
-  function handleNextStep() {
-    console.log(" continue clicked");
-    handleSubmit(onSubmit)();
-  }
+  } = useForm<FormInputs>({
+    defaultValues: {
+      amount: 0,
+      transferMethod: null,
+      transferFee: 1,
+      amountToReceive: 0,
+    },
+  });
 
   function resetState() {
-    dispatch({ type: "reset" });
-  }
-
-  function setStep() {
-    console.log("setStep");
-    dispatch({ type: "nextStep" });
+    setStep(1);
   }
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     console.log("onsubmit", data);
 
-    dispatch({ type: "setInputData", payLoad: data });
-
-    setStep();
-    mutate();
+    mutate({ ...data, tax: 0, userId: session?.user.id! });
   };
 
   if (
@@ -228,10 +133,12 @@ function Deposit() {
       <section className="mt-16 flex flex-col gap-16 sm:mt-0">
         <StepDisplay step={step} />
 
-        {(step === 1 || step === 2) && (
+        {step === 1 && (
           <div className="flex w-full flex-col items-center">
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
               className="flex w-full max-w-[400px] flex-col items-center gap-5 font-dm_sans"
             >
               <p className="text-center font-dm_sans text-2xl font-bold text-siteHeadingDark">
@@ -244,7 +151,17 @@ function Deposit() {
                   </span>
                   <input
                     type="number"
-                    {...register("amount", { required: true })}
+                    {...register("amount", {
+                      required: true,
+                      onChange: () => {
+                        const inputAmount = +getValues("amount");
+                        const tfFee = getValues("transferFee");
+
+                        if (inputAmount && inputAmount > 0) {
+                          setValue("amountToReceive", inputAmount - tfFee);
+                        }
+                      },
+                    })}
                     placeholder="0.00"
                     className="inputField py-3 font-dm_sans text-6xl font-bold text-siteHeadingDark placeholder-shown:text-siteHeadingDark/10 focus:border-0 focus:outline-none active:border-0 active:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
@@ -285,7 +202,7 @@ function Deposit() {
                     )}
                     onClick={() => {
                       setValue("transferMethod", "BTC");
-                      dispatch({ type: "setTransferMethod", payLoad: "BTC" });
+                      setTransferMethod("BTC");
                     }}
                   >
                     BTC
@@ -299,7 +216,7 @@ function Deposit() {
                     )}
                     onClick={() => {
                       setValue("transferMethod", "USDT");
-                      dispatch({ type: "setTransferMethod", payLoad: "USDT" });
+                      setTransferMethod("USDT");
                     }}
                   >
                     USDT
@@ -307,12 +224,13 @@ function Deposit() {
                 </div>
               </div>
               <button
-                disabled={transferMethod === null}
+                disabled={transferMethod === null || +watch("amount") < 2}
                 className={clsx(
                   "w-full rounded-xl bg-siteHeadingDark py-5 font-dm_sans text-xl text-white",
-                  transferMethod === null && "cursor-not-allowed opacity-50",
+                  (transferMethod === null || +watch("amount") < 2) &&
+                    "cursor-not-allowed opacity-50",
                 )}
-                onClick={handleNextStep}
+                onClick={handleSubmit(onSubmit)}
               >
                 Create Transaction
               </button>
@@ -344,7 +262,9 @@ function Deposit() {
           </div>
         )}
 
-        {step === 3 && transOBJ && <DepositTransCreated transOBJ={transOBJ} />}
+        {step === 2 && transOBJ && (
+          <DepositTransCreated transOBJ={transOBJ} resetState={resetState} />
+        )}
       </section>
     </>
   );

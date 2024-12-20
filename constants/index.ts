@@ -19,4 +19,42 @@ export const INVESTMENT_PLANS = [
   },
 ];
 
+export const MAIN_NAV_LINKS = [
+  {
+    title: "Home",
+    href: "/",
+  },
+  {
+    title: "About",
+    href: "/about",
+  },
+  {
+    title: "Investment Plans",
+    href: "/investment-plans",
+  },
+  {
+    title: "Contact",
+    href: "/contact",
+  },
+];
+
+export const TRANSFER_METHODS = [
+  {
+    id: 1,
+    key: "BTC",
+    label: "BTC",
+    depositAddress: "bc1q2tv7y6ftyc4tcecm7lmn0rq0vlp4eps66qhrzt",
+    network: "Not Reqiured",
+  },
+
+  {
+    id: 3,
+    key: "USDT",
+    label: "USDT",
+
+    depositAddress: "TRyXWCrXpiTi3a3JDgfoXVFZNKT5XYQrY2",
+    network: "TRC20",
+  },
+];
+
 //duration: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now

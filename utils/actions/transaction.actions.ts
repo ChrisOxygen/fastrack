@@ -153,15 +153,20 @@ export const getUserOverview = async (id: string) => {
 export const createTransaction = async (
   transactionDetails: CreateTransactionType,
 ) => {
+  console.log("transactionDetails", transactionDetails);
   const { type, amount, status, fee, userId } = transactionDetails;
   try {
     await connectToDatabase();
 
-    const user = await User.findById({ _id: userId });
+    const user = await User.findById(userId);
 
-    if (user.balance < amount + fee) {
+    console.log("user", user);
+
+    if (type === "withdrawal" && user.balance < amount + fee) {
       throw new Error("Insufficient balance");
     }
+
+    console.log("Not withdrawal");
 
     const uid = new ShortUniqueId();
 
@@ -205,6 +210,7 @@ export const createTransaction = async (
 export const createDepositTransaction = async (
   depositDetails: DepositTransactionType,
 ) => {
+  console.log("depositDetails", depositDetails);
   const { amount, transferMethod, transferFee, tax, amountToReceive, userId } =
     depositDetails;
 
@@ -219,6 +225,8 @@ export const createDepositTransaction = async (
     await connectToDatabase();
 
     const newTransaction = await createTransaction(transactionDetails);
+
+    console.log("newTransaction", newTransaction);
     const newDepositTransaction = await DepositTransaction.create({
       amountToReceive: amountToReceive,
       tax: tax,

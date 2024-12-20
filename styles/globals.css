@@ -85,3 +85,22 @@
     @apply;
   } */
 }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-syne text-siteHeadingDark;
+}
+
+p,
+span,
+a {
+  @apply font-archivo;
+}
+
+body > * {
+  @apply transition-all;
+}
