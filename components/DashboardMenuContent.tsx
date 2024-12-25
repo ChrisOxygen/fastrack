@@ -13,6 +13,10 @@ import LoadingSpinner from "./LoadingSpinner";
 function DashboardMenuContent() {
   const { data, status, error } = useFetchUserData();
 
+  if (status === "pending") {
+    return <LoadingSpinner />;
+  }
+
   const { email, firstName, lastName } = data as UserData;
 
   return (

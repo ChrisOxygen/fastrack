@@ -1,8 +1,10 @@
 import ContactSupportBox from "@/components/ContactSupportBox";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import OverViewSect from "@/components/OverViewSect";
 import RecentActivity from "@/components/RecentActivity";
 import ReferEarnBox from "@/components/ReferEarnBox";
 import TotalBalanceSect from "@/components/TotalBalanceSect";
+import useFetchUserData from "@/hooks/useFetchUserData";
 
 function Dashboard() {
   return (

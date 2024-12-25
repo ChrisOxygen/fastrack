@@ -67,6 +67,7 @@ export const loginUser = async (userDetails: userLoginDetailsType) => {
     if (res && !res.ok) {
       throw new Error(res.error!);
     }
+    return res;
   } catch (error) {
     throw error as Error;
     // handleError(error, "loginUser");

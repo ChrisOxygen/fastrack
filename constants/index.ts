@@ -84,4 +84,30 @@ export const DASHBOARD_MENU_ITEMS = [
   },
 ];
 
+export const PACKAGES_DETAILS = [
+  {
+    name: "Sapphire",
+    description:
+      "A stable investment package for beginners with moderate returns.",
+    minimumAmount: "$100",
+    duration: "48hrs",
+    roi: "15% Return on Investment",
+  },
+  {
+    name: "Emerald",
+    description: "An investment package with balanced risk and reward.",
+    minimumAmount: "$400",
+    duration: "7 Days",
+    roi: "49.8% Return on Investment",
+  },
+  {
+    name: "Diamond",
+    description:
+      "Our premium package with the highest potential returns for seasoned investors.",
+    minimumAmount: "$20,000",
+    duration: "30 Days",
+    roi: "92.6% Return on Investment",
+  },
+];
+
 //duration: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now

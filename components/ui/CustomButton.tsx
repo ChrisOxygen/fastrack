@@ -98,7 +98,7 @@ function CustomButton({
       ) : (
         <button
           className={clsx(
-            "relative z-[2] inline-flex h-full w-max items-center justify-center px-[26px] py-4 text-center text-[16px] font-bold leading-[1] text-white transition-all ease-in-out hover:scale-[112%] hover:text-black",
+            "relative z-[2] inline-flex h-full w-max items-center justify-center px-[26px] py-4 text-center text-[16px] font-bold leading-[1] transition-all ease-in-out hover:scale-[112%] hover:text-black",
             textColor === "white" && "text-white hover:text-black",
             textColor === "black" && "text-black hover:text-white",
           )}

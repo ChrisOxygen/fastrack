@@ -50,7 +50,7 @@ function BuildPortfolioSect() {
             },
           }}
           viewport={{ once: true }}
-          className="flex w-full max-w-[600px] flex-col gap-6"
+          className="flex w-full max-w-[600px] flex-col items-center gap-6 lg:items-start"
         >
           <motion.span
             initial={{
@@ -88,7 +88,7 @@ function BuildPortfolioSect() {
               },
             }}
             viewport={{ once: true }}
-            className="max-w-[700px] text-3xl font-bold md:text-5xl"
+            className="max-w-[700px] text-center text-3xl font-bold md:text-5xl lg:text-left"
           >
             Build your portfolio starting with just $1
           </motion.h2>
@@ -108,7 +108,7 @@ function BuildPortfolioSect() {
               },
             }}
             viewport={{ once: true }}
-            className="w-full max-w-[900px] text-xl text-siteText md:text-2xl"
+            className="w-full max-w-[900px] text-center text-xl text-siteText md:text-2xl lg:text-left"
           >
             Invest in stocks, ETFs, and their options, at your pace and
             commission-free.

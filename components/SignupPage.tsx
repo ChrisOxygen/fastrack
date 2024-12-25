@@ -59,7 +59,7 @@ function SignupPage() {
       // Invalidate and refetch
       console.log("User created successfully");
 
-      router.push("/login");
+      router.push("/login?signup=true");
     },
     onError: (error) => {
       console.log(error, "error");

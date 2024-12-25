@@ -4,9 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button, Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useSession } from "next-auth/react";
 import { loginUser } from "@/utils/services";
@@ -25,14 +25,16 @@ function LoginForm() {
     formState: { errors },
   } = useForm<LoginInputs>();
 
+  const queryClient = useQueryClient();
+
   const { data: session } = useSession();
 
   const router = useRouter();
 
   const { mutate } = useMutation({
     mutationFn: loginUser,
-    onSuccess: () => {
-      router.push("/dashboard");
+    onSuccess: (data) => {
+      redirect("/dashboard");
     },
     onError: (error) => {
       if (
@@ -48,7 +50,7 @@ function LoginForm() {
   };
 
   if (session) {
-    router.push("/dashboard");
+    redirect("/dashboard");
   }
 
   return (

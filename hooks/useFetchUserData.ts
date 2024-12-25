@@ -3,10 +3,10 @@
 import { getUserData } from "@/utils/actions/user.actions";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "next/navigation";
 
 function useFetchUserData() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
 
   const { data, error, status } = useQuery({
     queryKey: ["user"],
@@ -19,9 +19,10 @@ function useFetchUserData() {
   const router = useRouter();
 
   if (!session) {
-    router.push("/login");
+    redirect("/login");
   }
-  return { data, error, status, session };
+
+  return { data, error, status, sessionStatus, session };
 }
 
 export default useFetchUserData;

@@ -11,6 +11,9 @@ import { Spinner } from "@nextui-org/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import DashboardMenu from "@/components/DashboardMenu";
 import Loading from "./loading";
+import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { getUserData } from "@/utils/actions/user.actions";
 
 export type TransactionType = {
   transactionId: string;
@@ -58,7 +61,6 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <main className="block h-full grid-cols-[260px_1fr] lg:grid lg:h-screen lg:overflow-hidden xl:grid-cols-[350px_1fr]">
         <DashboardMenu device="desktop" />
         <section className="h-full max-h-[1080px] w-full overflow-auto p-4 lg:h-screen lg:overflow-hidden">
-          <Suspense fallback={<Loading />}></Suspense>
           {children}
         </section>
       </main>

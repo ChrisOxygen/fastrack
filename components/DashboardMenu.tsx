@@ -9,10 +9,10 @@ import { UserData } from "@/app/dashboard/layout";
 import { useRouter } from "next/navigation";
 
 import { DASHBOARD_MENU_ITEMS } from "@/constants";
+import LoadingSpinner from "./LoadingSpinner";
 
 function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
   const { data } = useFetchUserData();
-
   const router = useRouter();
 
   const { email, firstName, lastName } = data as UserData;

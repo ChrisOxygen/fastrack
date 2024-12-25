@@ -53,6 +53,19 @@ export const createInvestment = async (
     investmentDetails;
   try {
     await connectToDatabase();
+
+    // find the user in the DB
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // check if the user has enough balance to make the investment
+
+    if (user.balance < amount) {
+      throw new Error("Insufficient balance");
+    }
     const newTransaction = await createTransaction(investmentDetails);
     // gets the investment package returns from the investment package imported from constants
 

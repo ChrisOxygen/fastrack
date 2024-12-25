@@ -1,21 +1,24 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { redirect, useSearchParams } from "next/navigation";
 import LoginForm from "@/components/LoginForm";
 import { getServerSession } from "next-auth";
+import { use } from "react";
+import { useSession } from "next-auth/react";
 
 type LoginInputs = {
   email: string;
   password: string;
 };
 
-async function Login() {
-  const session = await getServerSession();
+function Login() {
+  const { data: session } = useSession();
 
   if (session) {
     redirect("/dashboard");
   }
 
   return <LoginForm />;
-  // return <div className="">Zod mando</div>;
 }
 
 export default Login;
