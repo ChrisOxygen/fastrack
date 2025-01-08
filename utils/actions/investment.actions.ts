@@ -100,20 +100,6 @@ export async function updateInvestmentsBasedOnDuration(id: string) {
     // Get the current date in milliseconds
     const currentDate = new Date().getTime();
 
-    // Prepare an array of conditions based on each investment package's duration
-    // const conditions = Object.entries(INVESTMENT_PLANS).map(
-    //   ([packageName, { durationDays }]) => {
-    //     // Calculate the date before which the investment should have been created to be marked as "completed"
-    //     const cutoffDate = new Date(
-    //       currentDate - durationDays * 24 * 60 * 60 * 1000,
-    //     );
-    //     return {
-    //       investmentPackage: packageName.toLocaleLowerCase(),
-    //       createdAt: { $lte: cutoffDate },
-    //     };
-    //   },
-    // );
-
     const conditions = INVESTMENT_PLANS.map((plan) => {
       // Calculate the date before which the investment should have been created to be marked as "completed"
       const cutoffDate = new Date(

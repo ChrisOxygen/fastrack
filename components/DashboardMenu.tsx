@@ -27,7 +27,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
         >
           <Image
             src="/fastrack-green.png"
-            alt="Kudizen"
+            alt="Fastrack"
             width={150}
             height={10}
           />
@@ -71,7 +71,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
             <FiPower />
           </button>
         </div>
-        <span className="">2024 Kudizen </span>
+        <span className="">2024 Fastrack </span>
       </div>
     </aside>
   );

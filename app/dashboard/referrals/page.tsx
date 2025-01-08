@@ -25,7 +25,7 @@ function Referrals() {
       <div className="flex flex-col items-center text-center">
         <h3 className="font-syne text-4xl font-bold">Referrals</h3>
         <span className="font-dm_sans text-siteHeadingDark/60">
-          invite your friends to kudizen and both of you get rewarded
+          invite your friends to Fastrack and both of you get rewarded
         </span>
       </div>
       <div className="flex flex-col items-center justify-between gap-8 sm:flex-row sm:items-start sm:gap-0">
@@ -38,7 +38,7 @@ function Referrals() {
           </span>
           <span className="text-center font-dm_sans text-siteHeadingDark/70">
             send your referral link to your friends and tell them how cool
-            kudizen is.
+            Fastrack is.
           </span>
         </div>
         <div className="flex w-full max-w-[230px] flex-col items-center gap-2">

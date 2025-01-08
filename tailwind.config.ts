@@ -9,14 +9,6 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      grid1364: "1364px",
-      xxl: "1536px",
-    },
     extend: {
       fontFamily: {
         syne: ["var(--syne)"],

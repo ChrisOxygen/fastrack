@@ -50,7 +50,7 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start">
               <span className="font-syne text-3xl">${totalDeposit}</span>
-              <span className="font-dm_sans">Total Deposite</span>
+              <span className="font-dm_sans">Total Deposit</span>
             </div>
           </div>
           <div className="overview-line-box border-x-0 border-b border-l-0 border-siteHeadingDark/25 sm:border-l lg:border-x">
@@ -120,7 +120,7 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-dm_sans font-bold">Profit wallet</span>
-              <span className="font-dm_sans text-3xl">$245</span>
+              <span className="font-dm_sans text-3xl">N/A</span>
             </div>
           </div>
         </div>

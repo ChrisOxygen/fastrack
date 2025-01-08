@@ -29,7 +29,7 @@ function BuildPortfolioSect() {
           <Image
             className=""
             src="/assets/fastrack-img-1.webp"
-            alt="Kudizen"
+            alt="Fastrack"
             width={619}
             height={619}
           />

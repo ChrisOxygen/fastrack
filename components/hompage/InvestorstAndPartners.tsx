@@ -9,7 +9,7 @@ function InvestorstAndPartners() {
           <Image
             className="object-contain opacity-50 brightness-0 invert transition-all hover:opacity-100"
             src="/assets/brand-1.svg"
-            alt="Kudizen"
+            alt="Fastrack"
             width={184}
             height={23}
           />
@@ -19,7 +19,7 @@ function InvestorstAndPartners() {
           <Image
             className="object-contain opacity-50 brightness-0 invert transition-all hover:opacity-100"
             src="/assets/brand-2.svg"
-            alt="Kudizen"
+            alt="Fastrack"
             width={184}
             height={23}
           />
@@ -28,7 +28,7 @@ function InvestorstAndPartners() {
           <Image
             className="-mt-8 object-contain opacity-50 brightness-0 invert transition-all hover:opacity-100"
             src="/assets/brand-3.svg"
-            alt="Kudizen"
+            alt="Fastrack"
             width={184}
             height={23}
           />
@@ -37,7 +37,7 @@ function InvestorstAndPartners() {
           <Image
             className="object-contain opacity-50 brightness-0 invert transition-all hover:opacity-100"
             src="/assets/brand-4.svg"
-            alt="Kudizen"
+            alt="Fastrack"
             width={184}
             height={23}
           />
@@ -46,7 +46,7 @@ function InvestorstAndPartners() {
           <Image
             className="object-contain opacity-50 brightness-0 invert transition-all hover:opacity-100"
             src="/assets/brand-5.svg"
-            alt="Kudizen"
+            alt="Fastrack"
             width={184}
             height={23}
           />

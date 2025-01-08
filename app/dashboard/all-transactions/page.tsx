@@ -46,12 +46,12 @@ function AllTransactions() {
         <div className="flex flex-col">
           <h3 className="font-syne text-4xl font-bold">All Transactions</h3>
           <span className="font-dm_sans text-siteHeadingDark/60">
-            invite your friends to kudizen and both of you get rewarded
+            invite your friends to Fastrack and both of you get rewarded
           </span>
         </div>
         <div className="flex h-full flex-col gap-3">
           <div
-            className={`hidden w-full justify-between gap-0 border-y border-siteHeadingDark/20 px-5 py-2 sm:grid sm:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] lg:grid-cols-[minmax(180px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(0,250px)_minmax(0,140px)_minmax(70px,140px)] grid1364:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] grid1364:gap-3`}
+            className={`grid1364:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] grid1364:gap-3 hidden w-full justify-between gap-0 border-y border-siteHeadingDark/20 px-5 py-2 sm:grid sm:grid-cols-[minmax(200px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(110px,250px)_minmax(50px,140px)_minmax(70px,140px)] lg:grid-cols-[minmax(180px,300px)_minmax(70px,200px)_minmax(80px,200px)_minmax(0,250px)_minmax(0,140px)_minmax(70px,140px)]`}
           >
             <span className="text-sm text-siteHeadingDark/60">TYPE</span>
             <span className="justify-self-center text-sm text-siteHeadingDark/60">
@@ -60,10 +60,10 @@ function AllTransactions() {
             <span className="justify-self-center text-sm text-siteHeadingDark/60">
               STATUS
             </span>
-            <span className="block justify-self-center text-sm text-siteHeadingDark/60 lg:hidden grid1364:block">
+            <span className="grid1364:block block justify-self-center text-sm text-siteHeadingDark/60 lg:hidden">
               TRANS.ID
             </span>
-            <span className="block justify-self-center text-sm text-siteHeadingDark/60 lg:hidden grid1364:block">
+            <span className="grid1364:block block justify-self-center text-sm text-siteHeadingDark/60 lg:hidden">
               FEE
             </span>
 

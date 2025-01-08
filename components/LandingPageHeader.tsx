@@ -8,6 +8,7 @@ import MobileMenu from "./MobileMenu";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useState } from "react";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 
 function LandingPageHeader() {
   const { scrollY } = useScroll();
@@ -56,7 +57,7 @@ function LandingPageHeader() {
         >
           <Image
             src="/fastrack-green.png"
-            alt="Kudizen"
+            alt="Fastrack"
             width={150}
             height={10}
           />

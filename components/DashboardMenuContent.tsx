@@ -57,7 +57,7 @@ function DashboardMenuContent() {
               <FiPower />
             </button>
           </div>
-          <span className="">2024 Kudizen </span>
+          <span className="">2024 Fastrack </span>
         </div>
       </div>
     </>

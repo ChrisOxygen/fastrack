@@ -15,36 +15,38 @@ function FiveMinsSection() {
           />
         </div>
         <div className="flex flex-col gap-20">
-          <h3 className="text-6xl font-bold text-siteGreen">
+          <h3 className="text-3xl font-bold text-siteGreen md:text-5xl">
             It takes 5 minutes
           </h3>
           <div className="flex flex-col gap-10">
-            <div className="relative flex items-start gap-16 after:absolute after:bottom-[-33px] after:left-[20px] after:h-3/4 after:w-1 after:bg-siteOrange after:content-['']">
+            <div className="relative flex items-start gap-10 after:absolute after:bottom-[-33px] after:left-[20px] after:h-3/4 after:w-1 after:bg-siteOrange after:content-[''] lg:gap-16">
               <span className="text-4xl font-bold text-siteOrange">01</span>
               <div className="flex flex-col gap-5">
-                <h4 className="text-4xl font-bold">Sign up, Its free</h4>
+                <h4 className="font-archivo text-2xl font-bold md:text-4xl">
+                  Sign up, Its free
+                </h4>
                 <p className="text-xl text-siteText">
                   Sign up and login to your dashbord to make an investment Sign
                   up and login to your dashbord to make an investment
                 </p>
               </div>
             </div>
-            <div className="relative flex items-start gap-16 after:absolute after:bottom-[-33px] after:left-[20px] after:h-3/4 after:w-1 after:bg-siteOrange after:content-['']">
+            <div className="relative flex items-start gap-10 after:absolute after:bottom-[-33px] after:left-[20px] after:h-3/4 after:w-1 after:bg-siteOrange after:content-[''] lg:gap-16">
               <span className="text-4xl font-bold text-siteOrange">02</span>
               <div className="flex flex-col gap-5">
-                <h4 className="text-4xl font-bold">
-                  2. Find best investment package
+                <h4 className="font-archivo text-2xl font-bold md:text-4xl">
+                  Find best investment package
                 </h4>
                 <p className="text-xl text-siteText">
                   Sign up for an account with your name, email and phone number.
                 </p>
               </div>
             </div>
-            <div className="relative flex items-start gap-16">
+            <div className="relative flex items-start gap-10 lg:gap-16">
               <span className="text-4xl font-bold text-siteOrange">03</span>
               <div className="flex flex-col gap-5">
-                <h4 className="text-4xl font-bold">
-                  3. Start earning on investments
+                <h4 className="font-archivo text-2xl font-bold md:text-4xl">
+                  Start earning on investments
                 </h4>
                 <p className="text-xl text-siteText">
                   Sign up for an account with your name, email and phone number.

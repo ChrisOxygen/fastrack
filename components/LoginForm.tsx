@@ -68,7 +68,7 @@ function LoginForm() {
         >
           <Image
             src="/fastrack-green.png"
-            alt="Kudizen"
+            alt="Fastrack"
             width={150}
             height={10}
           />
@@ -104,7 +104,7 @@ function LoginForm() {
             </Button>
           </form>
         </div>
-        <span className="">Kudizen 2024 all rights reserved</span>
+        <span className="">Fastrack 2024 all rights reserved</span>
       </div>
     </main>
   );

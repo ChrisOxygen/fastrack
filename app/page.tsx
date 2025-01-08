@@ -1,14 +1,13 @@
 import HeroSection from "@/components/hompage/HeroSection";
 import InvestorstAndPartners from "@/components/hompage/InvestorstAndPartners";
-import CustomButton from "@/components/ui/CustomButton";
-import Image from "next/image";
-import { CgArrowRight } from "react-icons/cg";
 
-import { motion } from "framer-motion";
 import BuildPortfolioSect from "@/components/hompage/BuildPortfolioSect";
 import OurNumberSection from "@/components/hompage/OurNumberSection";
 import PackagePricing from "@/components/hompage/PackagePricing";
 import FiveMinsSection from "@/components/hompage/FiveMinsSection";
+import WhyUsSection from "@/components/hompage/WhyUsSection";
+import TestimonialSect from "@/components/hompage/TestimonialSect";
+import CtaFooter from "@/components/CtaFooter";
 
 function LandingPage() {
   console.log("LandingPage");
@@ -20,6 +19,9 @@ function LandingPage() {
       <OurNumberSection />
       <PackagePricing />
       <FiveMinsSection />
+      <WhyUsSection />
+      <TestimonialSect />
+      <CtaFooter />
     </main>
   );
 }

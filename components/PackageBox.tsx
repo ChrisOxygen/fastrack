@@ -30,7 +30,7 @@ function PackageBox({ ivPackageDetails }: PackageBoxProps) {
         <span className="font-syne text-[60px] font-bold leading-none">
           {minimumAmount}
         </span>
-        <span className="mb-2">Minimun Amount</span>
+        <span className="mb-2">Minimun</span>
       </div>
       <hr className="bg-siteText" />
       <div className="mb-5 flex w-full flex-col gap-4">

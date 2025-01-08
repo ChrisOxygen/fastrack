@@ -54,7 +54,7 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
             >
               <Image
                 src="/fastrack-green.png"
-                alt="Kudizen"
+                alt="Fastrack"
                 width={150}
                 height={10}
               />
