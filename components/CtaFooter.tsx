@@ -2,13 +2,10 @@
 
 import Image from "next/image";
 import CustomButton from "./ui/CustomButton";
-import { usePathname } from "next/navigation";
-import { MAIN_NAV_LINKS } from "@/constants";
-import Link from "next/link";
-import clsx from "clsx";
+
+import Menu from "./Menu";
 
 function CtaFooter() {
-  const pathName = usePathname();
   return (
     <div className="relative flex w-full overflow-hidden bg-[#045046] pb-8 pt-[100px] after:absolute after:left-[10px] after:top-0 after:h-full after:w-full after:bg-[url('/assets/green-curve.svg')] after:bg-no-repeat md:pb-0 md:after:left-[50px]">
       <div className="mx-auto flex w-full flex-col items-center justify-between gap-4 px-6 md:container">
@@ -35,25 +32,11 @@ function CtaFooter() {
             width={200}
             height={52}
           />
-          <nav className="my-6 min-w-[300px] border-y border-white/20 py-6">
-            <menu className="flex flex-col items-center justify-center gap-8 font-semibold">
-              {MAIN_NAV_LINKS.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className={clsx(
-                    "text-white transition-all hover:text-siteOrange",
-                    pathName === link.href &&
-                      "text-siteOrange hover:text-siteOrange",
-                  )}
-                >
-                  {link.title}
-                </Link>
-              ))}
-            </menu>
+          <nav className="my-6 min-w-[300px] border-y border-white/20 py-6 text-white">
+            <Menu location="footer" />
           </nav>
           <p className="text-center font-archivo text-white">
-            Copyright© 2025 Finwave by RadiusTheme
+            Copyright© 2025 Fastrack Investment
           </p>
           <div className="">
             <Image

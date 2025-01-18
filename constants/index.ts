@@ -76,9 +76,9 @@ export const DASHBOARD_MENU_ITEMS = [
   {
     tabTitle: "referrals",
   },
-  {
-    tabTitle: "settings",
-  },
+  // {
+  //   tabTitle: "settings",
+  // },
   {
     tabTitle: "support",
   },
@@ -171,6 +171,115 @@ export const TESTIMONIALS = [
     testimonial:
       "Investing with Fast Track has been a smooth experience. I didn’t expect the profits to reach my account so quickly, but they exceeded my expectations. Their fast payouts make them my top recommendation!",
   },
+];
+
+export const TEAM_MEMBERS = [
+  {
+    img: "/assets/chase_coleman.png",
+    name: "Chase Coleman",
+    role: "CEO/Founder",
+    about:
+      "American billionaire hedge fund manager, and the founder of Fasttrack investment and Tiger global management. As of July 2023, his net worth is estimated at US$8.5 billion by Forbes.",
+  },
+
+  {
+    img: "/assets/Richard-Liu.jpg",
+    name: "Richard Liu",
+    role: "Senior Executive",
+    about:
+      "Richard Liu, who also goes by his Chinese name Liu Qiangdong, is the founder and chairman of e-commerce site JD.com and Fast track investment.",
+  },
+
+  {
+    img: "/assets/Sergie.jpg",
+    name: "Sergei Sergienko",
+    role: "Chief Marketing Officer",
+    about:
+      "Russian born Australian Bitcoin multimillionaire. He is worth a whopping $100 million! It is a dream come true, only possible thanks to the digital gold rush of Bitcoin, buying BTC from as low as $6.",
+  },
+
+  {
+    img: "/assets/son_chi.jpg",
+    name: "Song Chi-hyung",
+    role: "Senior Executive Vice President",
+    about:
+      "Founder and chairman of Dunamu, which operates South Korea`s dominant cryptocurrency exchange In September 2021, Dunamu raised $85 million at a valuation of $8.7 billion.",
+  },
+
+  {
+    img: "/assets/Hassan_Ismailik.jpg",
+    name: "Hasan Ismaik",
+    role: "CEO Arabtec",
+    about:
+      "Billionaire thanks to an increased stake in the publicly-traded business. Ismaik now owns 20.5% of the Gulf’s largest builder, putting his net worth at $1.4 billion per today’s share prices.",
+  },
+
+  {
+    img: "/assets/Jim_Crawford.jpg",
+    name: "Jim Crawford",
+    role: "Executive Vice President",
+    about:
+      "Mr. Crawford has over eighteen years experience in the technology and business sector with expertise in a wide range of disciplines including new media, mobile marketing, intellectual property, security, and compliance.",
+  },
+
+  {
+    img: "/assets/Vivek.jpg",
+    name: "Vivek Ramaswamy",
+    role: "Senior Executive Vice President ",
+    about: "A leader with diverse leadership experience across Human Resources",
+  },
+
+  {
+    img: "/assets/sheryl.jpg",
+    name: "Sheryl Sandberg",
+    role: "Manager",
+    about:
+      "Sheryl had helped turn its advertising business into a profit powerhouse which now has expanded. She helped increase ad revenue by thirty seven percent using Facebook as an advertising platform and now ranks",
+  },
+];
+
+export const INVESTORS = [
+  {
+    img: "/assets/Sir-Peter-Rigby.jpg",
+    name: "Sir Peter Rigby",
+    role: "Investor",
+  },
+  {
+    img: "/assets/Jason-Les.jpg",
+    name: "Jason Les",
+    role: "Investor",
+  },
+  {
+    img: "/assets/Michael-J.-Saylor.webp",
+    name: "Michael J. Saylor",
+    role: "Investor",
+  },
+  {
+    img: "/assets/Andy-Roddick.jpg",
+    name: "Andy Roddick",
+    role: "Investor",
+  },
+  {
+    img: "/assets/Sean-Hannity.jpg",
+    name: "Sean Hannity",
+    role: "Investor",
+  },
+];
+
+export const PARTENER_LOGOS = [
+  "/assets/partner-logos/1btcxe.svg",
+  "/assets/partner-logos/aeternity.svg",
+  "/assets/partner-logos/Binance-Horizontal-Black-Logo.wine.svg",
+  "/assets/partner-logos/bitcoin-1.svg",
+  "/assets/partner-logos/bleutrade.svg",
+  "/assets/partner-logos/coinex.svg",
+  "/assets/partner-logos/dai-2.svg",
+  "/assets/partner-logos/dreamteam.svg",
+  "/assets/partner-logos/ethereum-classic-etc.svg",
+  "/assets/partner-logos/ethereum.svg",
+  "/assets/partner-logos/huobi-global-2.svg",
+  "/assets/partner-logos/kcs-3.svg",
+  "/assets/partner-logos/ven-1.svg",
 ];
 
 //duration: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now

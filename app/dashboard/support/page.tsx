@@ -1,8 +1,8 @@
-import ComingSoonPage from "@/components/ComingSoonPage";
+import ContactPage from "@/app/(root)/contact/page";
 import React from "react";
 
 function Support() {
-  return <ComingSoonPage />;
+  return <ContactPage />;
 }
 
 export default Support;

@@ -30,7 +30,7 @@ function DashboardMenuContent() {
             <SideBarMenuItem tabTitle="investment" />
             <SideBarMenuItem tabTitle="withdraw" />
             <SideBarMenuItem tabTitle="referrals" />
-            <SideBarMenuItem tabTitle="settings" />
+            {/* <SideBarMenuItem tabTitle="settings" /> */}
             <SideBarMenuItem tabTitle="support" />
           </menu>
         </div>

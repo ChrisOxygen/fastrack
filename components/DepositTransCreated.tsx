@@ -2,6 +2,7 @@ import copy from "copy-to-clipboard";
 import { notify } from "./ReferEarnBox";
 import { BiCopy } from "react-icons/bi";
 
+import Image from "next/image";
 import Countdown from "react-countdown";
 import { useQuery } from "@tanstack/react-query";
 import { getTransaction } from "@/utils/actions/transaction.actions";
@@ -49,15 +50,14 @@ function DepositTransCreated({
     console.log("copied");
     notify();
   }
-  function handleWalletAdressCopy() {
-    copy(transactionId);
-    console.log("copied");
-    notify();
-  }
-
   const transferMethodObj = TRANSFER_METHODS.find(
     (method) => method.key === transferMethod,
   )!;
+  function handleWalletAdressCopy() {
+    copy(transferMethodObj.depositAddress);
+    console.log("copied");
+    notify("Wallet address copied");
+  }
 
   return (
     <div className="flex w-full flex-col gap-5">
@@ -115,17 +115,33 @@ function DepositTransCreated({
             <span className="shrink-0 text-lg font-semibold text-siteHeadingDark/70">
               {transferMethod} wallet address
             </span>
-            <div className="max-w-[732px]items-center flex w-full justify-end gap-2 text-lg font-black text-black">
-              <span className="overflow-hidden text-ellipsis">
-                {transferMethodObj.depositAddress}
-              </span>
-              <button
-                className="text-2xl text-green-600"
-                onClick={() => handleWalletAdressCopy()}
-              >
-                <BiCopy />
-              </button>
+            <div className="max-w-[732px]items-center flex w-full flex-col justify-end gap-2 text-lg font-black text-black">
+              <div className="max-w-[732px]items-center flex w-full justify-end gap-2 text-lg font-black text-black">
+                <span className="overflow-hidden text-ellipsis">
+                  {transferMethodObj.depositAddress}
+                </span>
+                <button
+                  className="text-2xl text-green-600"
+                  onClick={() => handleWalletAdressCopy()}
+                >
+                  <BiCopy />
+                </button>
+              </div>
             </div>
+          </div>
+
+          <div className="flex w-full flex-col items-end justify-between border-b-2 border-dashed border-siteHeadingDark/25 py-3 font-dm_sans sm:flex-row sm:items-center sm:justify-end">
+            <Image
+              src={
+                transferMethod === "BTC"
+                  ? "/Fastrack_Btc_Barcode.jpg"
+                  : "/Fastrack_USDT_Barcode.jpg"
+              }
+              alt="image"
+              className=""
+              width={220}
+              height={300}
+            />
           </div>
           {transferMethod === "USDT" && (
             <div className="flex items-center justify-between border-b-2 border-dashed border-siteHeadingDark/25 py-3 font-dm_sans">

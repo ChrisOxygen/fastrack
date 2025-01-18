@@ -32,16 +32,16 @@ function OurNumberSection() {
             <div className="flex flex-col items-center gap-1 md:gap-3">
               <div className="flex items-center gap-2">
                 <span className="block font-syne text-4xl font-medium leading-none md:text-6xl">
-                  5
+                  530 +
                 </span>
                 <div className="grid place-items-center">
-                  <Image
+                  {/* <Image
                     className="w-[130px] lg:w-[150px]"
                     src="/assets/countries.webp"
                     alt="star"
                     width={170}
                     height={67}
-                  />
+                  /> */}
                 </div>
               </div>
               <span className="text-2xl text-siteGreen md:text-3xl">

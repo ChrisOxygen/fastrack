@@ -254,9 +254,9 @@ function Deposit() {
                 </strong>
                 . you can also copy the wallet address by clicking on the copy
                 icon next to the address. After generating the transaction, you
-                hace 24 hours to make the payment. if you fail to make the
+                have 24 hours to make the payment. if you fail to make the
                 payment within the stipulated time, the transaction will be
-                cancelled and you will have to create a new transaction.
+                cancelled and you have to create a new transaction.
               </p>
             </div>
           </div>

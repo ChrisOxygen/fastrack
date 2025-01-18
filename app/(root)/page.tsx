@@ -12,7 +12,7 @@ import CtaFooter from "@/components/CtaFooter";
 function LandingPage() {
   console.log("LandingPage");
   return (
-    <main className="flex w-full flex-col overflow-x-hidden">
+    <div className="flex w-full flex-col">
       <HeroSection />
       <InvestorstAndPartners />
       <BuildPortfolioSect />
@@ -21,8 +21,7 @@ function LandingPage() {
       <FiveMinsSection />
       <WhyUsSection />
       <TestimonialSect />
-      <CtaFooter />
-    </main>
+    </div>
   );
 }
 

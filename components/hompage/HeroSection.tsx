@@ -22,7 +22,7 @@ function HeroSection() {
           backgroundImage: "url('/assets/hero-line-shape-1.svg')",
         }}
       ></span>
-      <LandingPageHeader />
+      {/* <LandingPageHeader /> */}
       <div className="relative row-span-1 row-start-2 flex h-full w-screen flex-col items-center justify-center gap-4 px-6 md:gap-7">
         <h2 className="max-w-[700px] text-center text-3xl font-bold md:text-6xl">
           Dollar investments

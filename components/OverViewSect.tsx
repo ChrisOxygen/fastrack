@@ -77,7 +77,7 @@ function OverViewSect() {
             </span>
             <div className="flex flex-col items-start">
               <span className="font-syne text-3xl">{investmentCount}</span>
-              <span className="font-dm_sans">Total Investemts</span>
+              <span className="font-dm_sans">Total Investments</span>
             </div>
           </div>
           <div className="overview-line-box border-x-0 border-b border-siteHeadingDark/25 sm:border-b-0 lg:border-x">

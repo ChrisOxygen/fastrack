@@ -20,6 +20,7 @@ const options: AuthOptions = {
     Credentials({
       name: "Credentials",
       id: "credentials",
+
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -65,6 +66,9 @@ const options: AuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: "/login",
+  },
   callbacks: {
     async jwt({ token, user }) {
       user && (token.user = user);
