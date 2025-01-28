@@ -26,7 +26,7 @@ function ReferEarnBox() {
     <div className="flex flex-col items-center gap-3 rounded-2xl bg-siteLemon px-7 py-6 text-siteHeadingDark">
       <h3 className="font-syne text-3xl font-bold">Refer $ Earn</h3>
       <p className="text-center font-dm_sans">
-        Share this link with a friend, and you both could be eligeble for a $50
+        Share this link with a friend, and you both could be eligible for a $50
         bonus.
       </p>
       <p className="rounded-xl border border-siteHeadingDark p-2 font-dm_sans text-3xl font-bold">

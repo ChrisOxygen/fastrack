@@ -23,7 +23,7 @@ function OurNumberSection() {
             </div>
             <div className="flex flex-col items-center gap-1 md:gap-3">
               <span className="font-syne text-4xl font-medium md:text-6xl">
-                $42m +
+                $282m +
               </span>
               <span className="text-2xl text-siteGreen md:text-3xl">
                 Paid out to users
@@ -32,7 +32,7 @@ function OurNumberSection() {
             <div className="flex flex-col items-center gap-1 md:gap-3">
               <div className="flex items-center gap-2">
                 <span className="block font-syne text-4xl font-medium leading-none md:text-6xl">
-                  530 +
+                  15 +
                 </span>
                 <div className="grid place-items-center">
                   {/* <Image
@@ -45,7 +45,7 @@ function OurNumberSection() {
                 </div>
               </div>
               <span className="text-2xl text-siteGreen md:text-3xl">
-                Paid out to users
+                Countries
               </span>
             </div>
           </div>

@@ -90,7 +90,7 @@ function BuildPortfolioSect() {
             viewport={{ once: true }}
             className="max-w-[700px] text-center text-3xl font-bold md:text-5xl lg:text-left"
           >
-            Build your portfolio starting with just $1
+            Build your portfolio starting with just $100
           </motion.h2>
           <motion.p
             initial={{
@@ -115,7 +115,7 @@ function BuildPortfolioSect() {
           </motion.p>
           <CustomButton
             href="/signup"
-            text="Sign up for Free"
+            text="Sign up for free"
             iconPosition="right"
             bgColor="orange"
             hoverBgColor="green"
@@ -126,7 +126,6 @@ function BuildPortfolioSect() {
       </div>
     </div>
   );
-  // Test commment
 }
 
 export default BuildPortfolioSect;

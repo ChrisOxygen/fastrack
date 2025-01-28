@@ -15,7 +15,7 @@ function CtaFooter() {
           </span>
           <h3 className="mb-5 text-center font-archivo text-3xl font-bold text-white md:text-5xl">
             Get Started Today.
-            <br /> Boost Revenue With Finwave
+            <br /> Boost Revenue With Fastrack
           </h3>
           <CustomButton
             text="Get Started Today"
@@ -35,10 +35,13 @@ function CtaFooter() {
           <nav className="my-6 min-w-[300px] border-y border-white/20 py-6 text-white">
             <Menu location="footer" />
           </nav>
-          <p className="text-center font-archivo text-white">
-            Copyright© 2025 Fastrack Investment
+
+          <p className="-mb-3 text-center font-archivo text-[16px] text-white">
+            Regulated, certified and incensed by the US security exchange
+            commission
           </p>
-          <div className="">
+
+          <div className="flex flex-col gap-8 sm:flex-row">
             <Image
               className=""
               src="/assets/seal.webp"
@@ -46,7 +49,19 @@ function CtaFooter() {
               width={200}
               height={52}
             />
+
+            <Image
+              className=""
+              src="/assets/Fastrack-certification.jpg"
+              alt="Fastrack certification"
+              width={200}
+              height={52}
+            />
           </div>
+
+          <p className="mt-4 text-center font-archivo text-white">
+            Copyright© 2025 Fastrack Investment
+          </p>
         </div>
         <Image
           className="-mb-[20px] shrink-0 object-contain opacity-5 brightness-0 invert transition-all md:shrink"

@@ -86,6 +86,21 @@
   } */
 }
 
+/* Logo partners animation */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll {
+  display: flex;
+  animation: scroll 15s linear infinite;
+}
+
 h1,
 h2,
 h3,

@@ -13,9 +13,10 @@ function PackagePricing() {
             Customized Investment Packages for every budget and goal
           </h3>
           <p className="text-lg text-siteText">
-            Discover our competitive pricing structure designed to provide
-            accessible financial services without compromising quality. Empower
-            your financial future today.
+            Explore tailored investment packages offering diversification,
+            expert management, customizable options, and consistent growth.
+            Achieve financial goals with transparency, affordability, and
+            reliable returns for every investor’s needs.
           </p>
         </div>
         <div className="mt-12 flex w-full flex-col items-start justify-between gap-6 lg:flex-row">

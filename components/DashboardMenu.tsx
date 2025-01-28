@@ -71,7 +71,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
             <FiPower />
           </button>
         </div>
-        <span className="">2024 Fastrack </span>
+        <span className="">2025 Fastrack </span>
       </div>
     </aside>
   );

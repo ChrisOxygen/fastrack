@@ -29,8 +29,8 @@ function HeroSection() {
           <br /> that help you grow.
         </h2>
         <p className="w-full max-w-[900px] text-center text-xl text-siteText md:text-2xl">
-          Rise gives you access to a carefully selected portfolio of global
-          investments, across US stocks, US real estate and fixed income assets.
+          Our platform is designed to simplify investing and empower individuals
+          - Beginers or Experts to achieve their financial goals.
         </p>
         <div className="flex items-center gap-6">
           <CustomButton

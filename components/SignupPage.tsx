@@ -266,7 +266,7 @@ function SignupPage() {
             )}
           </form>
         </div>
-        <span className="">Fastrack 2024 all rights reserved</span>
+        <span className="">Fastrack 2025 all rights reserved</span>
       </div>
     </main>
   );

@@ -28,10 +28,10 @@ function InvestorsCarousel() {
     <div>
       <div className="mb-10 flex flex-col items-start space-y-2 px-6 pt-16 text-start sm:pt-24 md:mb-16 md:items-center md:text-center">
         <h5 className="text-[12px] font-light uppercase tracking-wider text-siteOrange md:text-sm">
-          Our Team Experts
+          Our Investors
         </h5>
         <h3 className="font-wix w-full text-3xl font-semibold sm:w-[75%] md:w-1/2 md:text-4xl">
-          Meet the Experts Behind Your Financial Growth
+          Meet the Investors Behind Your Financial Growth
         </h3>
       </div>
 

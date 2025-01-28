@@ -10,29 +10,32 @@ function WhyUsSection() {
           <div className="flex flex-col gap-5 pr-0 lg:pr-40">
             <div className="mb-11 flex flex-col gap-3 border-b border-white/30 pb-11 last:mb-0 last:border-b-0 last:pb-0">
               <span className="w-max rounded bg-siteOrange/30 px-4 py-1 font-semibold uppercase text-siteOrange">
-                Expert Guidance
+                ⁠Expertise and Innovation
               </span>
               <p className="text-lg text-white">
-                Get insights from seasoned professionals and cutting-edge
-                analytics to make informed investment decisions
+                Leverage the knowledge of seasoned financial experts combined
+                with cutting-edge AI technology for personalized insights,
+                strategic management, and optimized returns.
               </p>
             </div>
             <div className="mb-11 flex flex-col gap-3 border-b border-white/30 pb-11 last:mb-0 last:border-b-0 last:pb-0">
               <span className="w-max rounded bg-siteOrange/30 px-4 py-1 font-semibold uppercase text-siteOrange">
-                Secure Platform
+                ⁠Diverse and Accessible Options
               </span>
               <p className="text-lg text-white">
-                Your investments are protected with top-tier security measures
-                and encryption technology.
+                Explore a wide range of investment opportunities tailored to
+                your goals, with affordable entry points for both beginners and
+                experienced investors.
               </p>
             </div>
             <div className="mb-11 flex flex-col gap-3 border-b border-white/30 pb-11 last:mb-0 last:border-b-0 last:pb-0">
               <span className="w-max rounded bg-siteOrange/30 px-4 py-1 font-semibold uppercase text-siteOrange">
-                High Growth Opportunities
+                ⁠Transparency and Security
               </span>
               <p className="text-lg text-white">
-                Unlock a diverse portfolio of high-return investment options
-                tailored to your goals.
+                Enjoy peace of mind with clear fee structures, open
+                communication, and top-tier security measures to protect your
+                investments and data.
               </p>
             </div>
             <div className="mb-11 flex flex-col gap-3 border-b border-white/30 pb-11 last:mb-0 last:border-b-0 last:pb-0">
@@ -40,8 +43,9 @@ function WhyUsSection() {
                 Dedicated Support
               </span>
               <p className="text-lg text-white">
-                We&apos;re here for you 24/7 with personalized support and a
-                commitment to your success.
+                Access 24/7 customer service and educational resources,
+                empowering you to make informed decisions and achieve long-term
+                financial success.
               </p>
             </div>
           </div>
