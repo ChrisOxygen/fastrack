@@ -30,6 +30,8 @@ export type UserData = {
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
+  console.log("session", session);
+
   if (!session) {
     console.log("session---------", session);
 
