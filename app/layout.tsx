@@ -4,9 +4,9 @@ import { NextProvider } from "@/providers/NextProvider";
 import "@/styles/globals.css";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import NextAuthProvider from "@/providers/NextAuthProvider";
-import { getServerSession } from "next-auth";
 
 import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/auth";
 
 const syne = Syne({ subsets: ["latin"], variable: "--syne" });
 const dm_sans = DM_Sans({ subsets: ["latin"], variable: "--dm-sans" });
@@ -22,14 +22,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
+  const session = await auth();
   return (
     <html
       lang="en"
       className={`${syne.variable} ${dm_sans.variable} ${archivo.variable}`}
     >
       <body suppressHydrationWarning={true}>
-        <NextAuthProvider session={session}>
+        <NextAuthProvider>
           <ReactQueryProvider>
             <NextProvider>{children}</NextProvider>
           </ReactQueryProvider>

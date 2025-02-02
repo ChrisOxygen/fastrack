@@ -5,6 +5,7 @@ import useFetchUserData from "@/hooks/useFetchUserData";
 import clsx from "clsx";
 import Link from "next/link";
 import { FiArrowUp, FiPlus, FiTrendingUp } from "react-icons/fi";
+import LoadingSpinner from "./LoadingSpinner";
 
 function TotalBalanceSect({
   isInvestmenyPage = false,
@@ -12,6 +13,8 @@ function TotalBalanceSect({
   isInvestmenyPage?: boolean;
 }) {
   const { data, error, status } = useFetchUserData();
+
+  if (status === "pending") return <LoadingSpinner />;
 
   const { balance } = data as UserData;
   return (

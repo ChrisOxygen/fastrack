@@ -16,8 +16,9 @@ type userSignupDetailsType = {
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { connectToDatabase } from "./database";
-import { userLoginDetailsType } from "@/types";
+import { ErrorWithMessageAndStatus, userLoginDetailsType } from "@/types";
 import User from "./database/models/user.model";
+import { CustomFormError } from "@/lib/utils";
 
 // Define custom error classes using ES6+ syntax
 class ValidationError extends Error {

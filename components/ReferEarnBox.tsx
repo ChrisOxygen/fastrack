@@ -5,6 +5,7 @@ import useFetchUserData from "@/hooks/useFetchUserData";
 import copy from "copy-to-clipboard";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
+import LoadingSpinner from "./LoadingSpinner";
 
 export const notify = (mainText?: string) =>
   toast.custom(
@@ -15,6 +16,8 @@ export const notify = (mainText?: string) =>
 
 function ReferEarnBox() {
   const { data, error, status } = useFetchUserData();
+
+  if (status === "pending") return <LoadingSpinner />;
 
   const { referralCode } = data as UserData;
   function handleCopy() {

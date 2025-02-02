@@ -1,6 +1,6 @@
 import { CyptoTransferMethodType } from "@/app/dashboard/deposit/page";
 
-export type InvestmentTransactionType = {
+declare type InvestmentTransactionType = {
   investmentPackage: "sapphire" | "emerald" | "diamond";
   amount: number;
   userId: string;
@@ -15,7 +15,7 @@ export type InvestmentTransactionType = {
     | "deposit";
 };
 
-export type DepositTransactionType = {
+declare type DepositTransactionType = {
   amount: number;
   transferMethod: CyptoTransferMethodType;
   transferFee: number;
@@ -24,7 +24,7 @@ export type DepositTransactionType = {
   userId: string;
 };
 
-export type CreateTransactionType = {
+declare type CreateTransactionType = {
   type:
     | "investment deposit"
     | "withdrawal"
@@ -38,7 +38,7 @@ export type CreateTransactionType = {
   userId: string;
 };
 
-export type WithdrawalDetails = {
+declare type WithdrawalDetails = {
   amount: number;
   deductableAmount: number;
   tax: number;
@@ -48,18 +48,18 @@ export type WithdrawalDetails = {
   network?: string;
 };
 
-export type CustomError = Error & {
+declare type CustomError = Error & {
   field: string;
 };
 
-export type userCryptoDepositDetailsType = {
+declare type userCryptoDepositDetailsType = {
   amount: number;
   transferMethod: CyptoTransferMethodType;
   transferFee: number;
   amountToReceive: number;
   tax: number;
 };
-export type userTransferDetailsType = {
+declare type userTransferDetailsType = {
   reciverEmail: string;
   amount: number;
   note?: string;
@@ -67,7 +67,7 @@ export type userTransferDetailsType = {
   amountToReceive: number;
 };
 
-export type BankWithdrawalDetailsType = {
+declare type BankWithdrawalDetailsType = {
   bankName: string;
   accountNumber: string;
   accountName: string;
@@ -77,7 +77,7 @@ export type BankWithdrawalDetailsType = {
   deductableAmount: number;
 };
 
-export type PayPalWithdrawalDetailsType = {
+declare type PayPalWithdrawalDetailsType = {
   payPalEmail: string;
   amount: number;
   fee: number;
@@ -85,7 +85,7 @@ export type PayPalWithdrawalDetailsType = {
   deductableAmount: number;
 };
 
-export type UserWdrawalDetailsType = {
+declare type UserWdrawalDetailsType = {
   amount: number;
   deductableAmount: number;
   tax: number;
@@ -95,7 +95,33 @@ export type UserWdrawalDetailsType = {
   network?: string;
 };
 
-export type userLoginDetailsType = {
+declare type userLoginDetailsType = {
   email: string;
   password: string;
 };
+
+declare interface SignUpDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+declare interface SignInDetails {
+  email: string;
+  password: string;
+}
+
+declare type ErrorWithMessageAndStatus = {
+  message: string;
+  status: number;
+  field?: string;
+} & Error;
+
+declare interface SessionUserProfile {
+  id: string;
+  name: string;
+  avatar: string;
+  email: string;
+  isVerified: boolean;
+}

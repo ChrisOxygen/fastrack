@@ -1,19 +1,12 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 
-import useFetchUserData from "@/hooks/useFetchUserData";
 import MobileMenu from "@/components/MobileMenu";
-import { Spinner } from "@nextui-org/react";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import DashboardMenu from "@/components/DashboardMenu";
-import Loading from "./loading";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { getUserData } from "@/utils/actions/user.actions";
+
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export type TransactionType = {
   transactionId: string;
@@ -34,11 +27,13 @@ export type UserData = {
   balance: number;
 };
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { data, error, status } = useFetchUserData();
+async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
 
-  if (status === "pending") {
-    return <LoadingSpinner />;
+  if (!session) {
+    console.log("session---------", session);
+
+    return redirect("/login");
   }
 
   return (

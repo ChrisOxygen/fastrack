@@ -281,4 +281,11 @@ export const PARTENER_LOGOS = [
   "/assets/partner-brand-14-2.png",
 ];
 
+export const AUTH_SLIDE_ITEMS = [
+  "Dollar investments that help you grow.",
+  "Easy. Diversified. Managed by Experts.",
+  "Get smarter about your money",
+  "Join a new generation of investors",
+];
+
 //duration: new Date(Date.now() + 48 * 60 * 60 * 1000), // 48 hours from now

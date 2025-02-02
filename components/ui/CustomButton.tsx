@@ -4,16 +4,18 @@ import { motion } from "framer-motion";
 import clsx from "clsx";
 import Link from "next/link";
 
-type CustomButtonProps = {
-  text: string;
+interface CustomButtonProps {
+  text: string | React.ReactNode;
   href?: string;
-  onClickFn?: () => void;
+  onClickFn?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   icon?: React.ReactNode;
   bgColor: "green" | "orange" | "white";
   hoverBgColor: "green" | "orange" | "white";
   textColor: "white" | "black";
   iconPosition?: "left" | "right";
-};
+  isFullWidth?: boolean;
+  disabled?: boolean;
+}
 
 function CustomButton({
   text,
@@ -24,6 +26,8 @@ function CustomButton({
   textColor,
   iconPosition,
   onClickFn,
+  isFullWidth,
+  disabled,
 }: CustomButtonProps) {
   const childBgVariants = {
     hidden: {
@@ -54,8 +58,11 @@ function CustomButton({
   return (
     <motion.div
       className={clsx(
-        "relative h-[48px] w-max overflow-hidden rounded-[8px] sm:h-[58px]",
+        "relative flex h-[48px] w-max cursor-pointer justify-center overflow-hidden rounded-[8px] sm:h-[58px]",
         backgroundColor,
+        isFullWidth && "!w-full",
+        textColor === "white" &&
+          "*:text-white *:hover:scale-[112%] *:hover:text-black",
       )}
       initial="hidden"
       animate="hidden"
@@ -97,8 +104,9 @@ function CustomButton({
         </Link>
       ) : (
         <button
+          disabled={disabled}
           className={clsx(
-            "relative z-[2] inline-flex h-full w-max items-center justify-center px-[26px] py-4 text-center text-[16px] font-bold leading-[1] transition-all ease-in-out hover:scale-[112%] hover:text-black",
+            "relative z-[2] inline-flex h-full w-full cursor-pointer items-center justify-center px-[26px] py-4 text-center text-[16px] font-bold leading-[1] transition-all ease-in-out hover:scale-[112%] hover:text-black",
             textColor === "white" && "text-white hover:text-black",
             textColor === "black" && "text-black hover:text-white",
           )}

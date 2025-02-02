@@ -1,3 +1,5 @@
+"use client";
+
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,8 +14,10 @@ import { DASHBOARD_MENU_ITEMS } from "@/constants";
 import LoadingSpinner from "./LoadingSpinner";
 
 function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
-  const { data } = useFetchUserData();
+  const { data, status } = useFetchUserData();
   const router = useRouter();
+
+  if (status === "pending") return <LoadingSpinner />;
 
   const { email, firstName, lastName } = data as UserData;
   return (
