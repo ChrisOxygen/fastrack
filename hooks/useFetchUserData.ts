@@ -16,12 +16,6 @@ function useFetchUserData() {
     enabled: !!session?.user.id,
   });
 
-  const router = useRouter();
-
-  if (!session) {
-    redirect("/login");
-  }
-
   return { data, error, status, sessionStatus, session };
 }
 
