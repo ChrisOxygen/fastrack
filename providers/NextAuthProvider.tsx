@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 
 function NextAuthProvider({ children }: { children: React.ReactNode }) {

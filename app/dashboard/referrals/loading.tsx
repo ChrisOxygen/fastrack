@@ -1,6 +1,7 @@
-import LoadingSpinner from "@/components/LoadingSpinner";
+import InBoxLoader from "@/components/InBoxLoader";
+
 function loading() {
-  return <LoadingSpinner />;
+  return <InBoxLoader />;
 }
 
 export default loading;

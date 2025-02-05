@@ -14,12 +14,17 @@ export const notify = (mainText?: string) =>
     </div>,
   );
 
-function ReferEarnBox() {
-  const { data, error, status } = useFetchUserData();
+  type ReferEarnBoxProps = {
+    referralCode: string;
+    status: "pending" | "error" | "success";
+  };
+
+function ReferEarnBox({ referralCode, status }: ReferEarnBoxProps) {
+  
 
   if (status === "pending") return <LoadingSpinner />;
 
-  const { referralCode } = data as UserData;
+  
   function handleCopy() {
     copy(window.location.origin + "/signup/" + referralCode);
     console.log("copied");

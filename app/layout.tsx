@@ -29,7 +29,7 @@ export default async function RootLayout({
       className={`${syne.variable} ${dm_sans.variable} ${archivo.variable}`}
     >
       <body suppressHydrationWarning={true}>
-        <NextAuthProvider>
+        <NextAuthProvider >
           <ReactQueryProvider>
             <NextProvider>{children}</NextProvider>
           </ReactQueryProvider>

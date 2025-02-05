@@ -7,6 +7,8 @@ import DashboardMenu from "@/components/DashboardMenu";
 
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import useFetchUserData from "@/hooks/useFetchUserData";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export type TransactionType = {
   transactionId: string;
@@ -28,16 +30,10 @@ export type UserData = {
 };
 
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  console.log("DashboardLayout");
   const session = await auth();
 
-  console.log("session", session);
-
-  if (!session) {
-    console.log("session---------", session);
-
-    return redirect("/login");
-  }
-
+  console.log("session--------", session);
   return (
     <div className="flex w-full flex-col">
       <header className="flex items-center justify-between border-b border-siteHeadingDark/30 bg-white p-5 lg:hidden">

@@ -14,13 +14,18 @@ import {
 } from "react-icons/fi";
 import LoadingSpinner from "./LoadingSpinner";
 import useUserOverview from "@/hooks/useUserOverview";
+import { Skeleton } from "./ui/skeleton";
 
-function OverViewSect() {
-  const { data, error, status } = useFetchUserData();
+type OverviewDataProps = {
+  balance: number;
+  status: "pending" | "error" | "success";
+};
+
+function OverViewSect({ balance, status }: OverviewDataProps) {
   const { overviewData, useOverviewStatus } = useUserOverview();
 
   if (status === "pending" || useOverviewStatus === "pending")
-    return <LoadingSpinner />;
+    return <Skeleton className="h-full w-full rounded-2xl" />;
 
   const {
     totalDeposit,
@@ -30,8 +35,6 @@ function OverViewSect() {
     totalWithdrawal,
     investmentCount,
   } = overviewData!;
-
-  const { balance } = data as UserData;
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-siteHeadingDark/25 px-5 py-4 2xl:px-7 2xl:py-6">

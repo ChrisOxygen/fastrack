@@ -17,13 +17,14 @@ import Link from "next/link";
 
 import BtnLoadSpinner from "@/components/BtnLoadSpinner";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 import CustomButton from "@/components/ui/CustomButton";
 import { useMutation } from "@tanstack/react-query";
 import { SignInDetails } from "@/types";
 import { signInUser } from "@/utils/actions/user.actions";
 import { useSession } from "next-auth/react";
+import { revalidatePath } from "next/cache";
 
 const loginFormSchema = z.object({
   email: z.string().email({
@@ -39,7 +40,7 @@ function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -53,6 +54,7 @@ function LoginPage() {
     onSuccess: () => {
       // Handle success
 
+      update();
       router.push("/dashboard");
     },
     onError: (error) => {

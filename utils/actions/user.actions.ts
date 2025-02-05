@@ -133,7 +133,6 @@ export const verifiyAccout = async (data: { email: string; code: string }) => {
 
     user.isVerified = true;
     await user.save();
-    
 
     await VerificationCode.findOneAndDelete({ userId: user._id });
 
@@ -146,6 +145,7 @@ export const verifiyAccout = async (data: { email: string; code: string }) => {
 };
 
 export const getUserData = async (id: string) => {
+  console.log("getUserData fired------------------", id);
   try {
     await connectToDatabase();
 
@@ -160,6 +160,7 @@ export const getUserData = async (id: string) => {
       referralCode: currentUser.referralCode,
       balance: currentUser.balance,
     };
+    console.log("userObj------------------", userObj);
     return userObj ? JSON.parse(JSON.stringify(userObj)) : null;
   } catch (error) {
     handleError(error, "getUserData");
@@ -293,6 +294,8 @@ export const signInUser = async (data: SignInDetails) => {
     if (signedIn && signedIn.error) {
       throw new Error(signedIn.code);
     }
+
+    return JSON.parse(JSON.stringify({ success: true }));
   } catch (err) {
     if (err instanceof InvalidLoginError) {
       throw new Error("Invalid email or password");

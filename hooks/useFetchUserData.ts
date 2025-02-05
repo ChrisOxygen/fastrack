@@ -4,6 +4,7 @@ import { getUserData } from "@/utils/actions/user.actions";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter, redirect } from "next/navigation";
+import { use, useEffect, useState } from "react";
 
 function useFetchUserData() {
   const { data: session, status: sessionStatus } = useSession();
@@ -15,6 +16,10 @@ function useFetchUserData() {
     },
     enabled: !!session?.user.id,
   });
+
+  useEffect(() => {
+    console.log("session#############", session);
+  }, [session]);
 
   return { data, error, status, sessionStatus, session };
 }
