@@ -7,7 +7,6 @@ import bcrypt from "bcryptjs";
 
 import { connectToDatabase } from "@/utils/database";
 import { ErrorWithMessageAndStatus, SessionUserProfile } from "./types";
-import { revalidatePath } from "next/cache";
 
 export class InvalidLoginError extends CredentialsSignin {
   code = "Invalid email or password";
@@ -109,8 +108,6 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
           isVerified: user.isVerified,
         };
       }
-
-      console.log("session from session#############", session);
 
       return session;
     },

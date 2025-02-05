@@ -1,9 +1,7 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
+
 function loading() {
-  return <div className="">loading from login...</div>;
+  return <LoadingSpinner />;
 }
-// function loading() {
-//   return <LoadingSpinner />;
-// }
 
 export default loading;

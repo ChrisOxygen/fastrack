@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { useState } from "react";
 import TransactionPagination from "@/components/TransactionPagination";
+import InBoxLoader from "@/components/InBoxLoader";
 
 function AllTransactions() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,11 +33,7 @@ function AllTransactions() {
     setCurrentPage(page);
   };
 
-  if (status === "loading" || queryStatus === "pending")
-    return <LoadingSpinner />;
-  if (status === "unauthenticated") {
-    redirect("/login");
-  }
+  if (status === "loading" || queryStatus === "pending") return <InBoxLoader />;
 
   const { userTransactions, numberOfTransactions } = transactions!;
 

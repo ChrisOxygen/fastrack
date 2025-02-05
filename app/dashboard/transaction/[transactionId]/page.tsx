@@ -11,6 +11,7 @@ import { notify } from "@/components/ReferEarnBox";
 import { useQuery } from "@tanstack/react-query";
 import { getTransaction } from "@/utils/actions/transaction.actions";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import InBoxLoader from "@/components/InBoxLoader";
 
 function getTransactionTitle(type: string) {
   switch (type) {
@@ -74,7 +75,7 @@ function Transaction() {
   });
 
   if (status === "pending") {
-    return <LoadingSpinner />;
+    return <InBoxLoader />;
   }
 
   if (error) {

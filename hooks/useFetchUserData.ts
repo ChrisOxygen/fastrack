@@ -17,10 +17,6 @@ function useFetchUserData() {
     enabled: !!session?.user.id,
   });
 
-  useEffect(() => {
-    console.log("session#############", session);
-  }, [session]);
-
   return { data, error, status, sessionStatus, session };
 }
 
