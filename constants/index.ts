@@ -55,6 +55,14 @@ export const TRANSFER_METHODS = [
     depositAddress: "TRyXWCrXpiTi3a3JDgfoXVFZNKT5XYQrY2",
     network: "TRC20",
   },
+  {
+    id: 3,
+    key: "ETH",
+    label: "ETH",
+
+    depositAddress: "0x598Ed260789d85F0b5F2d9471CDf608b7Af02875",
+    network: "Not Reqiured",
+  },
 ];
 
 export const DASHBOARD_MENU_ITEMS = [

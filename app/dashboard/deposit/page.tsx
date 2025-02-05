@@ -13,9 +13,8 @@ import clsx from "clsx";
 import DepositTransCreated from "@/components/DepositTransCreated";
 import { useSession } from "next-auth/react";
 import { createDepositTransaction } from "@/utils/actions/transaction.actions";
-import { toast } from "sonner";
 
-export type CyptoTransferMethodType = "BTC" | "USDT" | null;
+export type CyptoTransferMethodType = "BTC" | "USDT" | "ETH" | null;
 
 type FormInputs = {
   amount: number;
@@ -59,15 +58,7 @@ function Deposit() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: createDepositTransaction,
-    onError: (error) => {
-      // toast("Event has been created", {
-      //   description: "Sunday, December 03, 2023 at 9:00 AM",
-      //   action: {
-      //     label: "Undo",
-      //     onClick: () => console.log("Undo"),
-      //   },
-      // })
-    },
+    onError: (error) => {},
     onSuccess: (data) => {
       reset();
       setTransferMethod(null);
@@ -220,6 +211,20 @@ function Deposit() {
                     }}
                   >
                     USDT
+                  </button>
+                  <button
+                    className={clsx(
+                      "w-full rounded-xl border border-siteGreen px-6 py-5 font-dm_sans text-xl",
+                      transferMethod === "ETH"
+                        ? "bg-siteGreen text-white"
+                        : "bg-transparent text-siteGreen",
+                    )}
+                    onClick={() => {
+                      setValue("transferMethod", "ETH");
+                      setTransferMethod("ETH");
+                    }}
+                  >
+                    ETH
                   </button>
                 </div>
               </div>

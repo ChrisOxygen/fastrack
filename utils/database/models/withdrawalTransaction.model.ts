@@ -14,7 +14,7 @@ const withdrawalTransactionSchema = new Schema(
   {
     withdrawalMethod: {
       type: String,
-      enum: ["USDT", "BTC"],
+      enum: ["USDT", "BTC", "ETH"],
       required: [true, "Withdrawal method is required"],
     },
     deductableAmount: {
