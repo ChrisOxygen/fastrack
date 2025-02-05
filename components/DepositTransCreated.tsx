@@ -10,6 +10,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import CustomButton from "./ui/CustomButton";
 
 import { TRANSFER_METHODS } from "@/constants";
+import InBoxLoader from "./InBoxLoader";
 
 type DepositTransCreatedProps = {
   transOBJ: {
@@ -38,7 +39,7 @@ function DepositTransCreated({
     enabled: !!id,
   });
 
-  if (transactionStatus === "pending") return <LoadingSpinner />;
+  if (transactionStatus === "pending") return <InBoxLoader />;
 
   const { transactionId, createdAt, amount, fee } = transaction!;
 

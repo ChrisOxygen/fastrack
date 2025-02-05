@@ -12,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 // import { signupNewUser } from "@/utils/services";
 import { signupNewUser } from "@/utils/actions/user.actions";
 import LoadingSpinner from "./LoadingSpinner";
+import InBoxLoader from "./InBoxLoader";
 
 type SignupInputs = {
   firstName: string;
@@ -87,7 +88,7 @@ function SignupPage() {
   };
 
   if (isPending) {
-    return <LoadingSpinner />;
+    return <InBoxLoader />;
   }
 
   return (
