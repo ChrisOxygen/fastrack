@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { getToken } from "next-auth/jwt";
 
-export default async function Middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Check for session token
   const token = await getToken({
     req: request,
