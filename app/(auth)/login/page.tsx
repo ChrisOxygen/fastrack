@@ -81,9 +81,10 @@ function LoginPage() {
   const loading =
     form.formState.isSubmitting || form.formState.isValidating || isPending;
 
-  if (session) {
-    router.push("/dashboard");
-  }
+  // if (session) {
+  //   router.push("/dashboard");
+  //   // redirect("/dashboard");
+  // }
   return (
     <div className="flex w-full flex-col gap-2">
       <h2 className="text-4xl font-thin text-siteGreen">Sign in</h2>
