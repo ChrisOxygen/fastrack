@@ -51,12 +51,14 @@ function LoginPage() {
     mutationFn: (values: SignInDetails) => {
       return signInUser(values as SignInDetails);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       // Handle success
 
       console.log("success login");
 
-      update();
+      await update();
+
+      console.log("after update");
       router.push("/dashboard");
     },
     onError: (error) => {
