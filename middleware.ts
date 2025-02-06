@@ -16,6 +16,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // if page is login, sign up or forgot password, redirect to dashboard if token is present
+
+  // console.log("request.url-----------", request.url);
+  // if (
+  //   request.url.includes("/login") ||
+  //   request.url.includes("/signup") ||
+  //   request.url.includes("/forgot-password")
+  // ) {
+  //   console.log("redirecting to dashboard");
+  //   return NextResponse.redirect(new URL("/dashboard", request.url));
+  // }
+
   return NextResponse.next();
 }
 
