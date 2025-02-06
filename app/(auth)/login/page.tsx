@@ -54,6 +54,8 @@ function LoginPage() {
     onSuccess: () => {
       // Handle success
 
+      console.log("success login");
+
       update();
       router.push("/dashboard");
     },

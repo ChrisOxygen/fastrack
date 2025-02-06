@@ -30,10 +30,6 @@ export type UserData = {
 async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
-  if (!session) {
-    console.log("redirecting");
-    redirect("/login");
-  }
   return (
     <div className="flex w-full flex-col">
       <header className="flex items-center justify-between border-b border-siteHeadingDark/30 bg-white p-5 lg:hidden">
