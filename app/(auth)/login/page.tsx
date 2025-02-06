@@ -58,12 +58,7 @@ function LoginPage() {
 
       await update();
 
-      console.log("after update");
-
-      router.refresh();
-
-      console.log("after refresh");
-      router.push("/dashboard");
+      globalThis.location.href = "/dashboard";
     },
     onError: (error) => {
       // An error happened!
