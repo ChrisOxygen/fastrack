@@ -57,6 +57,7 @@ function LoginPage() {
       console.log("success login");
 
       await update();
+      router.refresh();
 
       router.push("/dashboard");
     },
