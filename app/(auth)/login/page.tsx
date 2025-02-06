@@ -58,12 +58,12 @@ function LoginPage() {
 
       await update();
 
-      globalThis.location.href = "/dashboard";
+      router.push("/dashboard");
     },
     onError: (error) => {
       // An error happened!
       console.log("error--------------");
-      console.log("error name", error);
+      console.log("error name", error.message);
       if (error.message === "Invalid email or password") {
         form.setError("root" as "email" | "password" | "root", {
           type: "manual",
