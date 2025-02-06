@@ -59,10 +59,15 @@ function LoginPage() {
       await update();
 
       console.log("after update");
+
+      router.refresh();
+
+      console.log("after refresh");
       router.push("/dashboard");
     },
     onError: (error) => {
       // An error happened!
+      console.log("error--------------");
       console.log("error name", error);
       if (error.message === "Invalid email or password") {
         form.setError("root" as "email" | "password" | "root", {
