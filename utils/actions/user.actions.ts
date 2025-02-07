@@ -298,13 +298,13 @@ export const signInUser = async (data: SignInDetails) => {
     return JSON.parse(JSON.stringify({ success: true }));
   } catch (err) {
     if (err instanceof InvalidLoginError) {
-      throw new Error("Invalid email or password");
+      return JSON.parse(
+        JSON.stringify({ error: true, message: "Invalid email or password" }),
+      );
     } else {
       const error = err as UnverifiedUserError;
       const errorString = `UNVERIFIED ${error.userName}`;
-      const newErr = new Error(errorString);
-
-      return newErr;
+      return JSON.parse(JSON.stringify({ error: true, message: errorString }));
     }
   }
 };

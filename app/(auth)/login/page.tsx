@@ -56,8 +56,12 @@ function LoginPage() {
 
       console.log("data", data);
 
-      update();
-      router.push("/dashboard");
+      if (data.error === true) {
+        throw new Error(data.message);
+      } else {
+        update();
+        router.push("/dashboard");
+      }
     },
     onError: (error) => {
       // An error happened!
