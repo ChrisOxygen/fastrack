@@ -51,20 +51,15 @@ function LoginPage() {
     mutationFn: (values: SignInDetails) => {
       return signInUser(values as SignInDetails);
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       // Handle success
 
-      console.log("success login");
-
-      await update();
-      router.refresh();
-
+      update();
       router.push("/dashboard");
     },
     onError: (error) => {
       // An error happened!
-      console.log("error--------------");
-      console.log("error name", error.message);
+      console.log("error name", error);
       if (error.message === "Invalid email or password") {
         form.setError("root" as "email" | "password" | "root", {
           type: "manual",
@@ -86,10 +81,9 @@ function LoginPage() {
   const loading =
     form.formState.isSubmitting || form.formState.isValidating || isPending;
 
-  // if (session) {
-  //   router.push("/dashboard");
-  //   // redirect("/dashboard");
-  // }
+  if (session) {
+    router.push("/dashboard");
+  }
   return (
     <div className="flex w-full flex-col gap-2">
       <h2 className="text-4xl font-thin text-siteGreen">Sign in</h2>

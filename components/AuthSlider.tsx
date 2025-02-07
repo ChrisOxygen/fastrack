@@ -1,5 +1,3 @@
-"use client";
-
 import { use, useEffect, useState } from "react";
 
 import { AUTH_SLIDE_ITEMS } from "@/constants";

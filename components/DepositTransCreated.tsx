@@ -120,7 +120,7 @@ function DepositTransCreated({
               </span>
               <div className="max-w-[732px]items-center flex w-full flex-col justify-end gap-2 text-lg font-black text-black">
                 <div className="max-w-[732px]items-center flex w-full flex-col justify-end gap-2 text-lg font-black text-black md:flex-row">
-                  <span className="max-w-[300px] text-clip text-wrap text-[12px] md:max-w-max md:text-medium">
+                  <span className="max-w-[300px] text-clip text-wrap text-[12px]">
                     {transferMethodObj.depositAddress}
                   </span>
                   <button

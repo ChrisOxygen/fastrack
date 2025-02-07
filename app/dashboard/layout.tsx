@@ -5,6 +5,9 @@ import { Toaster } from "react-hot-toast";
 import MobileMenu from "@/components/MobileMenu";
 import DashboardMenu from "@/components/DashboardMenu";
 
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
+
 export type TransactionType = {
   transactionId: string;
   type: string;
@@ -24,7 +27,13 @@ export type UserData = {
   balance: number;
 };
 
-function DashboardLayout({ children }: { children: React.ReactNode }) {
+async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+
+  if (!session) {
+    console.log("redirecting");
+    redirect("/login");
+  }
   return (
     <div className="flex w-full flex-col">
       <header className="flex items-center justify-between border-b border-siteHeadingDark/30 bg-white p-5 lg:hidden">
