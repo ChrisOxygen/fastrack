@@ -304,7 +304,7 @@ export const signInUser = async (data: SignInDetails) => {
       const errorString = `UNVERIFIED ${error.userName}`;
       const newErr = new Error(errorString);
 
-      throw newErr;
+      return newErr;
     }
   }
 };

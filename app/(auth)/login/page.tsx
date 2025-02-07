@@ -51,8 +51,10 @@ function LoginPage() {
     mutationFn: (values: SignInDetails) => {
       return signInUser(values as SignInDetails);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Handle success
+
+      console.log("data", data);
 
       update();
       router.push("/dashboard");
