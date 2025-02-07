@@ -1,6 +1,9 @@
+"use client";
+
 import clsx from "clsx";
 import CustomButton from "./ui/CustomButton";
 import { LuCheckCheck } from "react-icons/lu";
+import { useSession } from "next-auth/react";
 
 type PackageBoxProps = {
   ivPackageDetails: {
@@ -13,6 +16,7 @@ type PackageBoxProps = {
 };
 
 function PackageBox({ ivPackageDetails }: PackageBoxProps) {
+  const { data: session } = useSession();
   const { name, description, minimumAmount, duration, roi } = ivPackageDetails;
 
   const isEmerald = name === "Emerald";
@@ -52,6 +56,7 @@ function PackageBox({ ivPackageDetails }: PackageBoxProps) {
         </div>
       </div>
       <CustomButton
+        href={session ? "/dashboard/investment" : "/signup"}
         text="Get Started Today"
         bgColor={isEmerald ? "white" : "orange"}
         hoverBgColor={isEmerald ? "orange" : "green"}

@@ -19,9 +19,10 @@ function CtaFooter() {
           </h3>
           <CustomButton
             text="Get Started Today"
+            href="/signup"
             bgColor="orange"
             hoverBgColor="white"
-            textColor="black"
+            textColor="white"
           />
         </div>
         <div className="z-20 mt-20 flex w-full flex-col items-center gap-10 rounded-3xl bg-[#006D5B] p-20">

@@ -56,6 +56,7 @@ function FiveMinsSection() {
 
             <CustomButton
               text="Get Started Today"
+              href="/signup"
               bgColor="green"
               hoverBgColor="orange"
               textColor="white"

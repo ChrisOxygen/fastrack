@@ -10,9 +10,9 @@ import TestimonialSect from "@/components/hompage/TestimonialSect";
 import CtaFooter from "@/components/CtaFooter";
 import HeaderScroll from "@/components/HeaderScroll";
 import PartnerLogos from "@/components/hompage/PartnerLogos";
+import { useSession } from "next-auth/react";
 
 function LandingPage() {
-  console.log("LandingPage");
   return (
     <div className="flex w-full flex-col">
       <HeroSection />

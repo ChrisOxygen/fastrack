@@ -22,14 +22,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html
       lang="en"
       className={`${syne.variable} ${dm_sans.variable} ${archivo.variable}`}
     >
       <body suppressHydrationWarning={true}>
-        <NextAuthProvider >
+        <NextAuthProvider>
           <ReactQueryProvider>
             <NextProvider>{children}</NextProvider>
           </ReactQueryProvider>
