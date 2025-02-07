@@ -60,6 +60,7 @@ function LoginPage() {
     onError: (error) => {
       // An error happened!
       console.log("error name", error);
+      console.log("error message------------", error.message);
       if (error.message === "Invalid email or password") {
         form.setError("root" as "email" | "password" | "root", {
           type: "manual",
