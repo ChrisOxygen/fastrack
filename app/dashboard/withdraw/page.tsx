@@ -15,6 +15,7 @@ import StepDisplay from "@/components/StepDisplay";
 import clsx from "clsx";
 import { WithdrawalDetails } from "@/types";
 import { createWithdrawalTransaction } from "@/utils/actions/transaction.actions";
+import InBoxLoader from "@/components/InBoxLoader";
 
 type FormInputs = {
   amount: number;
@@ -34,8 +35,7 @@ function WithdrawScreen() {
   );
   const [transID, setTransID] = useState<string | null>(null);
 
-  const { session, data } = useFetchUserData();
-  const { balance } = data as UserData;
+  const { session, data, status } = useFetchUserData();
 
   const queryClient = useQueryClient();
 
@@ -75,6 +75,9 @@ function WithdrawScreen() {
     setError,
     formState: { errors, isLoading, isSubmitting, isValidating },
   } = useForm<FormInputs>();
+
+  if (status === "pending") return <InBoxLoader />;
+  const { balance } = data as UserData;
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     console.log(data);
