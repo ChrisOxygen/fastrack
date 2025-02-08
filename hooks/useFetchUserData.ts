@@ -17,6 +17,10 @@ function useFetchUserData() {
     enabled: !!session?.user.id,
   });
 
+  if (sessionStatus === "unauthenticated") {
+    redirect("/login");
+  }
+
   return { data, error, status, sessionStatus, session };
 }
 

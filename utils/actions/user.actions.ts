@@ -12,7 +12,8 @@ import User from "../database/models/user.model";
 
 import ShortUniqueId from "short-unique-id";
 import { updateInvestmentsBasedOnDuration } from "./investment.actions";
-import { InvalidLoginError, signIn, UnverifiedUserError } from "@/auth";
+import { InvalidLoginError, UnverifiedUserError } from "@/auth.config";
+import { signIn } from "@/auth";
 import { ErrorWithMessageAndStatus, SignInDetails } from "@/types";
 import { CustomFormError } from "@/lib/utils";
 
@@ -276,8 +277,14 @@ export const signupNewUser = async (userDetails: {
     });
 
     return newUser ? JSON.parse(JSON.stringify({ success: true })) : null;
-  } catch (error) {
-    throw error as Error;
+  } catch (err) {
+    const error = err as Error;
+    return JSON.parse(
+      JSON.stringify({
+        error: true,
+        message: error.message || "An error occurred",
+      }),
+    );
   }
 };
 

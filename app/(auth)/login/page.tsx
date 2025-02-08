@@ -58,10 +58,10 @@ function LoginPage() {
 
       if (data.error === true) {
         throw new Error(data.message);
-      } else {
-        update();
-        router.push("/dashboard");
       }
+      console.log("after throw");
+      update();
+      router.push("/dashboard");
     },
     onError: (error) => {
       // An error happened!
@@ -88,9 +88,6 @@ function LoginPage() {
   const loading =
     form.formState.isSubmitting || form.formState.isValidating || isPending;
 
-  if (session) {
-    router.push("/dashboard");
-  }
   return (
     <div className="flex w-full flex-col gap-2">
       <h2 className="text-4xl font-thin text-siteGreen">Sign in</h2>

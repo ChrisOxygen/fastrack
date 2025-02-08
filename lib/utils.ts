@@ -21,3 +21,11 @@ export class CustomFormError extends Error {
     }
   }
 }
+
+export class FormServerError {
+  message: string;
+
+  constructor(message: string) {
+    this.message = message;
+  }
+}

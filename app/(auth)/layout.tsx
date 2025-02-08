@@ -6,8 +6,14 @@ import Image from "next/image";
 import { HiArrowNarrowRight } from "react-icons/hi";
 
 import AuthSlider from "@/components/AuthSlider";
+import { useSession } from "next-auth/react";
 
 function AuthLayout({ children }: { children: React.ReactNode }) {
+  const { data: session } = useSession();
+
+  if (session) {
+    window.location.href = "/dashboard";
+  }
   return (
     <div className="flex h-full min-h-[100vh] w-full flex-col gap-10 overflow-hidden bg-cover bg-center p-5 lg:grid lg:h-screen lg:grid-cols-[minmax(300px,1fr)_minmax(500px,1fr)] lg:gap-0">
       <div
