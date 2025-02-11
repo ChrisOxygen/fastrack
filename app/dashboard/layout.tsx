@@ -47,7 +47,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       </header>
       <main className="block h-full grid-cols-[260px_1fr] lg:grid lg:h-screen lg:overflow-hidden xl:grid-cols-[350px_1fr]">
         <DashboardMenu device="desktop" />
-        <section className="h-full max-h-[1080px] w-full overflow-auto p-4 lg:h-screen lg:overflow-hidden">
+        <section className="h-full max-h-[1080px] min-h-screen w-full overflow-auto p-4">
           {children}
         </section>
       </main>

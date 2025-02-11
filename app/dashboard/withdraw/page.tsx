@@ -19,7 +19,7 @@ import InBoxLoader from "@/components/InBoxLoader";
 
 type FormInputs = {
   amount: number;
-  withdrawalMethod: "USDT" | "BTC";
+  withdrawalMethod: "USDT" | "BTC" | "ETH";
   walletAddress: string;
 
   fee: number;
@@ -134,10 +134,10 @@ function WithdrawScreen() {
   };
 
   return (
-    <section className="flex h-screen flex-col gap-16 overflow-hidden">
+    <section className="flex h-full flex-col gap-16 overflow-auto">
       <StepDisplay step={step} />
       {step === 1 && (
-        <div className="mx-auto flex w-full max-w-[700px] flex-col overflow-auto p-5">
+        <div className="mx-auto flex w-full max-w-[700px] flex-col p-5">
           <span className="font-dm_sans text-3xl font-bold">Withdraw</span>
           <form action="" className="">
             <div className="flex w-full flex-col gap-4">
@@ -204,6 +204,7 @@ function WithdrawScreen() {
                         >
                           <Radio value="USDT">USDT</Radio>
                           <Radio value="BTC">BTC</Radio>
+                          <Radio value="ETH">ETH</Radio>
                         </RadioGroup>
                       )}
                     />

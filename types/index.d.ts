@@ -43,7 +43,7 @@ declare type WithdrawalDetails = {
   deductableAmount: number;
   tax: number;
   fee: number;
-  withdrawalMethod: "BTC" | "USDT";
+  withdrawalMethod: "BTC" | "USDT" | "ETH";
   walletAddress: string;
   network?: string;
 };
