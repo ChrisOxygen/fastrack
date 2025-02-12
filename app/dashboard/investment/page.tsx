@@ -3,6 +3,7 @@
 import InBoxLoader from "@/components/InBoxLoader";
 import InvestmentsDisplay from "@/components/InvestmentsDisplay";
 import TotalBalanceSect from "@/components/TotalBalanceSect";
+import useFetchUserData from "@/hooks/useFetchUserData";
 
 import { getUserInvestments } from "@/utils/actions/investment.actions";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { useSession } from "next-auth/react";
 
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { UserData } from "../layout";
 
 function Investment() {
   const { data: session, status } = useSession();
@@ -25,6 +27,8 @@ function Investment() {
     },
     enabled: !!session?.user.id,
   });
+
+  const { data } = useFetchUserData();
 
   if (status === "unauthenticated") {
     redirect("/login");
@@ -46,9 +50,15 @@ function Investment() {
     return router.push("/dashboard/investment/create");
   }
 
+  const { balance } = data as UserData;
+
   return (
     <div className="flex flex-col gap-5">
-      <TotalBalanceSect status={investmentsStatus} isInvestmenyPage={true} />
+      <TotalBalanceSect
+        balance={balance}
+        status={investmentsStatus}
+        isInvestmenyPage={true}
+      />
       <InvestmentsDisplay investments={investments} />
     </div>
   );
