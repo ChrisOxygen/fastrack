@@ -27,8 +27,10 @@ function getTransactionTitle(type: string) {
       return "Investment Bonus";
     case "referral bonus":
       return "Referral Bonus";
+    case "withdrawal":
+      return "withdrawal";
     default:
-      return "Investment";
+      return "Transaction";
   }
 }
 
