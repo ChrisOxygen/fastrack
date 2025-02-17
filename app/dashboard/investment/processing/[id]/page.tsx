@@ -41,9 +41,9 @@ function ProcessingPage() {
         </div>
         <button
           className="flex items-center justify-center gap-2 rounded-lg bg-[#1A5B4C] px-5 py-2 text-white shadow-sm"
-          onClick={() => router.back()}
+          onClick={() => router.push("/dashboard/investment")}
         >
-          Go Back
+          View all investments
         </button>
       </div>
     </section>

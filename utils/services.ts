@@ -283,3 +283,25 @@ export const handleServerError = (
   // Return error response (instead of using res, return an object)
   return { error: formattedMessage, code: statusCode };
 };
+
+export function roiZone(totalTime: number, remaininTime: number) {
+  const percentage = (remaininTime / totalTime) * 100;
+
+  if (percentage > 80) {
+    return { start: 82, end: 92 };
+  } else if (percentage > 60) {
+    return { start: 62, end: 72 };
+  } else if (percentage > 40) {
+    return { start: 42, end: 52 };
+  } else if (percentage > 20) {
+    return { start: 22, end: 32 };
+  } else {
+    return { start: 2, end: 12 };
+  }
+}
+
+// write a function that creates random number between 2 numbers
+
+export function randomBetween(min: number, max: number) {
+  return Math.random() * (max - min + 1) + min;
+}

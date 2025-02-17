@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { INVESTMENT_PLANS } from "@/constants";
 import CountDownTimer from "./CountDownTimer";
@@ -8,40 +8,34 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateSingleInvestmentBasedOnDuration } from "@/utils/actions/investment.actions";
 import { useRouter } from "next/navigation";
 
-//   {
-//     "_id": "672b6f04de6393391ae9f72d",
-//     "investmentPackage": "sapphire",
-//     "amount": 400,
-//     "status": "running",
-//     "returns": 460,
-//     "user": "66deb36559669ef523998f29",
-//     "createdAt": "2024-11-06T13:28:36.353Z",
-//     "updatedAt": "2024-11-06T13:28:36.353Z",
-//     "__v": 0
-// }
+import { useTimer } from "react-timer-hook";
+import ActiveInvestmentCompleted from "./ActiveInvestmentCompleted";
 
-function IvTrading({ investment }: { investment: any }) {
+type IvTradingProps = {
+  investment: any;
+  expiryTimestamp: Date;
+  roi: number;
+  packageDurationDays: number;
+};
+
+function IvTrading({
+  investment,
+  expiryTimestamp,
+  roi,
+  packageDurationDays,
+}: IvTradingProps) {
   const [addedAmt, setAddedAmt] = useState(0);
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const [hasCompleted, setHasCompleted] = useState(false);
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => {
-      return updateSingleInvestmentBasedOnDuration(investment._id);
-    },
-    onError: (error) => {
-      console.log("error", error);
-    },
-    onSuccess: (data) => {
-      console.log("data", data);
+  const timer = useTimer({
+    expiryTimestamp,
+    onExpire: () => {
+      console.log("timer expired");
 
-      queryClient.invalidateQueries({
-        queryKey: ["user", "investment", "investments"],
-      });
-
-      router.push(`/dashboard/investment/processing/${investment._id}`);
+      setHasCompleted(true);
     },
   });
+
   const {
     investmentPackage,
     amount,
@@ -49,36 +43,6 @@ function IvTrading({ investment }: { investment: any }) {
     status: ivStatus,
     returns,
   } = investment;
-
-  const createdAtDate = new Date(createdAt);
-  console.log("createdAtDate FRom DB", createdAtDate);
-
-  const packageDurationDays = INVESTMENT_PLANS.find(
-    (plan) =>
-      plan.packageName.toLocaleLowerCase() ===
-      investmentPackage.toLocaleLowerCase(),
-  )!.durationDays;
-
-  const roiP = INVESTMENT_PLANS.find(
-    (plan) =>
-      plan.packageName.toLocaleLowerCase() ===
-      investmentPackage.toLocaleLowerCase(),
-  )!.roiPercent;
-
-  const roi = amount * (roiP / 100);
-
-  //   const durationPecentage = (createdAt: string, durationInDays: number) => {
-  //     const startDate = new Date(createdAt).getTime();
-  //     const endDate = new Date(createdAt);
-  //     endDate.setDate(endDate.getDate() + durationInDays);
-  //     const endDateInMs = endDate.getTime();
-  //     const currentDate = new Date().getTime();
-
-  //     const duration = endDateInMs - startDate;
-  //     const remaining = endDateInMs - currentDate;
-  //     const percentage = (remaining / duration) * 100;
-  //     return percentage;
-  //   };
 
   const durationPercentage = useCallback(
     (createdAt: string, durationInDays: number) => {
@@ -128,60 +92,44 @@ function IvTrading({ investment }: { investment: any }) {
     }
   }, [createdAt, packageDurationDays, roi, durationPercentage]);
 
-  useEffect(() => {
-    const createdMs = new Date(createdAt).getTime();
-    const durationMs = packageDurationDays * 24 * 60 * 60 * 1000;
-    const endDateMs = createdMs + durationMs;
-    const remainingTimeMs = endDateMs - new Date().getTime();
-
-    const countdown = setTimeout(() => {
-      mutate();
-    }, remainingTimeMs);
-
-    return () => clearTimeout(countdown);
-  }, [createdAt, mutate, packageDurationDays]);
-
-  console.log(
-    "durationPecentage",
-    durationPercentage(createdAt, packageDurationDays),
-    "ROI",
-    roi,
-    amount,
-    addedAmt,
-  );
+  console.log("timer", timer);
 
   const isRunning = ivStatus === "running";
   return (
     <>
-      <div className="mt-10 flex w-full flex-col items-center gap-2">
-        <span className="py[3px] grid place-items-center border bg-gray-100 px-2 font-semibold uppercase text-gray-600">
-          {investmentPackage}
-        </span>
-        <IvSim tradeAmount={amount + addedAmt} />
-        <div className="flex flex-col items-center gap-2">
-          <CountDownTimer
-            isActive={isRunning}
-            createdAt={createdAt}
-            durationInDays={packageDurationDays}
-          />
-          <div
-            className={clsx(
-              "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
-              isRunning ? "opacity-100" : "opacity-50",
-            )}
-          >
-            <span
+      {hasCompleted ? (
+        <ActiveInvestmentCompleted investmentId={investment._id as string} />
+      ) : (
+        <div className="mt-10 flex w-full flex-col items-center gap-2">
+          <span className="py[3px] grid place-items-center border bg-gray-100 px-2 font-semibold uppercase text-gray-600">
+            {investmentPackage}
+          </span>
+          <IvSim tradeAmount={amount + addedAmt} />
+          <div className="flex flex-col items-center gap-2">
+            <CountDownTimer
+              isActive={isRunning}
+              createdAt={createdAt}
+              durationInDays={packageDurationDays}
+            />
+            <div
               className={clsx(
-                "block size-2 rounded-full",
-                isRunning ? "bg-orange-500" : "bg-gray-500",
+                "flex items-center gap-3 rounded-3xl border border-siteHeadingDark/25 px-3 py-1 text-sm uppercase",
+                isRunning ? "opacity-100" : "opacity-50",
               )}
-            ></span>
-            <span className={` ${isRunning ? "opacity-100" : "opacity-50"}`}>
-              Running
-            </span>
+            >
+              <span
+                className={clsx(
+                  "block size-2 rounded-full",
+                  isRunning ? "bg-orange-500" : "bg-gray-500",
+                )}
+              ></span>
+              <span className={` ${isRunning ? "opacity-100" : "opacity-50"}`}>
+                Running
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

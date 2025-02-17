@@ -84,7 +84,7 @@ function CreateInvestment() {
       }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "investments"] });
       router.push("/dashboard/investment");
     },
   });
@@ -131,51 +131,58 @@ function CreateInvestment() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="investmentPackage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>InvestMent Package</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select an InvestMent Package" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="sapphire">sapphire</SelectItem>
-                  <SelectItem value="emerald">emerald</SelectItem>
-                  <SelectItem value="diamond">diamond</SelectItem>
-                </SelectContent>
-              </Select>
+    <main className="grid h-full place-items-center pt-10 md:pt-0">
+      <div className="max-w-[600px] rounded-xl border bg-slate-100/50 p-10">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="investmentPackage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>InvestMent Package</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an InvestMent Package" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="sapphire">sapphire</SelectItem>
+                      <SelectItem value="emerald">emerald</SelectItem>
+                      <SelectItem value="diamond">diamond</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>amount to invest</FormLabel>
-              <FormControl>
-                <Input placeholder="50" {...field} />
-              </FormControl>
-              <FormDescription>
-                Enter the amount you wish to invest.{" "}
-                {getMinimumAmount(form.watch("investmentPackage"))} minimum
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>amount to invest</FormLabel>
+                  <FormControl>
+                    <Input className="bg-white" placeholder="50" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Enter the amount you wish to invest.{" "}
+                    {getMinimumAmount(form.watch("investmentPackage"))} minimum
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Submit</Button>
+          </form>
+        </Form>
+      </div>
+    </main>
   );
 }
 

@@ -24,9 +24,16 @@ export const getInvestments = async (id: string) => {
 };
 
 export const getInvestment = async (id: string) => {
+  console.log("getInvestment fired-----------", id);
   try {
     await connectToDatabase();
-    const investment = await Investment.findById(id);
+    const investment = (await Investment.findById(id)) as IInvestment;
+
+    if (!investment) {
+      throw new Error("Investment not found");
+    }
+
+    console.log("investment---------------", investment);
     return investment ? JSON.parse(JSON.stringify(investment)) : null;
   } catch (error) {
     handleError(error, "getInvestment");

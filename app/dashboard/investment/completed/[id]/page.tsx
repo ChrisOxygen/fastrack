@@ -137,7 +137,7 @@ function CompletedInvestment() {
               </div>
               <div className="mt-6 flex w-full items-center gap-6">
                 <CustomButton
-                  href="/investment/create"
+                  href="/dashboard/investment/create"
                   text="Invest Again"
                   iconPosition="right"
                   bgColor="orange"
