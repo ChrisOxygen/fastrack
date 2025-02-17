@@ -15,6 +15,7 @@ import {
 import LoadingSpinner from "./LoadingSpinner";
 import useUserOverview from "@/hooks/useUserOverview";
 import { Skeleton } from "./ui/skeleton";
+import { formatToUSD } from "@/utils/services";
 
 type OverviewDataProps = {
   balance: number;
@@ -22,7 +23,7 @@ type OverviewDataProps = {
 };
 
 function OverViewSect({ balance, status }: OverviewDataProps) {
-  const { overviewData, useOverviewStatus } = useUserOverview();
+  const { overviewData, useOverviewStatus, profitData } = useUserOverview();
 
   if (status === "pending" || useOverviewStatus === "pending")
     return <Skeleton className="h-full w-full rounded-2xl" />;
@@ -123,7 +124,9 @@ function OverViewSect({ balance, status }: OverviewDataProps) {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="font-dm_sans font-bold">Profit wallet</span>
-              <span className="font-dm_sans text-3xl">N/A</span>
+              <span className="font-dm_sans text-3xl">
+                {formatToUSD(profitData as number)}
+              </span>
             </div>
           </div>
         </div>

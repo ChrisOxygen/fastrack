@@ -229,7 +229,6 @@ export function getReadableDuration(targetDate: Date): string {
 
   if (diff <= 0) return "Expired";
 
-  const seconds = Math.floor((diff / 1000) % 60);
   const minutes = Math.floor((diff / (1000 * 60)) % 60);
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -238,7 +237,14 @@ export function getReadableDuration(targetDate: Date): string {
   if (days > 0) parts.push(`${days} day${days > 1 ? "s" : ""}`);
   if (hours > 0) parts.push(`${hours} hour${hours > 1 ? "s" : ""}`);
   if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
-  if (seconds > 0) parts.push(`${seconds} second${seconds > 1 ? "s" : ""}`);
+
+  if (days > 0) {
+    return parts.slice(0, 2).join(", ");
+  }
+
+  if (parts.length === 0) {
+    return "a few seconds";
+  }
 
   return parts.join(", ");
 }

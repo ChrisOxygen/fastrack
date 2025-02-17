@@ -176,3 +176,20 @@ export async function updateSingleInvestmentBasedOnDuration(id: string) {
     console.error("Error updating investments:", error);
   }
 }
+
+export async function getToTalProfit(id: string) {
+  try {
+    await connectToDatabase();
+    const investments = await Investment.find({ user: id });
+
+    const totalProfit = investments.reduce((acc, iv) => {
+      return acc + iv.returns - iv.amount;
+    }, 0);
+
+    console.log("totalProfit------------", totalProfit);
+
+    return totalProfit as number;
+  } catch (error) {
+    handleError(error, "getToTalProfit");
+  }
+}

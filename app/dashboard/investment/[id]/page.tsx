@@ -83,7 +83,7 @@ function InvestmentPage() {
       const remainingDurationSecs =
         (endTime.getTime() - currentTime.getTime()) / 1000;
 
-      if (remainingDurationSecs <= 10) {
+      if (remainingDurationSecs <= 0) {
         setRunningStatus("ended");
         mutate();
       }
@@ -95,7 +95,8 @@ function InvestmentPage() {
   if (
     runningStatus === "pending" ||
     status === "loading" ||
-    queryStatus === "pending"
+    queryStatus === "pending" ||
+    runningStatus === "ended"
   )
     return <InBoxLoader />;
   if (status === "unauthenticated") {
@@ -131,10 +132,6 @@ function InvestmentPage() {
 
   if (!packageDurationDays || !createdAt || !roi) {
     return redirect("/dashboard/investment");
-  }
-
-  if (runningStatus === "ended") {
-    return <div className="">Ended...</div>;
   }
 
   return (

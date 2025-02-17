@@ -22,7 +22,7 @@ function Investment() {
     error,
     status: investmentsStatus,
   } = useQuery({
-    queryKey: ["user", "investments"],
+    queryKey: ["investments"],
     queryFn: () => {
       return getUserInvestments(session?.user?.id!);
     },

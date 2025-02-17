@@ -1,15 +1,16 @@
-import { formatToUSD, randomBetween, roiZone } from "@/utils/services";
+import {
+  formatToUSD,
+  getReadableDuration,
+  randomBetween,
+  roiZone,
+} from "@/utils/services";
 import React, { useEffect, useState } from "react";
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs";
-import { Skeleton } from "./ui/skeleton";
-import { useTimer } from "react-timer-hook";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { getInvestment } from "@/utils/actions/investment.actions";
-import { useQuery } from "@tanstack/react-query";
+
 import { Investment } from "@/app/dashboard/investment/[id]/page";
-import { set } from "mongoose";
+
 import clsx from "clsx";
+import { set } from "mongoose";
 
 type IvSimulatorProps = {
   investment: Investment;
@@ -24,6 +25,7 @@ function IvSimulator({
   packageDurationDays,
 }: IvSimulatorProps) {
   const [instatntRoi, setInstatntRoi] = useState(0.02);
+  const [endsInText, setEndsInText] = useState("N/A");
 
   const [netProfit, setNetProfit] = useState<null | number>(() => {
     const currentTime = new Date();
@@ -76,6 +78,7 @@ function IvSimulator({
         setInstatntRoi(+diffPercentage.toFixed(2));
         return newAmount;
       });
+      setEndsInText(() => getReadableDuration(endTime));
     }, 5000);
 
     return () => clearInterval(interval);
@@ -97,7 +100,7 @@ function IvSimulator({
   return (
     <div className="w-full">
       <div className="hidden flex-col px-4 md:flex">
-        <div className="grid grid-cols-[minmax(max-content,1fr)_minmax(80px,150px)_minmax(80px,150px)_minmax(80px,150px)] border-b py-2">
+        <div className="grid grid-cols-[minmax(max-content,1fr)_minmax(80px,150px)_minmax(80px,150px)_minmax(80px,150px)_minmax(150px,190px)] border-b py-2">
           <span className="text-sm font-semibold uppercase text-siteText">
             Package
           </span>
@@ -107,18 +110,21 @@ function IvSimulator({
           <span className="justify-self-center text-sm font-semibold uppercase text-siteText">
             ROI(%)
           </span>
-          <span className="justify-self-end text-sm font-semibold uppercase text-siteText">
+          <span className="justify-self-center text-sm font-semibold uppercase text-siteText">
             Net Profit
           </span>
+          <span className="justify-self-end text-sm font-semibold uppercase text-siteText">
+            Ends in:
+          </span>
         </div>
-        <div className="grid grid-cols-[minmax(max-content,1fr)_minmax(80px,150px)_minmax(80px,150px)_minmax(80px,150px)] py-2">
+        <div className="grid grid-cols-[minmax(max-content,1fr)_minmax(80px,150px)_minmax(80px,150px)_minmax(80px,150px)_minmax(150px,190px)] py-2">
           <span className="font-semibold capitalize text-slate-900">
-            Emerald
+            {investmentPackage}
           </span>
           <span className="font-semibold uppercase text-slate-900">
             {formatToUSD(amount)}
           </span>
-          <div className="flex items-center gap-1 justify-self-center font-semibold uppercase text-slate-900">
+          <div className="-ml-2 flex items-center gap-1 justify-self-center font-semibold uppercase text-slate-900">
             <span
               className={clsx(
                 "",
@@ -136,8 +142,11 @@ function IvSimulator({
               {Math.abs(instatntRoi)}%
             </span>
           </div>
-          <span className="justify-self-end font-semibold uppercase text-slate-900">
+          <span className="justify-self-center font-semibold uppercase text-slate-900">
             {formatToUSD(amount + (netProfit as number))}
+          </span>
+          <span className="justify-self-end font-semibold capitalize text-slate-900">
+            {endsInText}
           </span>
         </div>
       </div>
@@ -175,11 +184,15 @@ function IvSimulator({
             </span>
           </div>
         </div>
-        <div className="border-b-dotted flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-dotted py-2">
           <span className="capitalize text-siteText">Net Profit</span>
           <span className="text-sm font-semibold uppercase">
             {formatToUSD(amount + (netProfit as number))}
           </span>
+        </div>
+        <div className="flex items-center justify-between py-2">
+          <span className="capitalize text-siteText">Ends in:</span>
+          <span className="Capitalize text-sm font-semibold">{endsInText}</span>
         </div>
       </div>
     </div>
