@@ -180,7 +180,10 @@ export async function updateSingleInvestmentBasedOnDuration(id: string) {
 export async function getToTalProfit(id: string) {
   try {
     await connectToDatabase();
-    const investments = await Investment.find({ user: id });
+    const investments = await Investment.find({
+      user: id,
+      status: "completed",
+    });
 
     const totalProfit = investments.reduce((acc, iv) => {
       return acc + iv.returns - iv.amount;
