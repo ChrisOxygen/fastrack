@@ -53,7 +53,9 @@ function OverViewSect({ balance, status }: OverviewDataProps) {
               <FiArrowDown />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">${totalDeposit}</span>
+              <span className="font-syne text-3xl">
+                {formatToUSD(totalDeposit)}
+              </span>
               <span className="font-dm_sans">Total Deposit</span>
             </div>
           </div>
@@ -89,8 +91,18 @@ function OverViewSect({ balance, status }: OverviewDataProps) {
               <FiCornerUpRight />
             </span>
             <div className="flex flex-col items-start">
-              <span className="font-syne text-3xl">{totalTransfer}</span>
-              <span className="font-dm_sans">Total Transfers</span>
+              <span className="hidden font-syne text-3xl md:inline">
+                {totalTransfer}
+              </span>
+              <span className="inline font-syne text-3xl md:hidden">
+                {formatToUSD(profitData as number)}
+              </span>
+              <span className="hidden font-dm_sans md:inline">
+                Total Transfers
+              </span>
+              <span className="inline font-dm_sans md:hidden">
+                Total profits
+              </span>
             </div>
           </div>
           <div className="overview-line-box border-l-0 border-siteHeadingDark/25 bg-white sm:border-l lg:border-l-0">
