@@ -4,6 +4,7 @@ import Image from "next/image";
 import CustomButton from "./ui/CustomButton";
 
 import Menu from "./Menu";
+import { COPYRIGHT_TEXT } from "@/constants";
 
 function CtaFooter() {
   return (
@@ -69,7 +70,7 @@ function CtaFooter() {
           </div>
 
           <p className="mt-4 text-center font-archivo text-white">
-            Copyright© 2025 Fastrack Investment
+            {COPYRIGHT_TEXT}
           </p>
         </div>
         <Image
