@@ -1,6 +1,6 @@
 function WhyUsSection() {
   return (
-    <div className="relative flex h-full w-full bg-siteGreen py-[100px] after:absolute after:right-0 after:top-0 after:h-full after:w-0 after:bg-[url('/assets/why-us-img.webp')] after:bg-center lg:after:w-1/3 xl:after:w-1/2">
+    <div className="relative flex h-full w-full bg-siteGreen py-[100px] after:absolute after:right-0 after:top-0 after:h-full after:w-0 after:bg-[url('/assets/why-us-img.webp')] after:bg-cover after:bg-center after:bg-no-repeat lg:after:w-1/3 xl:after:w-1/2">
       <div className="mx-auto flex w-full flex-col items-center justify-between gap-24 px-6 md:container lg:flex-row">
         <div className="flex w-full flex-col items-start gap-10 lg:w-2/3 xl:w-1/2">
           <h2 className="text-3xl font-bold text-white md:text-5xl">

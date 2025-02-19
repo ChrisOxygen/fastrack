@@ -53,7 +53,7 @@ function AboutHero() {
             professionalism and performance.
           </p>
 
-          <div className="">
+          <div className="flex flex-col gap-5">
             <ul className="space-y-3">
               <li className="flex flex-row items-center gap-2">
                 <BsPeople className="rounded-full border-[1px] border-stone-200 p-3 text-5xl text-siteOrange" />
@@ -76,9 +76,6 @@ function AboutHero() {
                 </span>
               </li>
             </ul>
-          </div>
-
-          <div className="group">
             <CustomButton
               href="/signup"
               text="Get Started"
