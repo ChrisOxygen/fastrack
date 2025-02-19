@@ -37,10 +37,18 @@ function CtaFooter() {
             <Menu location="footer" />
           </nav>
 
-          <p className="-mb-3 text-center font-archivo text-[16px] text-white">
-            Regulated, certified and incensed by the US security exchange
-            commission
-          </p>
+          <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-2 border-b border-b-white pb-5">
+              <p className="font-bold uppercase text-white">Address</p>
+              <p className="text-center font-archivo text-[16px] text-white">
+                233 S. Wacker Drive Suite 9750 Chicago, IL 60606
+              </p>
+            </div>
+            <p className="-mb-3 text-center font-archivo text-[16px] text-white">
+              Regulated, certified and incensed by the US security exchange
+              commission
+            </p>
+          </div>
 
           <div className="flex flex-col gap-8 sm:flex-row">
             <Image

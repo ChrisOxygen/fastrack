@@ -31,8 +31,8 @@ function InvestmentsDisplay({ investments }: { investments: any }) {
   const investmentsToDisplay = filterActive ? filteredInvestments : investments;
 
   return (
-    <div className="">
-      <div className="flex w-full flex-col gap-4 p-0 sm:p-5">
+    <div className="h-full w-full">
+      <div className="flex h-full w-full flex-col gap-4 p-0 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h3 className="font-dm_sans font-bold uppercase text-siteHeadingDark">
             Active Investments
@@ -40,7 +40,7 @@ function InvestmentsDisplay({ investments }: { investments: any }) {
           <IvFilters filters={filters} setFilters={setFilters} />
         </div>
         {isMobile ? (
-          <div className="flex w-full flex-col gap-4">
+          <div className="flex h-max w-full flex-col gap-4">
             {investmentsToDisplay.map((investment: any, index: number) => (
               <InvestmentRow
                 key={index}
@@ -71,7 +71,7 @@ function InvestmentsDisplay({ investments }: { investments: any }) {
                 End Date
               </span>
             </div>
-            <div className="flex h-[600px] flex-col">
+            <div className="flex h-full flex-col">
               <ScrollArea className="w-full">
                 {investmentsToDisplay.map((investment: any, index: number) => (
                   <InvestmentRow

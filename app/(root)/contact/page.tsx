@@ -6,7 +6,6 @@ import { z } from "zod";
 
 import { LiaHeadsetSolid } from "react-icons/lia";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -94,6 +93,12 @@ function ContactPage() {
                 accessible financial services without compromising quality.
                 Empower your financial future today.
               </p>
+              <div className="flex flex-col gap-2 border-b pb-5">
+                <p className="font-bold uppercase">Address</p>
+                <p className="text-center font-archivo text-[16px]">
+                  233 S. Wacker Drive Suite 9750 Chicago, IL 60606
+                </p>
+              </div>
             </div>
           </div>
           <div className="flex basis-1/2 rounded-3xl bg-siteGreen/5 px-5 py-6 shadow md:px-7 md:py-10">

@@ -27,9 +27,9 @@ function TotalBalanceSect({
         backgroundImage: "url('/Lines-No-Background-white.png')",
       }}
     >
-      <div className="z-10 flex flex-col items-start gap-2 font-dm_sans text-white">
+      <div className="z-10 flex flex-col items-start gap-1 font-dm_sans text-white">
         <span className="">Total Balance</span>
-        <span className="text-4xl">${balance?.toFixed(2)}</span>
+        <span className="text-2xl sm:text-3xl">${balance?.toFixed(2)}</span>
       </div>
       <div
         className={clsx(

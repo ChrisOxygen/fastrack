@@ -19,7 +19,7 @@ function DashboardMenu({ device }: { device: "mobile" | "desktop" }) {
     >
       <div className="flex items-center justify-between border-b-1 border-siteHeadingDark/25 py-4">
         <Link
-          href="/"
+          href="/dashboard"
           className="flex gap-2 text-center font-syne text-xl font-bold"
         >
           <Image
