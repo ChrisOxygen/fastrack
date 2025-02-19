@@ -41,7 +41,7 @@ function HeaderScroll() {
   }, []);
 
   return (
-    <div className="tradingview-widget-container" ref={containerRef}>
+    <div className="tradingview-widget-container z-[30]" ref={containerRef}>
       <div className="tradingview-widget-container__widget"></div>
     </div>
   );

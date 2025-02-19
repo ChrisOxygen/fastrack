@@ -32,7 +32,7 @@ function LandingPageHeader() {
   return (
     <motion.header
       className={clsx(
-        "fixed top-0 z-20 flex h-[86px] w-full items-center justify-between",
+        "fixed top-0 z-50 flex h-[86px] w-full items-center justify-between",
 
         isNotAtTop ? "bg-white shadow-md" : "bg-transparent",
       )}

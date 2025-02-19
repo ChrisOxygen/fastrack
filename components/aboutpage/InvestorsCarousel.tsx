@@ -44,38 +44,6 @@ function InvestorsCarousel() {
         </h3>
       </div>
 
-      {/* <div className="relative overflow-hidden lg:mx-12">
-        <div
-          className="flex px-4 transition-transform duration-500 ease-in-out"
-          style={{
-            transform: `translateX(-${currentIndex * (100 / visibleInvestors)}%)`,
-          }}
-        >
-          {INVESTORS.map((investor, index) => (
-            <div
-              key={index}
-              className="w-full flex-shrink-0 p-4 lg:max-w-[25%]"
-            >
-              <div>
-                <Image
-                  src={investor.img}
-                  alt={`Image of ${investor.name}, an ${investor.role}`}
-                  className="h-96 w-full object-cover sm:h-[300px]"
-                  width={500}
-                  height={500}
-                />
-              </div>
-              <div className="flex flex-col justify-center gap-0 bg-[rgb(0,72,56)] px-4 py-3">
-                <h3 className="text-lg font-semibold tracking-normal text-stone-50">
-                  {investor.name}
-                </h3>
-                <p className="text-sm text-stone-300">{investor.role}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
       <div className="flex w-full items-center justify-center">
         <Carousel
           opts={{
@@ -102,15 +70,17 @@ function InvestorsCarousel() {
                     <h3 className="text-lg font-semibold tracking-normal text-stone-50">
                       {investor.name}
                     </h3>
-                    <p className="text-sm text-stone-300">{investor.role}</p>
+                    <p className="font-syne text-[15px] font-medium tracking-wider text-siteOrange">
+                      {investor.role}
+                    </p>
                   </div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          <div className="flex items-center gap-3">
-            <CarouselPrevious className="rounded-full border-[1px] border-siteGreen p-2 text-lg font-thin text-siteGreen transition-all duration-300 ease-in-out hover:scale-125" />
-            <CarouselNext className="rounded-full border-[1px] border-siteGreen p-2 text-lg font-thin text-siteGreen transition-all duration-300 ease-in-out hover:scale-125" />
+          <div className="mt-10 flex items-center gap-3">
+            <CarouselPrevious className="rounded-full border-[1px] border-siteGreen p-8 text-lg font-thin text-siteGreen transition-all duration-300 ease-in-out hover:scale-125" />
+            <CarouselNext className="rounded-full border-[1px] border-siteGreen p-8 text-lg font-thin text-siteGreen transition-all duration-300 ease-in-out hover:scale-125" />
           </div>
         </Carousel>
       </div>

@@ -30,7 +30,13 @@ function itemIcon(listItem: string) {
   }
 }
 
-function MobileMenuItem({ tabTitle }: { tabTitle: string }) {
+function MobileMenuItem({
+  tabTitle,
+  handleMenuToggle,
+}: {
+  tabTitle: string;
+  handleMenuToggle: () => void;
+}) {
   const currentPath = usePathname();
   const dashboardPath = currentPath.replace("/dashboard ", " ");
   const isDashboard = tabTitle === "dashboard";
@@ -48,6 +54,7 @@ function MobileMenuItem({ tabTitle }: { tabTitle: string }) {
 
   return (
     <li
+      onClick={handleMenuToggle}
       className={clsx(
         "w-full rounded-lg p-1 text-lg hover:bg-gray-100",
         isReferral && "mt-auto",

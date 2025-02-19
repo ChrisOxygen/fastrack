@@ -23,11 +23,11 @@ function FiveMinsSection() {
               <span className="text-4xl font-bold text-siteOrange">01</span>
               <div className="flex flex-col gap-5">
                 <h4 className="font-archivo text-2xl font-bold md:text-4xl">
-                  Sign up, Its free
+                  Sign up for free, explore the best investment packages,
                 </h4>
                 <p className="text-xl text-siteText">
-                  Sign up and login to your dashbord to make an investment Sign
-                  up and login to your dashbord to make an investment
+                  start earning with secure, high-yield opportunities
+                  tailored to your goals.
                 </p>
               </div>
             </div>

@@ -46,7 +46,7 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
   }
   return (
     <>
-      <Sheet>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetTrigger className="ml-2 grid place-items-center text-4xl text-siteGreen">
           <CgMenuLeft />
         </SheetTrigger>
@@ -71,14 +71,35 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
             {location === "dashboard" && (
               <div className="flex h-full flex-col">
                 <menu className="flex h-full flex-col gap-1">
-                  <MobileMenuItem tabTitle="dashboard" />
-                  <MobileMenuItem tabTitle="all transactions" />
-                  <MobileMenuItem tabTitle="deposit" />
-                  <MobileMenuItem tabTitle="investment" />
-                  <MobileMenuItem tabTitle="withdraw" />
-                  <MobileMenuItem tabTitle="referrals" />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="dashboard"
+                  />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="all transactions"
+                  />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="deposit"
+                  />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="investment"
+                  />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="withdraw"
+                  />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="referrals"
+                  />
                   {/* <MobileMenuItem tabTitle="settings" /> */}
-                  <MobileMenuItem tabTitle="support" />
+                  <MobileMenuItem
+                    handleMenuToggle={handleMenuToggle}
+                    tabTitle="support"
+                  />
                 </menu>
                 <div className="flex w-full flex-col items-center border-siteHeadingDark/25 py-4">
                   <UserProfileBox />

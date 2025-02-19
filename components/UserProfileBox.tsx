@@ -14,7 +14,7 @@ function UserProfileBox() {
 
   const { email, firstName, lastName } = data as UserData;
   return (
-    <div className="mb-2 grid w-full grid-cols-[1fr_200px_1fr] items-center justify-center gap-2 rounded-lg border bg-white p-3 xl:grid-cols-[1fr_197px_1fr]">
+    <div className="mb-2 grid w-full grid-cols-[1fr_130px_1fr] items-center justify-center gap-2 rounded-lg border bg-white p-3 sm:grid-cols-[1fr_200px_1fr] xl:grid-cols-[1fr_197px_1fr]">
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-siteHeadingDark/25">
         <FiUserCheck />
       </span>
