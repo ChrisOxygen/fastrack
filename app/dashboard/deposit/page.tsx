@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -26,8 +25,6 @@ import {
 } from "@/components/ui/select";
 import { TRANSFER_METHODS } from "@/constants";
 import DepositFormSelect from "@/components/DepositFormSelect";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 
@@ -40,7 +37,6 @@ import DepositTransCreated from "@/components/DepositTransCreated";
 import { NumericFormat } from "react-number-format";
 import { convertAmount } from "@/cyptoConverter";
 import { debounce, formatToUSD } from "@/utils/services";
-import { set } from "mongoose";
 import InBoxLoader from "@/components/InBoxLoader";
 import { DepositTransactionType } from "@/types";
 
@@ -48,44 +44,12 @@ const FormSchema = z.object({
   paymentMethod: z.enum(["BTC", "USDT", "ETH"], {
     message: "Invalid payment method",
   }),
-  amount: z.number({
-    message: "Invalid amount",
-  }),
-  termsAndConditions: z
-    .boolean({
-      message: "You must agree to the terms and conditions",
+  amount: z
+    .number({
+      message: "Invalid amount",
     })
-    .refine((val) => val === true, {
-      message: "You must agree to the terms and conditions",
-    }),
+    .gt(2, { message: "Amount must be greater than 2" }),
 });
-
-// export type CyptoTransferMethodType = "BTC" | "USDT" | "ETH" | null;
-
-// type FormInputs = {
-//   amount: number;
-//   transferMethod: CyptoTransferMethodType;
-//   transferFee: number;
-//   amountToReceive: number;
-// };
-
-// export type mutationReturnType = {
-//   message: string;
-//   transaction: {
-//     amount: number;
-//     amountToReceive: number;
-//     createdAt: string;
-//     fee: number;
-//     status: string;
-//     transactionId: string;
-//     transferMethod: CyptoTransferMethodType;
-//     type: string;
-//     updatedAt: string;
-//     user: string;
-//     __v: number;
-//     _id: string;
-//   };
-// };
 
 function Deposit() {
   const [hasCreatedTransaction, setHasCreatedTransaction] = useState(false);
@@ -106,7 +70,6 @@ function Deposit() {
     defaultValues: {
       paymentMethod: undefined,
       amount: 0,
-      termsAndConditions: false,
     },
   });
 
@@ -288,7 +251,7 @@ function Deposit() {
                   </span>
                   <div className="flex flex-col items-start justify-between gap-5 rounded-2xl border bg-gray-100/50 p-4 py-4 text-lg font-semibold text-siteText md:flex-row md:items-center md:text-2xl">
                     <span className=" ">
-                      {selectedMethod !== null ? (
+                      {selectedMethod !== null && convertedDisplayAmount ? (
                         <span className="break-all">
                           {
                             TRANSFER_METHODS.find(
@@ -303,6 +266,14 @@ function Deposit() {
                       )}
                     </span>
                     <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(
+                          TRANSFER_METHODS.find(
+                            (method) => method.key === selectedMethod,
+                          )?.depositAddress!,
+                        );
+                      }}
                       disabled={!selectedMethod}
                       className={clsx(
                         "hidden p-1 md:block",
@@ -380,27 +351,7 @@ function Deposit() {
                     </div>
                   </div>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="termsAndConditions"
-                  render={({ field }) => (
-                    <FormItem className="ml-2 flex flex-col gap-1">
-                      <div className="flex items-center gap-5">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <FormLabel className="!m-0 font-archivo text-medium font-semibold text-siteHeadingDark md:text-lg">
-                          I agree to the terms and conditions
-                        </FormLabel>
-                      </div>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <Button
                   className="rounded-2xl border bg-siteGreen p-4 py-6 font-archivo text-lg font-semibold text-white hover:bg-siteOrange hover:text-black md:py-8 md:text-2xl"
                   type="submit"
