@@ -281,7 +281,7 @@ function Deposit() {
                           )?.depositAddress!,
                         );
                       }}
-                      disabled={!selectedMethod}
+                      disabled={!selectedMethod && !convertedDisplayAmount}
                       className={clsx(
                         "hidden p-1 md:block",
                         !selectedMethod
