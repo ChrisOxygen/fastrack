@@ -1,56 +1,114 @@
 "use client";
 
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import Link from "next/link";
+import { FiCopy, FiX } from "react-icons/fi";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TRANSFER_METHODS } from "@/constants";
+import DepositFormSelect from "@/components/DepositFormSelect";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import LoadingSpinner from "@/components/LoadingSpinner";
-import StepDisplay from "@/components/StepDisplay";
-
-import clsx from "clsx";
-
-import DepositTransCreated from "@/components/DepositTransCreated";
 import { useSession } from "next-auth/react";
 import { createDepositTransaction } from "@/utils/actions/transaction.actions";
+import DepositTransCreated from "@/components/DepositTransCreated";
 
-export type CyptoTransferMethodType = "BTC" | "USDT" | "ETH" | null;
+import { NumericFormat } from "react-number-format";
+import { convertAmount } from "@/cyptoConverter";
+import { debounce, formatToUSD } from "@/utils/services";
+import { set } from "mongoose";
+import InBoxLoader from "@/components/InBoxLoader";
+import { DepositTransactionType } from "@/types";
 
-type FormInputs = {
-  amount: number;
-  transferMethod: CyptoTransferMethodType;
-  transferFee: number;
-  amountToReceive: number;
-};
+const FormSchema = z.object({
+  paymentMethod: z.enum(["BTC", "USDT", "ETH"], {
+    message: "Invalid payment method",
+  }),
+  amount: z.number({
+    message: "Invalid amount",
+  }),
+  termsAndConditions: z
+    .boolean({
+      message: "You must agree to the terms and conditions",
+    })
+    .refine((val) => val === true, {
+      message: "You must agree to the terms and conditions",
+    }),
+});
 
-export type mutationReturnType = {
-  message: string;
-  transaction: {
-    amount: number;
-    amountToReceive: number;
-    createdAt: string;
-    fee: number;
-    status: string;
-    transactionId: string;
-    transferMethod: CyptoTransferMethodType;
-    type: string;
-    updatedAt: string;
-    user: string;
-    __v: number;
-    _id: string;
-  };
-};
+// export type CyptoTransferMethodType = "BTC" | "USDT" | "ETH" | null;
+
+// type FormInputs = {
+//   amount: number;
+//   transferMethod: CyptoTransferMethodType;
+//   transferFee: number;
+//   amountToReceive: number;
+// };
+
+// export type mutationReturnType = {
+//   message: string;
+//   transaction: {
+//     amount: number;
+//     amountToReceive: number;
+//     createdAt: string;
+//     fee: number;
+//     status: string;
+//     transactionId: string;
+//     transferMethod: CyptoTransferMethodType;
+//     type: string;
+//     updatedAt: string;
+//     user: string;
+//     __v: number;
+//     _id: string;
+//   };
+// };
 
 function Deposit() {
-  const [step, setStep] = useState(1);
-  const [transferMethod, setTransferMethod] =
-    useState<CyptoTransferMethodType>(null);
-
+  const [hasCreatedTransaction, setHasCreatedTransaction] = useState(false);
   const [transOBJ, setTransOBJ] = useState<{
     transferMethod: string;
     amountToReceive: number;
     transaction: string;
   } | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<
+    null | "BTC" | "USDT" | "ETH"
+  >(null);
+  const [convertedDisplayAmount, setConvertedDisplayAmount] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
+  const [fetchAmount, setFetchAmount] = useState(0);
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      paymentMethod: undefined,
+      amount: 0,
+      termsAndConditions: false,
+    },
+  });
 
   const queryClient = useQueryClient();
 
@@ -60,8 +118,7 @@ function Deposit() {
     mutationFn: createDepositTransaction,
     onError: (error) => {},
     onSuccess: (data) => {
-      reset();
-      setTransferMethod(null);
+      form.reset();
 
       const {
         transferMethod,
@@ -76,201 +133,289 @@ function Deposit() {
         transaction,
       });
 
-      setStep(2);
+      setHasCreatedTransaction(true);
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    getValues,
-    reset,
-    formState: { errors, isLoading, isSubmitting, isValidating },
-  } = useForm<FormInputs>({
-    defaultValues: {
-      amount: 0,
-      transferMethod: null,
+  useEffect(() => {
+    const setConvertedAmount = async (
+      paymentMethod: "BTC" | "USDT" | "ETH",
+      amount: number,
+    ) => {
+      try {
+        setIsFetching(true);
+        const result = await convertAmount({ paymentMethod, amount });
+        setConvertedDisplayAmount(result as number);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setConvertedDisplayAmount(0);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    if (selectedMethod !== null && fetchAmount > 0) {
+      console.log("fetching data-----------------");
+      const { paymentMethod, amount } = form.getValues();
+      setConvertedAmount(paymentMethod, amount);
+    }
+  }, [selectedMethod, form, fetchAmount]);
+
+  const debouncedSetFetchAmount = debounce((amount: number) => {
+    setFetchAmount(amount);
+  }, 500);
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
+    const muParameter = {
+      amount: data.amount,
+      transferMethod: data.paymentMethod,
       transferFee: 1,
-      amountToReceive: 0,
-    },
-  });
-
-  function resetState() {
-    setStep(1);
+      tax: 0,
+      amountToReceive: data.amount - 1,
+      userId: session?.user.id!,
+    } as DepositTransactionType;
+    mutate(muParameter);
   }
 
-  const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    console.log("onsubmit", data);
+  if (isPending) {
+    return <InBoxLoader />;
+  }
 
-    mutate({ ...data, tax: 0, userId: session?.user.id! });
+  const resetState = () => {
+    setHasCreatedTransaction(false);
+    setTransOBJ(null);
   };
-
-  if (
-    status === "loading" ||
-    isLoading ||
-    isSubmitting ||
-    isValidating ||
-    isPending
-  ) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <>
-      <section className="mt-16 flex flex-col gap-16 sm:mt-0">
-        <StepDisplay step={step} />
-
-        {step === 1 && (
-          <div className="flex w-full flex-col items-center">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-              className="flex w-full max-w-[400px] flex-col items-center gap-5 font-dm_sans"
-            >
-              <p className="text-center font-dm_sans text-2xl font-bold text-siteHeadingDark">
-                Amount to deposit
-              </p>
-              <div className="relative flex w-full max-w-[300px] flex-col items-center">
-                <div className="flex w-full justify-center">
-                  <span className="grid place-items-center py-3 text-center font-dm_sans text-6xl font-bold leading-none text-siteHeadingDark">
-                    $
-                  </span>
-                  <input
-                    type="number"
-                    {...register("amount", {
-                      required: true,
-                      onChange: () => {
-                        const inputAmount = +getValues("amount");
-                        const tfFee = getValues("transferFee");
-
-                        if (inputAmount && inputAmount > 0) {
-                          setValue("amountToReceive", inputAmount - tfFee);
-                        }
-                      },
-                    })}
-                    placeholder="0.00"
-                    className="inputField py-3 font-dm_sans text-6xl font-bold text-siteHeadingDark placeholder-shown:text-siteHeadingDark/10 focus:border-0 focus:outline-none active:border-0 active:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                  />
-                </div>
-                <span className=""></span>
-              </div>
-              <input
-                type="text"
-                hidden
-                className=""
-                {...register("transferFee", { required: true })}
-              />
-              <input
-                type="text"
-                hidden
-                className=""
-                {...register("transferMethod", { required: true })}
-              />
-              <input
-                type="text"
-                hidden
-                className=""
-                {...register("amountToReceive", { required: true })}
-              />
-              <div className="flex w-full flex-col gap-4">
-                <div className="grid w-full max-w-[400px] grid-cols-[minmax(50px,1fr)_max-content_minmax(50px,1fr)] items-center gap-5">
-                  <span className="h-[1px] w-full bg-siteHeadingDark/25"></span>
-                  <p className="">Available deposit methods</p>
-                  <span className="h-[1px] w-full bg-siteHeadingDark/25"></span>
-                </div>
-                <div className="flex w-full gap-4">
-                  <button
-                    className={clsx(
-                      "w-full rounded-xl border border-siteGreen px-6 py-5 font-dm_sans text-xl",
-                      transferMethod === "BTC"
-                        ? "bg-siteGreen text-white"
-                        : "bg-transparent text-siteGreen",
-                    )}
-                    onClick={() => {
-                      setValue("transferMethod", "BTC");
-                      setTransferMethod("BTC");
-                    }}
-                  >
-                    BTC
-                  </button>
-                  <button
-                    className={clsx(
-                      "w-full rounded-xl border border-siteGreen px-6 py-5 font-dm_sans text-xl",
-                      transferMethod === "USDT"
-                        ? "bg-siteGreen text-white"
-                        : "bg-transparent text-siteGreen",
-                    )}
-                    onClick={() => {
-                      setValue("transferMethod", "USDT");
-                      setTransferMethod("USDT");
-                    }}
-                  >
-                    USDT
-                  </button>
-                  <button
-                    className={clsx(
-                      "w-full rounded-xl border border-siteGreen px-6 py-5 font-dm_sans text-xl",
-                      transferMethod === "ETH"
-                        ? "bg-siteGreen text-white"
-                        : "bg-transparent text-siteGreen",
-                    )}
-                    onClick={() => {
-                      setValue("transferMethod", "ETH");
-                      setTransferMethod("ETH");
-                    }}
-                  >
-                    ETH
-                  </button>
-                </div>
-              </div>
-              <button
-                disabled={transferMethod === null || +watch("amount") < 2}
-                className={clsx(
-                  "w-full rounded-xl bg-siteHeadingDark py-5 font-dm_sans text-xl text-white",
-                  (transferMethod === null || +watch("amount") < 2) &&
-                    "cursor-not-allowed opacity-50",
-                )}
-                onClick={handleSubmit(onSubmit)}
-              >
-                Create Transaction
-              </button>
-            </form>
-
-            <div className="flex w-full max-w-[800px] flex-col gap-2 font-dm_sans">
-              <p className="font-bold capitalize text-siteGreen underline">
-                Instructions:
-              </p>
-              <p className="">
-                Enter the amount you wish to deposit, then select a deposit
-                method from the available deposit methods. When you are done,
-                click on the create transaction button to continue. This will
-                take you to the next step where you will be able to view the
-                wallet address to send the funds to, and also you&apos;ll find a{" "}
-                <strong>transaction ID</strong> that you will use as the
-                reference when making the payment.{" "}
-                <strong>
-                  This is very important, as it will help us to track your
-                  payment and credit your account accordingly
-                </strong>
-                . you can also copy the wallet address by clicking on the copy
-                icon next to the address. After generating the transaction, you
-                have 24 hours to make the payment. if you fail to make the
-                payment within the stipulated time, the transaction will be
-                cancelled and you have to create a new transaction.
-              </p>
+      {!hasCreatedTransaction && (
+        <section className="grid place-items-center">
+          <div className="flex w-full max-w-[800px] flex-col gap-5 rounded-2xl p-6 lg:border">
+            <div className="flex items-center justify-between font-syne text-2xl font-semibold md:text-3xl">
+              <span className="text-siteGreen">Deposit</span>
+              <Link href="/dashboard">
+                <FiX />
+              </Link>
             </div>
-          </div>
-        )}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="relative flex w-full flex-col gap-5"
+              >
+                <FormField
+                  control={form.control}
+                  name="paymentMethod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="ml-2 text-sm font-semibold uppercase text-siteHeadingDark">
+                        Payment Method
+                      </FormLabel>
+                      <Select
+                        onValueChange={(value) => {
+                          if (
+                            value === "BTC" ||
+                            value === "USDT" ||
+                            value === "ETH"
+                          ) {
+                            setSelectedMethod(value);
+                          }
+                          field.onChange(value);
+                        }}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="rounded-2xl border bg-gray-100/50 p-4 py-8 text-medium font-semibold text-siteText md:text-2xl">
+                            <SelectValue
+                              className="text-sm font-semibold text-siteText placeholder-shown:text-sm md:text-2xl"
+                              placeholder="Select a payment method from the dropdown   "
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="">
+                          {TRANSFER_METHODS.map((method) => (
+                            <SelectItem
+                              className="my-1"
+                              key={method.key}
+                              value={method.key}
+                            >
+                              <DepositFormSelect method={method} />
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
 
-        {step === 2 && transOBJ && (
-          <DepositTransCreated transOBJ={transOBJ} resetState={resetState} />
-        )}
-      </section>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="ml-2 text-sm font-semibold uppercase text-siteHeadingDark">
+                        Amount
+                      </FormLabel>
+
+                      <FormControl>
+                        <div className="flex items-end gap-[2px] rounded-2xl border bg-gray-100/50 p-4">
+                          <NumericFormat
+                            className="!m-0 border-none bg-transparent p-0 text-lg font-semibold text-siteText shadow-none focus-within:ring-0 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0 active:border-none md:text-2xl"
+                            thousandSeparator
+                            prefix="$"
+                            placeholder="0.00"
+                            allowLeadingZeros={false}
+                            onValueChange={(value) => {
+                              console.log(value);
+
+                              field.onChange(+value?.floatValue!);
+                              debouncedSetFetchAmount(+value?.floatValue!);
+                            }}
+                          />
+                        </div>
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex w-full flex-col gap-2">
+                  <span className="ml-2 text-sm font-semibold uppercase text-siteHeadingDark">
+                    Address
+                  </span>
+                  <div className="flex flex-col items-start justify-between gap-5 rounded-2xl border bg-gray-100/50 p-4 py-4 text-lg font-semibold text-siteText md:flex-row md:items-center md:text-2xl">
+                    <span className=" ">
+                      {selectedMethod !== null ? (
+                        <span className="break-all">
+                          {
+                            TRANSFER_METHODS.find(
+                              (method) => method.key === selectedMethod,
+                            )?.depositAddress
+                          }
+                        </span>
+                      ) : (
+                        <span className="text-wrap">
+                          Select a payment method to view address
+                        </span>
+                      )}
+                    </span>
+                    <button
+                      disabled={!selectedMethod}
+                      className={clsx(
+                        "hidden p-1 md:block",
+                        !selectedMethod
+                          ? "cursor-not-allowed text-siteText opacity-50"
+                          : "text-siteGreen",
+                      )}
+                    >
+                      <FiCopy />
+                    </button>
+                    <button
+                      disabled={!selectedMethod}
+                      className={clsx(
+                        "flex w-full items-center justify-between gap-2 rounded-lg border p-3 md:hidden",
+                        !selectedMethod
+                          ? "cursor-not-allowed text-siteText opacity-50"
+                          : "bg-siteGreen p-2 text-white hover:bg-siteOrange hover:text-black",
+                      )}
+                    >
+                      <span className="text-medium uppercase">
+                        Copy Address
+                      </span>
+                      <span className="text-xl">
+                        <FiCopy />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div className="flex w-full flex-col gap-2">
+                  <span className="ml-2 text-sm font-semibold uppercase text-siteHeadingDark">
+                    Summary
+                  </span>
+                  <div className="flex flex-col items-center gap-3 rounded-2xl border bg-gray-100/50 p-4 text-2xl font-semibold text-siteText">
+                    <div className="flex w-full items-center justify-between">
+                      <span className="text-medium font-normal md:text-xl">
+                        Deposit Amount
+                      </span>
+                      <span className="text-medium text-siteHeadingDark md:text-xl">
+                        {formatToUSD(fetchAmount)}
+                      </span>
+                    </div>
+                    <div className="flex w-full items-center justify-between">
+                      <span className="text-medium font-normal md:text-xl">
+                        Current Value
+                      </span>
+                      <div className="text-medium text-siteHeadingDark md:text-xl">
+                        {selectedMethod && fetchAmount > 0 ? (
+                          <span className="">{`${convertedDisplayAmount}(${selectedMethod})`}</span>
+                        ) : (
+                          <span className="">N/A</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex w-full items-center justify-between">
+                      <span className="text-medium font-normal md:text-xl">
+                        Fee
+                      </span>
+                      <span className="text-medium text-siteHeadingDark md:text-xl">
+                        $1.00
+                      </span>
+                    </div>
+                    <div className="flex w-full items-center justify-between">
+                      <span className="text-medium font-normal md:text-xl">
+                        Expected deposit
+                      </span>
+                      <div className="text-medium text-siteHeadingDark md:text-xl">
+                        {selectedMethod && fetchAmount > 0 ? (
+                          <span className="">
+                            {formatToUSD(fetchAmount - 1)}
+                          </span>
+                        ) : (
+                          <span className="">N/A</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="termsAndConditions"
+                  render={({ field }) => (
+                    <FormItem className="ml-2 flex flex-col gap-1">
+                      <div className="flex items-center gap-5">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <FormLabel className="!m-0 font-archivo text-medium font-semibold text-siteHeadingDark md:text-lg">
+                          I agree to the terms and conditions
+                        </FormLabel>
+                      </div>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  className="rounded-2xl border bg-siteGreen p-4 py-6 font-archivo text-lg font-semibold text-white hover:bg-siteOrange hover:text-black md:py-8 md:text-2xl"
+                  type="submit"
+                >
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </section>
+      )}
+
+      {hasCreatedTransaction && transOBJ && (
+        <DepositTransCreated transOBJ={transOBJ} resetState={resetState} />
+      )}
     </>
   );
 }

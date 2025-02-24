@@ -190,14 +190,7 @@ function Transaction() {
               </button>
             </div>
           </div>
-          <div className="flex items-center justify-between border-b-2 border-dashed border-siteHeadingDark/25 py-3 font-dm_sans">
-            <span className="text-lg font-semibold text-siteHeadingDark/70">
-              Transaction ID
-            </span>
-            <div className="flex items-center gap-2 text-lg font-black text-black">
-              <span className="">{id}</span>
-            </div>
-          </div>
+
           <div className="flex items-center justify-between border-b-2 border-dashed border-siteHeadingDark/25 py-3 font-dm_sans">
             <span className="text-lg font-semibold text-siteHeadingDark/70">
               {type} Amount

@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { revalidatePath } from "next/cache";
 
 //
 
@@ -257,6 +256,14 @@ export function formatToUSD(amount: number): string {
   }).format(amount);
 }
 
+export const formartToUSAmount = (amount: number) => {
+  // formart number to USD without dollar sign
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+};
+
 export const handleServerError = (
   error: unknown,
   context?: string,
@@ -310,4 +317,17 @@ export function roiZone(totalTime: number, remaininTime: number) {
 
 export function randomBetween(min: number, max: number) {
   return Math.random() * (max - min + 1) + min;
+}
+
+export function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  delay: number,
+): (...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function (this: unknown, ...args: Parameters<T>): void {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
 }

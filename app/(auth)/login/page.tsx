@@ -186,6 +186,22 @@ function LoginPage() {
           Forgot password?
         </Link>
       </Form>
+      <p className="mt-2 pb-5 text-sm">
+        Fa$tRack Investment Inc. is a registered investment company with the
+        SEC. The only official website for FastRack Investment is
+        fastrackinvestment.com, and we do not offer a mobile application.
+        FastRack Investment will not accept any investment deposits or RIO
+        payments outside of the website wallet or information on our platform
+        (fastrackinvestment.com). Any website or individual attempting to
+        persuade you to make an investment deposit to an external wallet aside
+        the information on the website platform (fastrackinvestment.com) or
+        through other internet services is not endorsed, affiliated with, or
+        authorized by FastRack Investment. All communications from FastRack
+        Investment will originate from the fastrackinvestment.com domain and/or
+        the FastRack Investment Investor Portal. This website does not
+        constitute an offer or solicitation for investment management, advisory,
+        or related services to potential clients or investors.
+      </p>
     </div>
   );
 }
