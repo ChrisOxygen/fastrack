@@ -101,7 +101,7 @@ function OverViewSect({ balance, status }: OverviewDataProps) {
                 Total Transfers
               </span>
               <span className="inline font-dm_sans md:hidden">
-                Total profits
+                Investment Profit
               </span>
             </div>
           </div>
@@ -135,7 +135,7 @@ function OverViewSect({ balance, status }: OverviewDataProps) {
               <FiTrendingUp />
             </span>
             <div className="flex flex-col items-start gap-1">
-              <span className="font-dm_sans font-bold">Profit wallet</span>
+              <span className="font-dm_sans font-bold">Investment Profit</span>
               <span className="font-dm_sans text-3xl">
                 {formatToUSD(profitData as number)}
               </span>

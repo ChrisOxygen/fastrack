@@ -193,7 +193,7 @@ function Deposit() {
     <>
       {!hasCreatedTransaction && (
         <section className="grid place-items-center">
-          <div className="flex w-full max-w-[800px] flex-col gap-5 rounded-2xl p-6 lg:border">
+          <div className="flex w-full max-w-[800px] flex-col gap-5 rounded-2xl p-0 md:p-6 lg:border">
             <div className="flex items-center justify-between font-syne text-2xl font-semibold md:text-3xl">
               <span className="text-siteGreen">Deposit</span>
               <Link href="/dashboard">
@@ -230,7 +230,7 @@ function Deposit() {
                           <SelectTrigger className="rounded-2xl border bg-gray-100/50 p-4 py-8 text-medium font-semibold text-siteText md:text-2xl">
                             <SelectValue
                               className="text-sm font-semibold text-siteText placeholder-shown:text-sm md:text-2xl"
-                              placeholder="Select a payment method from the dropdown   "
+                              placeholder="Select a payment method from the dropdown"
                             />
                           </SelectTrigger>
                         </FormControl>

@@ -7,7 +7,7 @@ import { HTMLAttributes, HTMLProps } from "react";
 
 type MenuProps = {
   location: "desktop" | "mobile" | "footer";
-  handleMenuToggle: () => void;
+  handleMenuToggle?: () => void;
 };
 
 function Menu({ location, handleMenuToggle }: MenuProps) {
