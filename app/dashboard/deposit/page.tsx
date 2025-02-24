@@ -39,6 +39,8 @@ import { convertAmount } from "@/cyptoConverter";
 import { debounce, formatToUSD } from "@/utils/services";
 import InBoxLoader from "@/components/InBoxLoader";
 import { DepositTransactionType } from "@/types";
+import copy from "copy-to-clipboard";
+import { notify } from "@/components/ReferEarnBox";
 
 const FormSchema = z.object({
   paymentMethod: z.enum(["BTC", "USDT", "ETH"], {
@@ -151,6 +153,11 @@ function Deposit() {
     setHasCreatedTransaction(false);
     setTransOBJ(null);
   };
+
+  function handleCopy(textToCopy: string) {
+    copy(textToCopy);
+    notify("Wallet Address copied to clipboard");
+  }
 
   return (
     <>
@@ -268,7 +275,7 @@ function Deposit() {
                     <button
                       onClick={(e) => {
                         e.preventDefault();
-                        navigator.clipboard.writeText(
+                        handleCopy(
                           TRANSFER_METHODS.find(
                             (method) => method.key === selectedMethod,
                           )?.depositAddress!,
