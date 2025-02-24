@@ -67,7 +67,9 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
           </SheetHeader>
           <SheetTitle className="hidden">Menu</SheetTitle>
           <div className="row-start-2 flex h-full flex-col justify-between self-stretch">
-            {location === "landing" && <LandingMenuContent />}
+            {location === "landing" && (
+              <LandingMenuContent handleMenuToggle={handleMenuToggle} />
+            )}
             {location === "dashboard" && (
               <div className="flex h-full flex-col">
                 <menu className="flex h-full flex-col gap-1">
@@ -110,44 +112,6 @@ function MobileMenu({ location }: { location: "landing" | "dashboard" }) {
           </div>
         </SheetContent>
       </Sheet>
-
-      {/* <button
-        className="z-[6000] ml-2 grid place-items-center text-4xl text-siteGreen"
-        onClick={() => handleMenuToggle()}
-      >
-        {menuOpen ? <FiX /> : <CgMenuLeft />}
-      </button>
-      <div
-        ref={myRef}
-        className={` ${menuOpen ? "flex" : "hidden"} fixed right-0 top-0 z-[100] h-screen w-full flex-row-reverse bg-black/40 backdrop-blur-sm`}
-      >
-        <div
-          className={`flex h-screen w-[75%] flex-col justify-between bg-white p-5`}
-        >
-          <div className="flex w-full items-center justify-between">
-            <Link
-              href={location === "dashboard" ? "/dashboard" : "/"}
-              className="flex gap-2 text-center font-syne text-xl font-bold"
-            >
-              <Image
-                src="/fastrack-green.png"
-                alt="Fastrack"
-                width={150}
-                height={10}
-              />
-            </Link>
-
-            <button
-              className="z-[6000] mt-[-2px] text-2xl text-siteHeadingDark"
-              onClick={() => handleMenuToggle()}
-            >
-              {menuOpen ? <FiX /> : <FiMenu />}
-            </button>
-          </div>
-          {location === "landing" && <LandingMenuContent />}
-          {location === "dashboard" && <DashboardMenuContent />}
-        </div>
-      </div> */}
     </>
   );
 }

@@ -2,12 +2,16 @@ import Link from "next/link";
 import Menu from "./Menu";
 import CustomButton from "./ui/CustomButton";
 
-function LandingMenuContent() {
+type LandingMenuContentProps = {
+  handleMenuToggle: () => void;
+};
+
+function LandingMenuContent({ handleMenuToggle }: LandingMenuContentProps) {
   return (
     <>
       <div className="w-full">
         <nav className="w-full">
-          <Menu location="mobile" />
+          <Menu handleMenuToggle={handleMenuToggle} location="mobile" />
         </nav>
       </div>
 

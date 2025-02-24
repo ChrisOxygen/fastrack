@@ -7,9 +7,10 @@ import { HTMLAttributes, HTMLProps } from "react";
 
 type MenuProps = {
   location: "desktop" | "mobile" | "footer";
+  handleMenuToggle: () => void;
 };
 
-function Menu({ location }: MenuProps) {
+function Menu({ location, handleMenuToggle }: MenuProps) {
   const pathName = usePathname();
 
   console.log(pathName);
@@ -26,6 +27,7 @@ function Menu({ location }: MenuProps) {
         <Link
           key={index}
           href={link.href}
+          onClick={handleMenuToggle}
           className={clsx(
             "",
             location === "footer" &&
